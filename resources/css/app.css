@@ -1,0 +1,598 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Signature green for SMK Islamiyah Ciputat. */
+    --color-school-50: oklch(0.973 0.014 163);
+    --color-school-100: oklch(0.940 0.031 163);
+    --color-school-200: oklch(0.888 0.062 162);
+    --color-school-300: oklch(0.810 0.093 159);
+    --color-school-400: oklch(0.699 0.107 156);
+    --color-school-500: oklch(0.606 0.105 152);
+    --color-school-600: oklch(0.500 0.089 151);
+    --color-school-700: oklch(0.420 0.072 151);
+    --color-school-800: oklch(0.355 0.059 152);
+    --color-school-900: oklch(0.301 0.048 153);
+    --color-school-950: oklch(0.204 0.034 154);
+
+    /* Warm gold used for badges, highlights and the search button. */
+    --color-gold-400: oklch(0.832 0.121 84);
+    --color-gold-500: oklch(0.770 0.140 76);
+    --color-gold-600: oklch(0.674 0.135 67);
+}
+
+/* Pale green brick wall used as the hero backdrop texture. */
+@utility bg-brick-green {
+    background-color: var(--color-school-800);
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            rgb(255 255 255 / 0.055) 0 2px,
+            transparent 2px 26px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgb(255 255 255 / 0.055) 0 2px,
+            transparent 2px 52px
+        );
+}
+
+/* Soft focus ring shared by the interactive chrome. */
+@utility ring-school-focus {
+    &:focus-visible {
+        outline: 2px solid var(--color-gold-400);
+        outline-offset: 2px;
+    }
+}
+
+/* Navbar link treatment: the label pulses on hover, otherwise the text simply
+   brightens. `.nav-link-active` keeps the current page legible via colour only,
+   since a permanently looping animation would be distracting.
+   No underline, no background block — nothing here shifts layout. */
+@keyframes nav-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+}
+
+@utility nav-link {
+    @apply relative text-white/85 transition-colors duration-500 ease-in-out;
+
+    /* Scaling the whole link would widen its flex-1 box and shove the label
+       off-centre, so only the inner text is animated. */
+    & > span {
+        @apply inline-block transition-transform duration-200 ease-out;
+    }
+
+    &:hover {
+        @apply text-white;
+
+        & > span {
+            animation: nav-pulse 0.9s ease-in-out infinite;
+        }
+    }
+
+    /* Keyboard focus gets a static nudge rather than a looping animation, which
+       would otherwise never stop for screen-reader users tabbing past it. */
+    &:focus-visible {
+        @apply text-white;
+
+        & > span {
+            @apply scale-105;
+        }
+    }
+
+    &.nav-link-active {
+        @apply text-gold-400;
+    }
+
+    &:hover,
+    &.nav-link-active:hover {
+        @apply text-white;
+    }
+
+    /* Respect the OS setting: no looping motion for anyone who asked for none. */
+    @media (prefers-reduced-motion: reduce) {
+        & > span {
+            animation: none;
+        }
+
+        &:hover > span,
+        &:focus-visible > span {
+            @apply scale-100;
+        }
+    }
+}
+
+/* Hero rotator. Every slide waits off to the right; the active one sits in
+   place while the one it replaces keeps travelling to the left, so the
+   sequence loops without ever jumping backwards. The script in
+   resources/js/app.js owns the timing and only flips data-state — all motion
+   lives here.
+
+   The transition is longer than a slide is held on purpose: two slides are
+   always mid-crossfade, which reads as a soft drift instead of a hard cut. */
+
+.hero-slide {
+    opacity: 0;
+    transform: translateX(100%);
+    z-index: 0;
+    transition:
+        opacity 800ms ease,
+        transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-slide[data-state='before'] {
+    transform: translateX(-100%);
+}
+
+.hero-slide[data-state='active'] {
+    opacity: 1;
+    transform: translateX(0);
+    z-index: 1;
+}
+
+/* The caption belongs to one slide, so it fades and rises into place instead
+   of sliding sideways with its photo. */
+
+.hero-caption {
+    opacity: 0;
+    transform: translateY(1.75rem);
+    transition:
+        opacity 700ms ease,
+        transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-caption[data-state='active'] {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-slide,
+    .hero-caption {
+        transform: none;
+        transition: opacity 200ms linear;
+    }
+}
+
+/* Scroll reveals.
+   Hidden state is scoped to .has-js, which the layout sets in <head> before
+   first paint — so with JavaScript unavailable (or before app.js loads) the
+   copy is simply there instead of flashing in and then hiding. Everything
+   animates once: resources/js/app.js marks an element as revealed and stops
+   observing it.
+
+   `data-reveal-from` picks the edge the element travels in from; the two halves
+   of a section use opposite edges so they cross as the reader scrolls. `scale`
+   grows from the left, which suits a hairline rule rather than a block. */
+
+.has-js [data-reveal] {
+    opacity: 0;
+    transition:
+        opacity 750ms ease,
+        transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.has-js [data-reveal][data-reveal-from='left'] {
+    transform: translate3d(-3rem, 0, 0);
+}
+
+.has-js [data-reveal][data-reveal-from='right'] {
+    transform: translate3d(3rem, 0, 0);
+}
+
+.has-js [data-reveal][data-reveal-from='scale'] {
+    transform: scaleX(0.2);
+    transform-origin: left center;
+}
+
+.has-js [data-reveal][data-revealed] {
+    opacity: 1;
+    transform: none;
+}
+
+/* Children of a revealed group cascade in, so a block of copy arrives line by
+   line instead of all at once. The group itself is what gets marked as
+   revealed, so it has to hand the visible state down to its children —
+   .has-js [data-reveal][data-revealed] above only reaches the element it is
+   written on. The nth-child(n + 6) fallback keeps the delay sane if the markup
+   grows more children than the rules below enumerate. */
+
+.has-js [data-reveal-group] > * {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+        opacity 650ms ease,
+        transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.has-js [data-reveal-group][data-revealed] > * {
+    opacity: 1;
+    transform: none;
+}
+
+.has-js [data-reveal-group][data-revealed] > *:nth-child(1) { transition-delay: 80ms; }
+.has-js [data-reveal-group][data-revealed] > *:nth-child(2) { transition-delay: 170ms; }
+.has-js [data-reveal-group][data-revealed] > *:nth-child(3) { transition-delay: 260ms; }
+.has-js [data-reveal-group][data-revealed] > *:nth-child(4) { transition-delay: 350ms; }
+.has-js [data-reveal-group][data-revealed] > *:nth-child(5) { transition-delay: 440ms; }
+.has-js [data-reveal-group][data-revealed] > *:nth-child(n + 6) { transition-delay: 530ms; }
+
+/* A longer, wider-spaced cascade for a grid of cards. Each one travels further
+   and takes longer to arrive, so the row assembles one card at a time instead
+   of snapping in together. The rules below outrank the ones above on equal
+   specificity, so they are written after them. */
+
+.has-js [data-reveal-slow] > * {
+    transform: translateY(2.75rem);
+    transition-duration: 1050ms;
+}
+
+.has-js [data-reveal-slow][data-revealed] > *:nth-child(1) { transition-delay: 100ms; }
+.has-js [data-reveal-slow][data-revealed] > *:nth-child(2) { transition-delay: 260ms; }
+.has-js [data-reveal-slow][data-revealed] > *:nth-child(3) { transition-delay: 420ms; }
+.has-js [data-reveal-slow][data-revealed] > *:nth-child(4) { transition-delay: 580ms; }
+.has-js [data-reveal-slow][data-revealed] > *:nth-child(n + 5) { transition-delay: 740ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .has-js [data-reveal],
+    .has-js [data-reveal-group] > * {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* Zero-JS disclosure state for the two navbar toggles. Their checkboxes are the
+   first children of <nav> so they can drive the panels that follow it, which
+   means :has() is the only way to reflect their state on the buttons. These
+   rules are deliberately unlayered so they outrank the `hidden` utility;
+   the drawer rules are therefore also wrapped in a width query so they
+   cannot override `lg:hidden`. All visual styling stays in Tailwind classes. */
+
+.nav-root:has(#nav-search:checked) .nav-search-panel {
+    display: block;
+}
+
+@media (width < 64rem) {
+    .nav-root:has(#nav-menu:checked) .nav-menu-panel {
+        display: block;
+    }
+
+    .nav-root:has(#nav-menu:checked) [data-nav-icon='menu'] {
+        display: none;
+    }
+
+    .nav-root:has(#nav-menu:checked) [data-nav-icon='close'] {
+        display: block;
+    }
+}
+
+.nav-root:has(#nav-menu:focus-visible) [data-nav-button],
+.nav-root:has(#nav-search:focus-visible) [data-nav-button] {
+    outline: 2px solid var(--color-gold-400);
+    outline-offset: 2px;
+}
+/* Staff cards (Tenaga Kependidikan).
+
+   The rail itself is a native horizontal scroller: overflow + scroll-snap, a
+   hidden scrollbar, and padding that lets the run of cards reach the screen
+   edge so the next card stays peeking in. Moving it needs no JavaScript. Only
+   the mouse-drag affordance and the dialog below are scripted.
+
+   Hover stays quiet on purpose: the card lifts a few pixels, the ring warms and
+   the photo nudges 3% - never enough to crop the face or blur the label. The
+   lift is wrapped in a hover-capable media query so a tap on a phone does not
+   leave a card stuck in its raised state. */
+
+.staff-rail {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+}
+
+/* Mandatory snapping measures from the scrollport edge, not from the content
+   edge, so without scroll-padding the first card is pulled 32px past the
+   container's padding and sits at scrollLeft 32 instead of 0. That reads as a
+   rail that is already scrolled - the previous arrow stays enabled and does
+   nothing - and it puts every snap point one card-offset out of step, so an
+   arrow scrolling by one card plus gap lands between two snap positions and
+   gets snapped straight back. The scroll-pl-* utilities on the rail track the
+   px-* padding per breakpoint, which puts scrollLeft 0 and every card start
+   back on a snap point. */
+
+.staff-rail::-webkit-scrollbar {
+    display: none;
+}
+
+/* A card being dragged sideways, so the cursor says so and the text underneath
+   does not get selected. */
+
+.staff-rail.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+}
+
+/* While the sweep is on, snapping is off: the loop nudges the rail a fraction
+   of a card at a time, and mandatory snap positions would fight every frame.
+   The still rail underneath keeps its snap for the arrows. */
+
+.staff-rail.is-marquee {
+    scroll-snap-type: none;
+}
+
+.staff-card {
+    transition:
+        transform 250ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 250ms ease,
+        --tw-ring-color 250ms ease;
+}
+
+.staff-card .staff-photo img {
+    transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.staff-card .staff-monogram {
+    background-color: var(--color-school-700);
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgb(255 255 255 / 0.05) 0 2px,
+        transparent 2px 24px
+    );
+}
+
+@media (hover: hover) {
+    .staff-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px -18px rgb(15 23 42 / 0.35);
+        --tw-ring-color: var(--color-school-300);
+    }
+
+    .staff-card:hover .staff-photo img {
+        transform: scale(1.03);
+    }
+}
+
+/* The focus ring belongs to the stretched button inside the card, so it is
+   moved onto the card itself rather than drawn as a box on top of the photo. */
+
+.staff-card:focus-within {
+    --tw-ring-color: var(--color-school-500);
+}
+
+/* Profile dialog.
+
+   The dialog element is the full-viewport layer: transparent, no padding, and
+   centred flex, so a click on the shaded area lands on the dialog and not on
+   the panel. That is what makes the overlay-click-to-close work. The fade and
+   the small scale-up live on the panel, so they scale the card and not the
+   screen. `allow-discrete` lets the transition run while display flips, and
+   @starting-style supplies the from-state on the first frame. */
+
+.staff-modal:not([open]) {
+    /* Tailwind-free override that matters: the browser hides a closed dialog
+       with its own `dialog:not([open]) { display: none }`, but an author
+       `display` on .staff-modal outranks that. Without this line the empty
+       overlay is laid out in the page and adds a full screen of blank space to
+       the bottom of the home page. */
+    display: none;
+}
+
+.staff-modal[open] {
+    /* Stated explicitly rather than leaning on the user-agent's `dialog:modal`,
+       so the overlay stays pinned to the viewport on its own terms. `inset: 0`
+       only stretches a box whose width and height are `auto`; the user agent
+       gives <dialog> `width: fit-content`, which is why both are reset here.
+       Sizing with `100vw` instead would count the classic scrollbar and leave
+       the overlay a strip narrower than the page. */
+    position: fixed;
+    inset: 0;
+    width: auto;
+    height: auto;
+}
+
+.staff-modal {
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.staff-modal::backdrop {
+    background-color: rgb(15 23 42 / 0);
+    transition:
+        background-color 200ms ease,
+        display 200ms allow-discrete,
+        overlay 200ms allow-discrete;
+}
+
+.staff-modal[open]::backdrop {
+    background-color: rgb(15 23 42 / 0.6);
+}
+
+.staff-modal-panel {
+    opacity: 0;
+    scale: 0.97;
+    translate: 0 10px;
+    transition:
+        opacity 200ms ease,
+        scale 200ms cubic-bezier(0.22, 1, 0.36, 1),
+        translate 200ms cubic-bezier(0.22, 1, 0.36, 1),
+        display 200ms allow-discrete,
+        overlay 200ms allow-discrete;
+}
+
+.staff-modal[open] .staff-modal-panel {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+}
+
+@starting-style {
+    .staff-modal[open]::backdrop {
+        background-color: rgb(15 23 42 / 0);
+    }
+
+    .staff-modal[open] .staff-modal-panel {
+        opacity: 0;
+        scale: 0.97;
+        translate: 0 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .staff-modal::backdrop,
+    .staff-modal[open]::backdrop,
+    .staff-modal-panel,
+    .staff-modal[open] .staff-modal-panel {
+        transition: none;
+    }
+
+    .staff-card,
+    .staff-card .staff-photo img {
+        transition: none;
+    }
+}
+
+/* The portrait inside the dialog is built by the script, so its appearance is
+   described here rather than in classes the build would never see. */
+
+.staff-modal-photo {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* The gold hairline that ties the popup portrait to its card. It lives on a
+   pseudo-element because the script clears the photo slot before filling it. */
+
+.staff-modal-photo::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        var(--color-school-700),
+        var(--color-gold-500),
+        var(--color-school-700)
+    );
+}
+
+.staff-modal-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.staff-modal-photo .staff-monogram {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Three follow-ups to the staff block above. Dragging wins over snapping while
+   the pointer is down, the dialog locks the page behind it, and the expertise
+   tags in the popup are styled here because the script builds those elements. */
+
+.staff-rail.is-dragging {
+    scroll-snap-type: none;
+}
+
+.staff-modal-open {
+    overflow: hidden;
+}
+
+.staff-modal-expertise li {
+    border-radius: 9999px;
+    background-color: var(--color-school-50);
+    color: var(--color-school-700);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1rem;
+    box-shadow: inset 0 0 0 1px var(--color-school-100);
+}
+
+/* The hover popup.
+
+   A dialog opened with show() rather than showModal() does not match `:modal`,
+   which is exactly the difference the hover popup needs: the page behind stays
+   live so the pointer can travel on to the next card. It is then placed by the
+   script next to the card instead of covering the viewport, so the three resets
+   above are undone here and the backdrop is dropped - there is nothing to shade
+   when nothing is dimmed.
+
+   These rules must stay after the `.staff-modal[open]` ones: they weigh the
+   same, so source order is what decides. */
+
+.staff-modal:not(:modal) {
+    inset: auto;
+    width: max-content;
+    height: max-content;
+    max-width: min(34rem, calc(100vw - 2rem));
+    align-items: flex-start;
+}
+
+.staff-modal:not(:modal)::backdrop {
+    background-color: rgb(15 23 42 / 0);
+}
+
+/* The hover popup is a wide testimonial card: a portrait column on the left and
+   the quote, the message, the name and the role on the right. It floats with a
+   deep shadow and rises out of the card it was opened from (the entrance
+   transition comes from `.staff-modal[open] .staff-modal-panel` above). */
+
+.staff-modal:not(:modal) .staff-modal-panel {
+    width: 34rem;
+    max-width: 100%;
+    max-height: calc(100vh - 2rem);
+    flex-direction: row;
+    overflow: hidden;
+    box-shadow: 0 28px 60px -18px rgb(15 23 42 / 0.4);
+}
+
+.staff-modal:not(:modal) .staff-modal-photo {
+    width: 11rem;
+    flex: none;
+    align-self: stretch;
+    aspect-ratio: auto;
+}
+
+.staff-modal:not(:modal) .staff-modal-photo::after {
+    display: none;
+}
+
+@media (width < 40rem) {
+    .staff-modal:not(:modal) .staff-modal-panel {
+        width: 20rem;
+        flex-direction: column;
+    }
+
+    .staff-modal:not(:modal) .staff-modal-photo {
+        width: auto;
+        aspect-ratio: 1 / 1;
+    }
+}
