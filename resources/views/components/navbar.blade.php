@@ -40,6 +40,13 @@
 
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-6 lg:gap-5">
+            {{-- Mobile brand: on phones the white header strip above collapses into
+                 this bar, so the logo lives here (lg:hidden keeps it off the
+                 desktop bar, where the strip still owns the brand). --}}
+            <a href="{{ route('home') }}" class="flex items-center lg:hidden">
+                <x-logo class="h-8 w-auto shrink-0" surface="light" />
+            </a>
+
             {{-- Desktop menu: every item takes an equal slice (flex-1), so the hairlines
                  land at even intervals and a short label like BERANDA occupies
                  exactly the same box as PROGRAM KEAHLIAN. --}}
@@ -54,15 +61,10 @@
                 @endforeach
             </ul>
 
-            {{-- Mobile brand --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-2.5 lg:hidden">
-                <x-logo class="h-8 w-auto shrink-0" surface="light" />
-                <span class="text-sm leading-tight font-bold tracking-tight text-white">{{ config('school.name') }}</span>
-            </a>
-
             <div class="flex items-center gap-2">
-                {{-- Search: white circle at the far right of the bar. --}}
-                <span data-nav-button class="relative flex size-10 items-center justify-center rounded-full bg-white text-school-700 shadow-sm transition hover:scale-105 hover:bg-school-50">
+                {{-- Search: white circle at the far right of the bar. On mobile it
+                     only exists inside the drawer, so the bar stays logo + burger. --}}
+                <span data-nav-button class="relative hidden size-10 items-center justify-center rounded-full bg-white text-school-700 shadow-sm transition hover:scale-105 hover:bg-school-50 lg:flex">
                     <x-icon name="search" class="size-5" />
                     <label for="nav-search" class="absolute inset-0 cursor-pointer rounded-full">
                         <span class="sr-only">Buka kotak pencarian</span>
@@ -81,9 +83,30 @@
         </div>
     </div>
 
-    {{-- Mobile drawer --}}
+    {{-- Mobile drawer: the burger's contents — search on top, then the menu
+             items, then the contact channels. --}}
     <div class="nav-menu-panel hidden max-h-[75vh] overflow-y-auto pb-4 lg:hidden">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2 py-4">
+                <label for="mobile-search-q" class="sr-only">Cari informasi sekolah</label>
+                <div class="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-white p-1.5 shadow-sm">
+                    <span class="pl-2 text-slate-400">
+                        <x-icon name="search" class="size-4" />
+                    </span>
+                    <input
+                        type="search"
+                        id="mobile-search-q"
+                        name="q"
+                        value="{{ request('q') }}"
+                        placeholder="Cari program keahlian, pengumuman..."
+                        class="min-w-0 flex-1 bg-transparent px-1 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
+                    />
+                    <button type="submit" class="flex size-9 shrink-0 items-center justify-center rounded-full bg-school-700 text-white transition hover:bg-school-800">
+                        <x-icon name="search" class="size-4" />
+                    </button>
+                </div>
+            </form>
+
             <ul class="border-t border-school-600/70 pt-2">
                 @foreach ($items as $index => $item)
                     <x-nav-item

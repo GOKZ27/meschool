@@ -102,7 +102,7 @@
                      a small clock. Every card lifts and deepens its shadow on
                      hover, so the row stays level. --}}
                 @if ($grid->isNotEmpty())
-                    <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2" data-reveal data-reveal-from="left">
+                    <div class="mt-5 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2" data-reveal data-reveal-from="left">
                         @foreach ($grid as $article)
                             <div class="h-full">
                                 <a
@@ -269,7 +269,7 @@
                         </a>
                     </div>
 
-                    <ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+                    <ul class="mt-6 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2 lg:grid-cols-3" data-reveal-group>
                         @foreach ($past as $article)
                             @php
                                 $day = $article->published_at?->format('j');

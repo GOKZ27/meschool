@@ -102,7 +102,7 @@
                         </a>
                     </div>
                 @else
-                    <ul class="mt-6 grid gap-6 sm:grid-cols-2" data-reveal-group>
+                    <ul class="mt-6 grid grid-cols-1 gap-6 min-[400px]:grid-cols-2" data-reveal-group>
                         @foreach ($jobs as $job)
                             <li>
                                 <x-bkk.job-card :job="$job" />

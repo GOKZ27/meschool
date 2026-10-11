@@ -116,8 +116,8 @@ class LogoTest extends TestCase
             $this->assertStringContainsString('shrink-0', $class);
         }
 
-        // The navbar bar is 48px tall (text-xs line + py-4); the logo and its
-        // padding must stay under that or the bar grows around the mark.
+        // The navbar bar is 64px tall; the logo and its padding must stay
+        // under that or the bar grows around the mark.
         $navbar = $xp->query('//nav')->item(0);
         $barLogo = $xp->query('.//img[contains(@src,"logo1.png")]', $navbar)->item(0);
 

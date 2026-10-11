@@ -46,7 +46,7 @@
     @if ($rotates)
         data-hero-slider
     @endif
-    class="relative isolate flex min-h-[28rem] items-center overflow-hidden bg-brick-green lg:min-h-[34rem]"
+    class="relative isolate sticky top-0 -z-10 flex h-svh items-center overflow-hidden bg-brick-green"
 >
     <div aria-hidden="true" class="absolute inset-0 -z-20">
         @foreach ($slides as $index => $slide)

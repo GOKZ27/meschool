@@ -100,7 +100,7 @@
                         </a>
                     </div>
                 @else
-                    <ul class="mt-6 grid gap-6 sm:grid-cols-2" data-reveal-group>
+                    <ul class="mt-6 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2" data-reveal-group>
                         @foreach ($news as $article)
                             <li>
                                 <x-news.card :article="$article" />

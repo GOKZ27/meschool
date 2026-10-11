@@ -596,28 +596,33 @@ class HomePageTest extends TestCase
         );
     }
 
-    public function test_the_home_page_offers_the_four_programs(): void
+    public function test_the_home_page_offers_all_six_programs(): void
     {
-        $items = config('school.programs.items');
+        $slugs = config('school.programs.slugs');
+        $items = array_intersect_key(
+            config('school.program_catalog.items'),
+            array_flip($slugs)
+        );
 
         $html = $this->get(route('home'))->assertOk()->getContent();
         [, $xp] = $this->parseHtml($html);
 
         $cards = $xp->query('//*[@id="program-keahlian"]//a');
 
-        $this->assertSame(4, count($items));
-        $this->assertSame(4, $cards->length);
+        $this->assertSame(6, count($items));
+        $this->assertSame(6, $cards->length);
 
-        // The four programs are pinned, because they are what the school offers.
+        // The six programs are pinned, because they are what the school offers.
         $this->assertSame(
-            ['Animasi', 'DKV', 'TKJT', 'PPLG'],
-            array_map(fn ($i) => $i['name'], $items)
+            ['Kuliner', 'DKV', 'TKJ', 'AK', 'MP', 'BD'],
+            array_values(array_map(fn ($i) => $i['name'], $items))
         );
 
         foreach ($cards as $index => $card) {
-            $item = $items[$index];
+            $slug = array_keys($items)[$index];
+            $item = $items[$slug];
 
-            $this->assertSame(route($item['route']), $card->getAttribute('href'));
+            $this->assertSame(route('program.'.$slug), $card->getAttribute('href'));
             $this->assertSame($item['name'], trim($xp->query('./h3', $card)->item(0)->textContent));
             $this->assertSame(
                 $item['description'],
@@ -635,8 +640,8 @@ class HomePageTest extends TestCase
 
     public function test_each_program_has_a_reachable_page(): void
     {
-        foreach (config('school.programs.items') as $item) {
-            $this->get(route($item['route']))
+        foreach (config('school.program_catalog.items') as $slug => $item) {
+            $this->get(route('program.'.$slug))
                 ->assertOk()
                 ->assertSee($item['name'], escape: false);
         }
@@ -647,7 +652,7 @@ class HomePageTest extends TestCase
         // An unknown name renders an empty box, which looks like a broken card.
         $icons = file_get_contents(resource_path('views/components/icon.blade.php'));
 
-        foreach (config('school.programs.items') as $item) {
+        foreach (config('school.program_catalog.items') as $item) {
             $this->assertStringContainsString(
                 "'{$item['icon']}' =>",
                 $icons,
@@ -677,7 +682,7 @@ class HomePageTest extends TestCase
         $grid = $xp->query('.//*[@data-reveal-slow]', $section)->item(0);
 
         $this->assertTrue($grid->hasAttribute('data-reveal-group'));
-        $this->assertSame(4, $xp->query('./a', $grid)->length);
+        $this->assertSame(6, $xp->query('./a', $grid)->length);
         $this->assertFalse($grid->hasAttribute('data-revealed'));
 
         // app.js has to watch both hooks, not just [data-reveal]: a grid that only

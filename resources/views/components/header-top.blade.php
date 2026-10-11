@@ -1,5 +1,7 @@
-{{-- White utility strip above the main navigation bar. --}}
-<header class="border-b border-slate-200 bg-white">
+{{-- White utility strip above the main navigation bar. On mobile it collapses
+     into the dark navbar (which carries the logo + burger instead), so one
+     brand bar is all the phone shows; desktop keeps both. --}}
+<header class="hidden border-b border-slate-200 bg-white lg:block">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <a href="{{ route('home') }}" class="ring-school-focus group flex items-center gap-3 rounded-sm">
             {{-- The artwork is portrait (219x274), so its height is pinned and the width

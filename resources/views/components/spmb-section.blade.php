@@ -18,10 +18,14 @@
      band sitting clear of the BKK grid above. The photo is a plain cover — no
      pan or zoom — and the dark overlay in config does the contrast work. The
      copy cascades in once through the shared reveal observer, then stays put;
-     prefers-reduced-motion gets the same instant reveal as everywhere else. --}}
+     prefers-reduced-motion gets the same instant reveal as everywhere else.
+
+     Like the hero, the band pins to the top of the viewport (sticky) on its
+     way in and sits behind -z-10, so the block that follows scrolls up and
+     covers the photo smoothly. --}}
 <section
     id="spmb"
-    class="relative isolate flex min-h-[500px] items-center overflow-hidden bg-school-950 py-20 sm:py-24 lg:min-h-[650px] lg:py-32"
+    class="relative isolate sticky top-0 -z-10 flex h-svh min-h-[500px] items-center overflow-hidden bg-school-950 py-20 sm:py-24 lg:py-32"
 >
     @if ($bg)
         <div

@@ -131,15 +131,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Programs of study
+    | Programs of study — home section
     |--------------------------------------------------------------------------
     |
-    | The four programs the school actually offers. <x-programs-section> reads
-    | this list and renders one card per entry, so adding a program means adding
-    | an entry here plus a matching route in routes/web.php.
-    |
-    | 'icon' must be a key of components/icon.blade.php — there is no icon
-    | library, so an unknown name renders an empty box. HomePageTest checks it.
+    | The eyebrow, heading and standfirst of the "Program Keahlian" section on
+    | the home page. The accords panel list itself is NOT duplicated here — the
+    | section renders every entry of 'program_catalog.items' below, the single
+    | catalogue of the six programs the school offers. Adding or renaming a
+    | program means editing that catalogue (plus its route in routes/web.php).
     |
     */
 
@@ -148,41 +147,10 @@ return [
 
         'title' => 'Belajar Terarah dengan Pilihan Jurusan Terbaik',
 
-        'intro' => 'Ada 4 pilihan jurusan yang bisa calon siswa dan siswi pilih untuk belajar di '.
+        'intro' => 'Ada 6 pilihan jurusan yang bisa calon siswa dan siswi pilih untuk belajar di '.
             'SMK Islamiyah Ciputat. Pilih yang paling sesuai dengan minat, lalu tumbuhkan jadi keahlian.',
 
-        'items' => [
-            [
-                'name' => 'Animasi',
-                'icon' => 'film',
-                'route' => 'program.animasi',
-                'description' => 'Jurusan Animasi fokus dalam mempelajari teori dan teknik dalam membuat '.
-                    'animasi 2D dan 3D, animasi film, animasi game, dan bidang lainnya yang menggunakan '.
-                    'konten animasi.',
-            ],
-            [
-                'name' => 'DKV',
-                'icon' => 'pencil-square',
-                'route' => 'program.dkv',
-                'description' => 'DKV adalah cabang ilmu desain. Di jurusan ini, siswa belajar konsep '.
-                    'komunikasi dan ungkapan kreatif dengan menggunakan berbagai elemen visual untuk '.
-                    'menyampaikan pesan.',
-            ],
-            [
-                'name' => 'TKJT',
-                'icon' => 'signal',
-                'route' => 'program.tkjt',
-                'description' => 'Teknik Jaringan Komputer dan Telekomunikasi adalah jurusan yang berisi '.
-                    'kompetensi yang mendasari penguasaan keahlian jaringan komputer dan telekomunikasi.',
-            ],
-            [
-                'name' => 'PPLG',
-                'icon' => 'code-bracket',
-                'route' => 'program.pplg',
-                'description' => 'Jurusan PPLG berhubungan dengan software komputer seperti pembuatan '.
-                    'aplikasi, website, game dan semua yang berhubungan dengan pemrograman.',
-            ],
-        ],
+        'slugs' => ['kuliner', 'dkv', 'tkj', 'ak', 'mp', 'bd'],
     ],
 
     /*
@@ -190,12 +158,12 @@ return [
     | Program landing pages
     |--------------------------------------------------------------------------
     |
-    | The catalogue behind /program-keahlian/{slug}. Every program that has a
-    | route — the six navbar dropdown items AND the four home-page cards — gets
-    | one entry here, keyed by the slug used in the URL. <x-programs-section>
-    | and the navbar send visitors here, so the title must match the label they
-    | already click on (TKJ stays TKJ, MP and BD stay deliberately generic —
-    | do not guess their real names).
+    | The catalogue behind /program-keahlian/{slug} and the "Program Keahlian"
+    | accordion on the home page. Every program that has a route gets one entry
+    | here, keyed by the slug used in the URL. <x-programs-section> and the
+    | navbar send visitors here, so the title must match the label they already
+    | click on (TKJ stays TKJ, MP and BD stay deliberately generic — do not
+    | guess their real names).
     |
     |   'name'          heading shown on the page, matching the menu/card label
     |   'icon'          a key of components/icon.blade.php

@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
+        <div class="mt-12 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2 lg:grid-cols-4" data-reveal-group>
             @foreach ($channels as $channel)
                 <a
                     href="{{ $channel['href'] }}"
@@ -75,7 +75,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                     @endif
-                    class="group flex items-start gap-4 rounded-2xl bg-slate-50 p-6 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md hover:ring-school-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-school-500"
+                    class="group flex flex-col items-start gap-4 rounded-2xl bg-slate-50 p-6 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md hover:ring-school-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-school-500 sm:flex-row sm:items-start"
                 >
                     <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-school-50 text-school-700 ring-1 ring-school-100 transition group-hover:bg-school-700 group-hover:text-white group-hover:ring-school-700">
                         <x-icon :name="$channel['icon']" class="size-5" />

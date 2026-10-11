@@ -65,7 +65,7 @@
              the expertise chips finally get to sit on the card itself. --}}
         <section class="bg-white py-20 lg:py-24">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group data-reveal-slow data-staff-grid>
+                <ul class="grid grid-cols-1 gap-6 min-[400px]:grid-cols-2 lg:grid-cols-3" data-reveal-group data-reveal-slow data-staff-grid>
                     @foreach ($people as $person)
                         <li>
                             <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-slate-900/5 hover:ring-school-300">
@@ -97,7 +97,7 @@
                                         {{ $person['position'] }}
                                     </p>
 
-                                    <p class="mt-3 text-sm leading-relaxed text-slate-600">
+                                    <p class="mt-3 max-lg:line-clamp-3 text-sm leading-relaxed text-slate-600">
                                         {{ $person['description'] }}
                                     </p>
 
