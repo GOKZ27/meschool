@@ -22,7 +22,7 @@
                     {{ $copy['title'] }}
                 </h1>
 
-                <p class="mt-3 max-w-2xl text-sm leading-relaxed text-school-100/85 sm:text-base">
+                <p class="mt-3 hidden max-w-2xl text-sm leading-relaxed text-school-100/85 sm:block sm:text-base">
                     {{ $copy['intro'] }}
                 </p>
 
@@ -67,7 +67,167 @@
             </div>
         </section>
 
-        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8">
+        {{-- ── The phone feed ───────────────────────────────────────────────
+             Below lg the archive reads as a front page rather than one card
+             repeated: two medium stories side by side, a tight row of four
+             thumbnails, the popular tags, then the rest as a two-up grid and
+             a single "next" button. The two-column archive below takes over
+             from lg, so no article ever renders twice at the same width. --}}
+        <div class="lg:hidden" data-berita-feed>
+            @php
+                $items = $news->getCollection();
+                $top = $items->take(2);
+                $dense = $items->slice(2, 4);
+                $tail = $items->slice(6);
+                $tags = $categories
+                    ->filter(fn (array $info) => $info['count'] > 0)
+                    ->sortByDesc('count')
+                    ->values();
+            @endphp
+
+            <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+                @if ($news->isEmpty())
+                    <div class="rounded-2xl bg-slate-50 p-10 text-center ring-1 ring-slate-200">
+                        <x-icon name="search" class="size-8 text-slate-400" />
+                        <p class="mt-4 text-sm leading-relaxed text-slate-600">{{ $copy['empty'] }}</p>
+
+                        <a
+                            href="{{ route('berita') }}"
+                            class="mt-6 inline-flex items-center gap-2 rounded-full bg-school-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-school-800"
+                        >
+                            {{ $copy['reset'] }}
+                            <x-icon name="arrow-right" class="size-4" />
+                        </a>
+                    </div>
+                @else
+                    {{-- 1. Two medium stories, side by side. --}}
+                    @if ($top->isNotEmpty())
+                        <ul class="grid grid-cols-2 gap-4" data-berita-top data-reveal-group>
+                            @foreach ($top as $article)
+                                <li>
+                                    <a
+                                        href="{{ route('berita.show', $article->slug) }}"
+                                        class="group flex h-full flex-col focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                    >
+                                        <x-news.thumb
+                                            :url="$article->imageUrl()"
+                                            :alt="$article->title"
+                                            :icon="$article->categoryInfo()['icon']"
+                                            :play="$article->declaresVideo()"
+                                            aspect="aspect-[4/3]"
+                                            class="rounded-xl"
+                                        />
+
+                                        <span class="mt-2 text-[0.68rem] font-semibold tracking-wide text-school-700 uppercase">
+                                            {{ $article->categoryLabel() }}
+                                        </span>
+
+                                        <h2 class="mt-1 line-clamp-2 text-[0.95rem] leading-snug font-semibold text-balance text-slate-900 transition group-hover:text-school-700">
+                                            {{ $article->title }}
+                                        </h2>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
+                    {{-- 2. Four compact thumbnails, tighter than the grid below. --}}
+                    @if ($dense->isNotEmpty())
+                        <ul class="mt-5 grid grid-cols-4 gap-2.5" data-berita-dense data-reveal-group>
+                            @foreach ($dense as $article)
+                                <li>
+                                    <a
+                                        href="{{ route('berita.show', $article->slug) }}"
+                                        class="group flex h-full flex-col focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                    >
+                                        <x-news.thumb
+                                            :url="$article->imageUrl()"
+                                            :alt="$article->title"
+                                            :icon="$article->categoryInfo()['icon']"
+                                            :play="$article->declaresVideo()"
+                                            aspect="aspect-square"
+                                            class="rounded-lg"
+                                        />
+
+                                        <h3 class="mt-1.5 line-clamp-2 text-[0.7rem] leading-snug font-medium text-slate-800 transition group-hover:text-school-700">
+                                            {{ $article->title }}
+                                        </h3>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
+                    {{-- 3. Tag Terpopuler: the busiest categories as a hashtag grid. --}}
+                    @if ($tags->isNotEmpty())
+                        <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-4" data-berita-tags data-reveal>
+                            <h2 class="text-sm font-bold tracking-tight text-slate-900">
+                                {{ $copy['tags_title'] }}
+                            </h2>
+
+                            <ul class="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
+                                @foreach ($tags as $info)
+                                    <li>
+                                        <a
+                                            href="{{ route('berita', ['kategori' => $info['slug']]) }}"
+                                            class="inline-flex items-center gap-1.5 text-sm font-medium text-school-700 transition hover:text-school-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                        >
+                                            <span aria-hidden="true">#</span>{{ $info['label'] }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </section>
+                    @endif
+
+                    {{-- 4. The rest as a two-up card grid. --}}
+                    @if ($tail->isNotEmpty())
+                        <ul class="mt-6 grid grid-cols-2 gap-4" data-berita-grid data-reveal-group>
+                            @foreach ($tail as $article)
+                                <li>
+                                    <a
+                                        href="{{ route('berita.show', $article->slug) }}"
+                                        class="group flex h-full flex-col focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                    >
+                                        <x-news.thumb
+                                            :url="$article->imageUrl()"
+                                            :alt="$article->title"
+                                            :icon="$article->categoryInfo()['icon']"
+                                            :play="$article->declaresVideo()"
+                                            aspect="aspect-[4/3]"
+                                            class="rounded-xl"
+                                        />
+
+                                        <span class="mt-2 text-[0.68rem] font-semibold tracking-wide text-school-700 uppercase">
+                                            {{ $article->categoryLabel() }}
+                                        </span>
+
+                                        <h3 class="mt-1 line-clamp-2 text-sm leading-snug font-semibold text-balance text-slate-900 transition group-hover:text-school-700">
+                                            {{ $article->title }}
+                                        </h3>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
+                    {{-- 5. One next-page button stands in for the desktop pager. --}}
+                    @if ($news->hasMorePages())
+                        <div class="mt-8 flex justify-center" data-berita-more data-reveal>
+                            <a
+                                href="{{ $news->nextPageUrl() }}"
+                                class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-school-700 transition hover:border-school-300 hover:bg-slate-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                            >
+                                {{ $copy['more'] }}
+                                <x-icon name="arrow-right" class="size-4" />
+                            </a>
+                        </div>
+                    @endif
+                @endif
+            </div>
+        </div>
+
+        <div class="mx-auto hidden max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-12 lg:px-8" data-berita-archive>
             {{-- ── The results ─────────────────────────────────────────── --}}
             <div class="lg:col-span-8">
                 <div class="flex flex-wrap items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3">

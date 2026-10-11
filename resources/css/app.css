@@ -179,12 +179,23 @@
         transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.has-js [data-reveal][data-reveal-from='left'] {
-    transform: translate3d(-3rem, 0, 0);
+.has-js [data-reveal][data-reveal-from='left'],
+.has-js [data-reveal][data-reveal-from='right'] {
+    transform: translate3d(0, 1.5rem, 0);
 }
 
-.has-js [data-reveal][data-reveal-from='right'] {
-    transform: translate3d(3rem, 0, 0);
+/* On a phone the two halves of a section are a single full-width column, so a
+   horizontal travel would shove them past the viewport and hand the page a
+   sideways scroll. The opposite-edge crossing is a wide-screen effect; from lg
+   the halves slide in from their own edge, below it they simply rise. */
+@media (min-width: 64rem) {
+    .has-js [data-reveal][data-reveal-from='left'] {
+        transform: translate3d(-3rem, 0, 0);
+    }
+
+    .has-js [data-reveal][data-reveal-from='right'] {
+        transform: translate3d(3rem, 0, 0);
+    }
 }
 
 .has-js [data-reveal][data-reveal-from='scale'] {
@@ -246,6 +257,15 @@
         opacity: 1;
         transform: none;
         transition: none;
+    }
+}
+
+/* Mobile: every decorative 1px hairline - the gold rule beside an eyebrow and
+   the slate separators inside cards - reads as clutter at phone width, so they
+   are dropped below lg. They all carry the `h-px` utility; desktop keeps them. */
+@media (width < 64rem) {
+    .h-px {
+        display: none;
     }
 }
 

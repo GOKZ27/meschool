@@ -35,28 +35,15 @@ abstract class Media
      *
      * A leading slash on the path is accepted and stripped, so both
      * url('hero/gedung.jpg') and url('/hero/gedung.jpg') work. A path that
-     * already carries the base prefix ("images/logo/logo.png") is not
-     * doubled, so config values can be written either way.
+     * already carries the base prefix ("images/logo/logo.png") or the mapped
+     * subfolder ("hero/gedung.jpg") is not prefixed a second time, so config
+     * values can be written in any of those forms.
      */
     public static function url(string $path, ?string $folder = null): string
     {
-        $base = trim(static::base(), '/');
-        $path = ltrim(trim($path), '/');
-
-        if (static::isRemote($path)) {
-            return $path;
-        }
-
-        if ($folder !== null) {
-            $folder = trim((string) (static::folder($folder) ?? $folder), '/');
-            $path = $folder.'/'.$path;
-        }
-
-        if ($base !== '' && str_starts_with($path, $base.'/')) {
-            $path = substr($path, strlen($base) + 1);
-        }
-
-        return asset($base === '' ? $path : $base.'/'.$path);
+        return static::isRemote($path)
+            ? trim($path)
+            : asset(static::relativePath($path, $folder));
     }
 
     /**
@@ -68,18 +55,43 @@ abstract class Media
      */
     public static function existingUrl(string $path, ?string $folder = null): ?string
     {
-        // A remote file cannot be checked on disk, so a configured URL is
-        // trusted as-is. The check is on the input, not on the built URL:
-        // asset() itself returns an absolute http:// URL for local files.
         if (static::isRemote($path)) {
-            return static::url($path, $folder);
+            return trim($path);
         }
 
-        $url = static::url($path, $folder);
+        // The on-disk check runs against the public-relative path, never the
+        // built URL: asset() prepends the app's base path (a deployment may
+        // serve from a subfolder such as /meschool), which is not a physical
+        // directory under public/.
+        $relative = static::relativePath($path, $folder);
 
-        $relative = parse_url($url, PHP_URL_PATH) ?: '';
+        return is_file(public_path($relative)) ? asset($relative) : null;
+    }
 
-        return is_file(public_path(ltrim($relative, '/'))) ? $url : null;
+    /**
+     * The public-relative path a file resolves to, with the base folder and the
+     * mapped subfolder applied exactly once. An input that already carries the
+     * base ("images/logo/logo.png") or the subfolder ("hero/gedung.jpg") is not
+     * prefixed again.
+     */
+    protected static function relativePath(string $path, ?string $folder = null): string
+    {
+        $base = trim(static::base(), '/');
+        $path = ltrim(trim($path), '/');
+
+        if ($base !== '' && str_starts_with($path, $base.'/')) {
+            $path = substr($path, strlen($base) + 1);
+        }
+
+        if ($folder !== null) {
+            $folder = trim((string) (static::folder($folder) ?? $folder), '/');
+
+            if ($folder !== '' && ! str_starts_with($path, $folder.'/')) {
+                $path = $folder.'/'.$path;
+            }
+        }
+
+        return $base === '' ? $path : $base.'/'.$path;
     }
 
     /**

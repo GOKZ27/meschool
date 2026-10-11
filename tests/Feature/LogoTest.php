@@ -12,7 +12,7 @@ class LogoTest extends TestCase
     {
         $path = config('school.logo.path');
 
-        $this->assertSame('images/logo/logo1.png', $path);
+        $this->assertSame('images/logo/logo2.png', $path);
         $this->assertFileExists(public_path($path));
     }
 
@@ -23,7 +23,7 @@ class LogoTest extends TestCase
 
         [, $xp] = $this->parseHtml($html);
 
-        $logos = $xp->query('//img[@src="'.asset('images/logo/logo1.png').'"]');
+        $logos = $xp->query('//img[@src="'.asset('images/logo/logo2.png').'"]');
 
         $this->assertGreaterThan(0, $logos->length, 'The configured logo is not rendered.');
         $this->assertStringContainsString(config('school.logo.alt'), $html);
@@ -49,14 +49,14 @@ class LogoTest extends TestCase
 
         $this->assertNotNull($nav, 'The navbar is missing.');
 
-        $logo = $xp->query('.//img[contains(@src,"logo1.png")]', $nav)->item(0);
+        $logo = $xp->query('.//img[contains(@src,"logo2.png")]', $nav)->item(0);
 
         $this->assertNotNull($logo, 'The navbar brand should use the real logo.');
         $this->assertStringContainsString('bg-white', $logo->getAttribute('class'));
 
         // The white header needs no plate.
         $header = $xp->query('//header')->item(0);
-        $headerLogo = $xp->query('.//img[contains(@src,"logo1.png")]', $header)->item(0);
+        $headerLogo = $xp->query('.//img[contains(@src,"logo2.png")]', $header)->item(0);
 
         $this->assertNotNull($headerLogo);
         $this->assertStringNotContainsString('bg-white', $headerLogo->getAttribute('class'));
@@ -72,7 +72,7 @@ class LogoTest extends TestCase
         // size, blowing the navbar out.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
-        preg_match_all('/<img[^>]*logo1\.png[^>]*>/', $html, $matches);
+        preg_match_all('/<img[^>]*logo2\.png[^>]*>/', $html, $matches);
 
         $this->assertNotEmpty($matches[0], 'The logo <img> was not found.');
 
@@ -95,7 +95,7 @@ class LogoTest extends TestCase
 
         [, $xp] = $this->parseHtml($html);
 
-        $logos = $xp->query('//img[contains(@src,"logo1.png")]');
+        $logos = $xp->query('//img[contains(@src,"logo2.png")]');
 
         $this->assertGreaterThan(0, $logos->length);
 
@@ -119,7 +119,7 @@ class LogoTest extends TestCase
         // The navbar bar is 64px tall; the logo and its padding must stay
         // under that or the bar grows around the mark.
         $navbar = $xp->query('//nav')->item(0);
-        $barLogo = $xp->query('.//img[contains(@src,"logo1.png")]', $navbar)->item(0);
+        $barLogo = $xp->query('.//img[contains(@src,"logo2.png")]', $navbar)->item(0);
 
         $this->assertNotNull($barLogo);
         $this->assertStringContainsString('h-8', $barLogo->getAttribute('class'));

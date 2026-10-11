@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Support\Images;
 use App\Support\Videos;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -937,8 +938,36 @@ class HomePageTest extends TestCase
         $this->assertSame(asset('images/hero/gedung.jpg'), Images::url('/gedung.jpg', 'hero'));
         $this->assertSame(asset('images/logo/logo.png'), Images::url('images/logo/logo.png'));
 
+        // A path that already carries the subfolder, or the base plus the
+        // subfolder, must not be prefixed a second time.
+        $this->assertSame(asset('images/hero/gedung.jpg'), Images::url('hero/gedung.jpg', 'hero'));
+        $this->assertSame(asset('images/hero/gedung.jpg'), Images::url('images/hero/gedung.jpg', 'hero'));
+
         // existingUrl() reports absence so callers can substitute a fallback.
         $this->assertNull(Images::existingUrl('tidak-ada.jpg', 'hero'));
+    }
+
+    public function test_the_images_helper_survives_a_deployment_subfolder(): void
+    {
+        // The VPS serves the app from /meschool, so asset() prepends that
+        // subfolder to every URL. The folder must still only be applied once,
+        // and existingUrl() must check the file on disk rather than trusting
+        // the URL path (which carries /meschool, not a directory under public/).
+        URL::forceRootUrl('http://80.43.0.10/meschool');
+
+        // A throwaway filename: fakeMedia() is unlinked in tearDown(), and a
+        // name that matches a tracked asset would delete the real file.
+        $this->fakeHeroPhoto('subfolder-check.jpg');
+
+        $this->assertSame(
+            'http://80.43.0.10/meschool/images/hero/subfolder-check.jpg',
+            Images::url('images/hero/subfolder-check.jpg', 'hero'),
+        );
+
+        $this->assertSame(
+            'http://80.43.0.10/meschool/images/hero/subfolder-check.jpg',
+            Images::existingUrl('images/hero/subfolder-check.jpg', 'hero'),
+        );
     }
 
     public function test_the_videos_helper_builds_public_urls(): void

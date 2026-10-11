@@ -41,10 +41,21 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-6 lg:gap-5">
             {{-- Mobile brand: on phones the white header strip above collapses into
-                 this bar, so the logo lives here (lg:hidden keeps it off the
-                 desktop bar, where the strip still owns the brand). --}}
-            <a href="{{ route('home') }}" class="flex items-center lg:hidden">
+                 this bar, so the logo + name live here (lg:hidden keeps them off
+                 the desktop bar, where the strip still owns the brand). The name
+                 is split one word per line so "SMK ISLAMIYAH CIPUTAT" reads as
+                 three tidy rows beside the mark instead of one cramped string. --}}
+            <a
+                href="{{ route('home') }}"
+                aria-label="{{ config('school.name') }}"
+                class="flex min-w-0 items-center gap-2.5 lg:hidden"
+            >
                 <x-logo class="h-8 w-auto shrink-0" surface="light" />
+                <span class="flex min-w-0 flex-col leading-[1.1]" aria-hidden="true">
+                    @foreach (preg_split('/\s+/', trim((string) config('school.name'))) as $word)
+                        <span class="truncate text-[11px] font-bold tracking-[0.08em] text-white uppercase">{{ $word }}</span>
+                    @endforeach
+                </span>
             </a>
 
             {{-- Desktop menu: every item takes an equal slice (flex-1), so the hairlines
@@ -71,11 +82,14 @@
                     </label>
                 </span>
 
-                {{-- Hamburger --}}
-                <span data-nav-button class="relative flex size-10 items-center justify-center rounded-full text-white ring-1 ring-white/25 transition hover:bg-school-800 lg:hidden">
+                {{-- Hamburger: the same 40px square footprint as the search
+                     button, with a soft translucent surface so it reads as a
+                     control. Both icons sit in the one centred box and swap in
+                     place, so opening the drawer never shifts the bar. --}}
+                <span data-nav-button class="relative flex size-10 items-center justify-center rounded-lg bg-white/10 text-white ring-1 ring-white/20 transition hover:bg-school-800 hover:ring-white/30 lg:hidden">
                     <x-icon name="menu" data-nav-icon="menu" class="size-5" />
                     <x-icon name="close" data-nav-icon="close" class="hidden size-5" />
-                    <label for="nav-menu" class="absolute inset-0 cursor-pointer rounded-full">
+                    <label for="nav-menu" class="absolute inset-0 cursor-pointer rounded-lg">
                         <span class="sr-only">Buka menu navigasi</span>
                     </label>
                 </span>

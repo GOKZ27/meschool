@@ -73,7 +73,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Point "path" at a real file in public/, e.g.
-    | "images/logo/logo1.png". The artwork is dark navy on a transparent
+    | "images/logo/logo2.png". The artwork is dark navy on a transparent
     | background, so on the dark navbar it needs surface="light" to stay
     | legible (see <x-logo>). While "path" is null the component falls back to
     | a typographic placeholder instead.
@@ -81,7 +81,7 @@ return [
     */
 
     'logo' => [
-        'path' => 'images/logo/logo1.png',
+        'path' => 'images/logo/logo2.png',
         'alt' => 'Logo SMK Islamiyah Ciputat',
     ],
 
@@ -470,6 +470,12 @@ return [
             'reset' => 'Tampilkan semua',
             'empty' => 'Belum ada berita yang cocok dengan pencarian Anda.',
             'related_title' => 'Berita Terkait',
+
+            // The phone-only feed that replaces the two-column archive below
+            // the lg breakpoint: two medium stories, a tight row of four
+            // thumbnails, the popular category tags and a "next page" button.
+            'tags_title' => 'Tag Terpopuler',
+            'more' => 'Selengkapnya',
         ],
     ],
 

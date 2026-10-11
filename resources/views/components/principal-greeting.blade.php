@@ -30,7 +30,11 @@
 <section id="sambutan" class="scroll-mt-24 bg-white py-20 lg:py-28">
     <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:items-center lg:gap-16 lg:px-8">
         <figure
-            @class(['relative lg:col-span-5', 'lg:order-1' => $portraitOnLeft, 'lg:order-2' => ! $portraitOnLeft])
+            @class([
+                'relative mx-auto w-full max-w-[17rem] sm:max-w-[20rem] lg:col-span-5 lg:mx-0 lg:max-w-none',
+                'lg:order-1' => $portraitOnLeft,
+                'lg:order-2' => ! $portraitOnLeft,
+            ])
             data-reveal
             data-reveal-from="{{ $portraitFrom }}"
         >
@@ -54,19 +58,23 @@
                 @endif
             </div>
 
-            <figcaption class="mt-5 flex items-center gap-3 text-sm text-slate-500">
+            <figcaption class="mt-5 flex items-center justify-center gap-3 text-center text-sm text-slate-500 lg:justify-start lg:text-left">
                 <span aria-hidden="true" class="h-px w-10 shrink-0 bg-gold-400"></span>
                 {{ $principal['role'] }} {{ config('school.name') }}
             </figcaption>
         </figure>
 
         <div
-            @class(['lg:col-span-7', 'lg:order-1' => ! $portraitOnLeft, 'lg:order-2' => $portraitOnLeft])
+            @class([
+                'text-center lg:col-span-7 lg:text-left',
+                'lg:order-1' => ! $portraitOnLeft,
+                'lg:order-2' => $portraitOnLeft,
+            ])
             data-reveal
             data-reveal-from="{{ $textFrom }}"
             data-reveal-group
         >
-            <p class="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-school-700 uppercase">
+            <p class="flex items-center justify-center gap-3 text-xs font-semibold tracking-[0.18em] text-school-700 uppercase lg:justify-start">
                 <span aria-hidden="true" class="h-px w-10 bg-gold-500"></span>
                 Sambutan {{ $principal['role'] }}
             </p>

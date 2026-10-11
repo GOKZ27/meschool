@@ -1,17 +1,17 @@
 # meschool
 
 Public website for **SMK Islamiyah Ciputat** (Indonesian vocational high school). Laravel **13**
-(`laravel/laravel` skeleton, installed 13.34) on PHP `^8.3` + SQLite. The chrome is anonymous Blade
-components in `resources/views/components/`. Only three features carry real logic: the home page
-(`HomeController`), the news archive `/berita` (`NewsController` + `App\Models\News`) and BKK
-(`BkkController` + `App\Support\Bkk`, config-driven). Every navbar entry lands on a real page: the
-programme dropdown runs on `ProgramController` with one literal route per slug (see Routes), the
-flat sections (SPMB, Tenaga Kependidikan) are copy-driven `Route::view`s; only the legacy child URLs
-(`bkk.lowongan`, `bkk.tracer-study`, `spmb.tentang-kami`, `spmb.informasi-sekolah`) and `/pencarian`
-still render `placeholder`.
+(`laravel/laravel` skeleton, framework v13.34 installed) on PHP `^8.3`. Four controllers carry the
+real logic: the home page (`HomeController`), the news archive `/berita` (`NewsController` +
+`App\Models\News`), BKK (`BkkController` + `App\Support\Bkk`, config-driven) and the programme pages
+(`ProgramController`, config-driven). Every navbar entry lands on a real page: the programme
+dropdown runs one literal route per slug (see Routes), the flat sections (SPMB, Tenaga Kependidikan)
+are copy-driven `Route::view`s; only the legacy child URLs (`bkk.lowongan`, `bkk.tracer-study`,
+`spmb.tentang-kami`, `spmb.informasi-sekolah`) and `/pencarian` still render `placeholder`.
 
-Local toolchain: PHP 8.3.35 ZTS (Laragon), Node 24, npm 11. This directory is **not a git repo** and
-has **no CI**.
+Local toolchain: PHP 8.3.35 ZTS (Laragon), Node 24, npm 11. This **is** a git repo (branch `main`)
+with **no CI** and no quality tooling beyond what the composer scripts run. Tests use in-memory
+SQLite; the local `.env` points at MySQL — see Environment.
 
 ## Read only these
 
@@ -41,11 +41,13 @@ Grep first (`Select-String`), then read only the matching file with `offset`/`li
 
 ```sh
 npm run build      # required first: ten tests read the compiled CSS
-composer test      # expect {"tool":"phpunit","result":"passed","tests":122,...,"assertions":1182}
+composer test      # expect {"tool":"phpunit","tests":122,...,"assertions":1210}
 vendor/bin/pint    # the only quality gate; run it last, after tests pass
 ```
 
 A change is done when the build succeeds, all 122 tests pass, and pint is clean — not before.
+**As of this writing one BKK test fails on date drift** (see Tests); treat that one as known, not
+as a regression you introduced.
 
 ## Commands
 
@@ -82,7 +84,7 @@ emits a single JSON line instead of PHPUnit's report:
 
 `PAO_DISABLE=1` (PowerShell: `$env:PAO_DISABLE=1`) restores normal output; `PAO_FORCE=1` forces JSON
 outside agent sessions. `vendor/bin/pint` does the same (`{"tool":"pint","result":"passed"}`).
-A clean run is **122 passed / 1182 assertions**.
+A clean run is **122 tests / ~1210 assertions**.
 
 ### Tests need a CSS build first
 
@@ -282,13 +284,15 @@ entries in config are placeholders. The section has **no standfirst**: heading l
   portrait-first — and each half reveals from the opposite edge. **`name` is `null` until the real
   principal is confirmed**: the signature then shows the role alone rather than crediting someone
   nobody has checked.
-- **The programs section is copy-driven too.** `config('school.programs')` (`eyebrow`, `title`,
-  `intro`, `items[]` of `name` / `icon` / `route` / `description`) feeds `<x-programs-section>`;
-  `HomePageTest` pins the four names in order.
-- **Two different program lists exist and they do not match.** The navbar dropdown
-  (`components/navbar.blade.php`) lists Kuliner, DKV, TKJ, AK, MP, BD; the home page cards list
-  Animasi, DKV, TKJT, PPLG. Only `DKV` is shared. **`MP` and `BD` are deliberately left generic** —
-  do not guess their real names.
+- **The programs section is copy-driven and mirrors the navbar.** `config('school.programs')` holds
+  only heading copy (`eyebrow` / `title` / `intro`) plus `slugs`; `<x-programs-section>` intersects
+  `program_catalog.items` with those slugs, so the home accordion shows the **same six** programmes
+  as the dropdown (Kuliner, DKV, TKJ, AK, MP, BD), in catalogue order.
+  `HomePageTest::test_the_home_page_offers_all_six_programs` pins them in order (do not reintroduce
+  the old Animasi/DKV/TKJT/PPLG card list — it is gone).
+- **`program_catalog` holds more pages than the six showcased** — it also carries `animasi`, `tkjt`
+  and `pplg` routes that no navbar item or home card links to. **`MP` and `BD` stay deliberately
+  generic** — do not guess their real names.
 - Tailwind **v4** via `@tailwindcss/vite`: no `tailwind.config.js`, no `postcss.config.js`, no
   `@tailwind base/components/utilities` — only `@import 'tailwindcss'` in `resources/css/app.css`.
   Brand palettes (`school-50…950`, `gold-400…600`) are `@theme` CSS vars there; use those tokens
@@ -341,8 +345,8 @@ keeps passing, because the tests read `public/build/assets/` directly.
 - **Programme pages**: one **literal** route per slug in `config('school.program_catalog.items')`,
   `/program-keahlian/{slug}` → `ProgramController@show` with `->defaults('program', $slug)`, so a
   missing slug is a 404 by construction (there is no `{program}` param route to swallow it). The
-  catalogue covers the six navbar dropdown items **and** the four home-page cards (Animasi / DKV /
-  TKJT / PPLG); `program.{{slug}}` is the name for all nine.
+  catalogue has nine entries: the six navbar/home programmes plus `animasi`, `tkjt` and `pplg`,
+  which have pages but are linked from nowhere; `program.{{slug}}` is the name for all nine.
 - The remaining `Route::view` stubs render `placeholder` with `$title` / `$description` for the
   legacy child URLs only (`bkk.lowongan` / `bkk.tracer-study` / `spmb.tentang-kami` /
   `spmb.informasi-sekolah`) plus `/pencarian` (`search`). `/maps` is a `Route::redirect` to
@@ -376,6 +380,18 @@ array cache/session and `sync` queue, so no services are needed; the abstract `T
 and would 500 otherwise — the commented-out `use` inside the stock `ExampleTest` is a leftover,
 ignore it). The news feature itself — archive, article page, filters, the home blocks — has **no**
 dedicated tests; only route resolution is pinned, so add coverage if you change it.
+
+The other Feature suites are small and per-area: `BkkPageTest`, `SpmbPageTest`,
+`KependidikanPageTest`, `ProgramPageTest`, `FooterTest`, `KontakPageTest`, `LogoTest`. Some use
+PHPUnit `#[Test]` attributes with plain snake_case method names (no `test_` prefix), so
+`--filter=test_…` silently matches nothing for those — filter on the method name instead.
+
+There is one **date-drift trap** in `BkkPageTest`: it recomputes expectations from `Bkk::jobs()`,
+but `test_a_closed_listing_does_not_offer_to_apply` asserts the closed listing's raw `apply_url` is
+absent from the page. When a closed job's `apply` is the bare contact `mailto:`, that string is
+identical to the footer's contact link, so the assertion fails as soon as such a job becomes the
+first closed one. Re-derive expectations from the actual deadlines; do not trust a stale "all green"
+claim.
 
 **PHPUnit cannot test the three JS features.** Timing, auto-advance, wrap-around, the rail
 arrows/drag threshold and the dialog are browser behaviour. They are checked by throwaway harnesses
@@ -428,10 +444,12 @@ conditional-class element.
 
 ## Environment
 
-`.env` exists with `APP_KEY` set and `APP_URL=http://localhost:8000`; `database/database.sqlite` is
-already migrated **and seeded with the `NewsSeeder` articles**, so the local site shows news while
-the test suite (fresh schema every run) never does. `SESSION_DRIVER`, `CACHE_STORE` and
-`QUEUE_CONNECTION` are all `database`, so
+`.env` exists with `APP_KEY` set and `APP_URL=http://localhost:8000`. **It currently points at MySQL
+(`DB_CONNECTION=mysql`, `DB_DATABASE=meschool`), even though `.env.example` and `phpunit.xml` use
+SQLite.** `database/database.sqlite` (gitignored) is present and already holds 20 seeded news rows,
+so switching `DB_CONNECTION` back to `sqlite` gives a populated local site; either way the test
+suite overrides to in-memory SQLite with a fresh schema every run and never sees local data.
+`SESSION_DRIVER`, `CACHE_STORE` and `QUEUE_CONNECTION` are all `database`, so
 **session and cache hit the DB and queued jobs do not run inline** — a common reason a feature
 appears to "do nothing" (no `queue:listen` running). Change `APP_URL` if you need correct `asset()`
 URLs from a real domain.
