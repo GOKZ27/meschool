@@ -1,4 +1,8 @@
-<x-layouts.app :title="$job['position'] . ' — ' . config('school.name')">
+<x-layouts.app
+    :title="$job['position'] . ' — ' . config('school.name')"
+    :description="\Illuminate\Support\Str::limit(implode(' ', $job['description'] ?? []), 160)"
+    type="article"
+>
     <x-header-top />
     <x-navbar />
 
@@ -6,7 +10,27 @@
         @php
             $copy = config('school.bkk.detail');
             $isRemote = str_starts_with($job['apply_url'], 'http');
+
+            $jobSchema = array_filter([
+                '@type' => 'JobPosting',
+                'title' => $job['position'],
+                'description' => implode(' ', $job['description'] ?? []),
+                'datePosted' => \Illuminate\Support\Carbon::parse($job['published_at'])->toAtomString(),
+                'validThrough' => \Illuminate\Support\Carbon::parse($job['deadline'])->toAtomString(),
+                'employmentType' => $job['type'] ?? null,
+                'industry' => $job['category_label'] ?? null,
+                'hiringOrganization' => ['@type' => 'Organization', 'name' => $job['company']],
+                'jobLocation' => [
+                    '@type' => 'Place',
+                    'address' => ['@type' => 'PostalAddress', 'addressLocality' => $job['location'], 'addressCountry' => 'ID'],
+                ],
+                'url' => route('bkk.show', $job['slug']),
+            ]);
+
+            $schema = ['@context' => 'https://schema.org', '@graph' => [$jobSchema]];
         @endphp
+
+        <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 
         <div class="mx-auto max-w-7xl px-4 pt-10 pb-14 sm:px-6 lg:px-8">
             <nav aria-label="Breadcrumb" class="text-sm text-slate-500">

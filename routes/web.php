@@ -4,6 +4,7 @@ use App\Http\Controllers\BkkController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -11,6 +12,27 @@ Route::view('/kontak', 'kontak')->name('kontak');
 
 // The Maps menu entry points straight at Google Maps rather than an in-app page.
 Route::redirect('/maps', config('school.contact.maps_url'))->name('maps');
+
+/*
+|--------------------------------------------------------------------------
+| Search-engine plumbing
+|--------------------------------------------------------------------------
+|
+| The sitemap is generated and robots.txt points at it. Both are routes rather
+| than static files so their URLs follow APP_URL on any deployment — the app
+| may be served from a subfolder such as /meschool.
+|
+*/
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    return response(
+        "User-agent: *\nAllow: /\nDisallow: /pencarian\n\nSitemap: ".url('/sitemap.xml')."\n",
+        200,
+        ['Content-Type' => 'text/plain; charset=UTF-8'],
+    );
+})->name('robots');
 
 /*
 |--------------------------------------------------------------------------

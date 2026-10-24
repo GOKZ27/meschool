@@ -1,4 +1,7 @@
-<x-layouts.app :title="'SPMB — '.config('school.name')">
+<x-layouts.app
+    :title="'SPMB — '.config('school.name')"
+    :description="config('school.spmb_page.intro')"
+>
     <x-header-top />
     <x-navbar />
 

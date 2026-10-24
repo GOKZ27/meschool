@@ -15,7 +15,7 @@ return [
 
     'name' => 'SMK ISLAMIYAH CIPUTAT',
 
-    'short_name' => 'SMK ISLAMIAH',
+    'short_name' => 'SMK ISLAMIYAH',
 
     'tagline' => 'Berbasis Islam, Berprestasi, dan Berjaya',
 
@@ -1127,7 +1127,7 @@ return [
             // ['video' => 'videos/hero/hero-sekolah.mp4', 'duration' => 1000],
         ],
 
-        'overlay' => 'bg-gradient-to-b from-school-950/95 via-school-900/80 to-school-950/95',
+        'overlay' => 'bg-gradient-to-b from-slate-950/85 via-slate-900/70 to-slate-950/85',
     ],
 
     /*

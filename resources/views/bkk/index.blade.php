@@ -1,4 +1,7 @@
-<x-layouts.app :title="(config('school.bkk.archive.title') ?? 'Lowongan') . ' — ' . config('school.name')">
+<x-layouts.app
+    :title="(config('school.bkk.archive.title') ?? 'Lowongan') . ' — ' . config('school.name')"
+    :description="config('school.bkk.archive.intro')"
+>
     <x-header-top />
     <x-navbar />
 

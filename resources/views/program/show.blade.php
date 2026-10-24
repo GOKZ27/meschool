@@ -1,4 +1,7 @@
-<x-layouts.app :title="$page['name'].' — '.config('school.name')">
+<x-layouts.app
+    :title="$page['name'].' — '.config('school.name')"
+    :description="$page['description'] ?? $page['tagline'] ?? null"
+>
     <x-header-top />
     <x-navbar />
 

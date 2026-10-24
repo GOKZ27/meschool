@@ -1,4 +1,7 @@
-<x-layouts.app :title="'Tenaga Kependidikan — '.config('school.name')">
+<x-layouts.app
+    :title="'Tenaga Kependidikan — '.config('school.name')"
+    :description="'Profil tenaga pendidik dan kependidikan '.config('school.name').' yang mendampingi siswa tumbuh dan berprestasi.'"
+>
     <x-header-top />
     <x-navbar />
 

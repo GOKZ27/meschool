@@ -1,4 +1,4 @@
-<x-layouts.app>
+<x-layouts.app :title="$title" :description="$description" robots="noindex, follow">
     <x-header-top />
     <x-navbar />
 

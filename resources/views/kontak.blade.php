@@ -38,7 +38,10 @@
     ];
 @endphp
 
-<x-layouts.app title="Kontak">
+<x-layouts.app
+    :title="'Kontak — '.config('school.name')"
+    :description="'Hubungi '.config('school.name').' — alamat, telepon, email, dan media sosial resmi sekolah di '.config('school.contact.address').'.'"
+>
     <x-header-top />
     <x-navbar />
 

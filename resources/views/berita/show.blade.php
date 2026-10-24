@@ -1,4 +1,9 @@
-<x-layouts.app :title="$article->title . ' — ' . config('school.name')">
+<x-layouts.app
+    :title="$article->title . ' — ' . config('school.name')"
+    :description="$article->excerpt"
+    :image="$article->imageUrl()"
+    type="article"
+>
     <x-header-top />
     <x-navbar />
 
@@ -9,7 +14,42 @@
             $photo = $article->imageUrl();
             $video = $article->videoUrl();
             $gallery = $article->galleryEntries();
+
+            $logoPath = (string) config('school.logo.path');
+            $logo = $logoPath !== '' ? \App\Support\Images::existingUrl($logoPath, 'logo') : null;
+
+            $articleSchema = array_filter([
+                '@type' => 'NewsArticle',
+                'headline' => $article->title,
+                'description' => $article->excerpt,
+                'inLanguage' => 'id-ID',
+                'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => route('berita.show', $article->slug)],
+                'datePublished' => $article->published_at?->toAtomString(),
+                'dateModified' => $article->updated_at?->toAtomString(),
+                'articleSection' => $article->categoryLabel(),
+                'author' => ['@type' => 'Organization', 'name' => $article->author ?: config('school.name')],
+                'publisher' => array_filter([
+                    '@type' => 'Organization',
+                    'name' => config('school.name'),
+                    'logo' => $logo ? ['@type' => 'ImageObject', 'url' => $logo] : null,
+                ]),
+                'image' => $article->imageUrl() ? [$article->imageUrl()] : null,
+            ]);
+
+            $breadcrumbSchema = [
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => route('home')],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => 'Berita', 'item' => route('berita')],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => $article->categoryLabel(), 'item' => route('berita', ['kategori' => $article->category])],
+                    ['@type' => 'ListItem', 'position' => 4, 'name' => $article->title, 'item' => route('berita.show', $article->slug)],
+                ],
+            ];
+
+            $schema = ['@context' => 'https://schema.org', '@graph' => [$articleSchema, $breadcrumbSchema]];
         @endphp
+
+        <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 
         <article class="mx-auto max-w-7xl px-4 pt-10 pb-14 sm:px-6 lg:px-8">
             <nav aria-label="Breadcrumb" class="text-sm text-slate-500">

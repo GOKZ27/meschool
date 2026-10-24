@@ -1,4 +1,7 @@
-<x-layouts.app :title="'Berita — ' . config('school.name')">
+<x-layouts.app
+    :title="'Berita — ' . config('school.name')"
+    :description="config('school.news.archive.intro')"
+>
     <x-header-top />
     <x-navbar />
 
@@ -11,7 +14,7 @@
         {{-- The archive opens with a brick-green band: the one place on this
              page where the brand colour is the background rather than the
              accent, so the search bar has somewhere loud to sit. --}}
-        <section class="bg-brick-green">
+        <section class="bg-slate-900">
             <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
                 <p class="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-gold-400 uppercase">
                     <span aria-hidden="true" class="h-px w-10 bg-gold-400"></span>
@@ -22,7 +25,7 @@
                     {{ $copy['title'] }}
                 </h1>
 
-                <p class="mt-3 hidden max-w-2xl text-sm leading-relaxed text-school-100/85 sm:block sm:text-base">
+                <p class="mt-3 hidden max-w-2xl text-sm leading-relaxed text-slate-200/85 sm:block sm:text-base">
                     {{ $copy['intro'] }}
                 </p>
 
@@ -42,7 +45,7 @@
                     <label for="berita-q" class="sr-only">{{ $copy['search_label'] }}</label>
 
                     <div class="relative flex-1">
-                        <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-school-100/70">
+                        <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-300/70">
                             <x-icon name="search" class="size-5" />
                         </span>
 
@@ -52,7 +55,7 @@
                             name="q"
                             value="{{ $filters['q'] }}"
                             placeholder="{{ $copy['search_placeholder'] }}"
-                            class="h-12 w-full rounded-full border-0 bg-white/10 pl-12 pr-4 text-sm text-white placeholder:text-school-100/70 ring-1 ring-white/20 transition focus:bg-white/15 focus:ring-gold-400 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold-400"
+                            class="h-12 w-full rounded-full border-0 bg-white/10 pl-12 pr-4 text-sm text-white placeholder:text-slate-300/70 ring-1 ring-white/20 transition focus:bg-white/15 focus:ring-gold-400 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold-400"
                         >
                     </div>
 
