@@ -1107,9 +1107,6 @@ return [
     | A slide whose file has not been uploaded yet falls back to the green
     | brick texture, so an unfinished set still cycles on its timings.
     |
-    | 'overlay' shades every slide. The caption is centred, so the shade runs
-    | top to bottom and darkens both edges rather than weighting one side.
-    |
     */
 
     'hero' => [
@@ -1126,8 +1123,6 @@ return [
             // sequence as a fourth slide:
             // ['video' => 'videos/hero/hero-sekolah.mp4', 'duration' => 1000],
         ],
-
-        'overlay' => 'bg-gradient-to-b from-slate-950/85 via-slate-900/70 to-slate-950/85',
     ],
 
     /*

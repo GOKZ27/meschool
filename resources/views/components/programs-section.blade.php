@@ -1,104 +1,94 @@
 @php
-    // Heading copy comes from config('school.programs'); the panel list itself
-    // is not duplicated — the section keeps only the catalogue entries whose
-    // slug is in config('school.programs.slugs'), the six programs the school
-    // offers (Kuliner, DKV, TKJ, AK, MP, BD). array_intersect_key preserves the
-    // catalogue order, so the panels open in slug order. The accent gradient
-    // per programme lives here instead of in config: Tailwind only compiles
-    // classes it can see inside its scanned sources (resources/), and PHP
-    // config files are not scanned.
     $programs = config('school.programs');
     $catalog = array_intersect_key(
         config('school.program_catalog.items', []),
         array_flip($programs['slugs'])
     );
 
-    $accents = [
-        'Kuliner' => 'from-rose-600 via-rose-700 to-rose-950',
-        'DKV' => 'from-orange-600 via-orange-700 to-orange-950',
-        'TKJ' => 'from-blue-600 via-blue-700 to-blue-950',
-        'AK' => 'from-amber-500 via-amber-600 to-amber-950',
-        'MP' => 'from-purple-600 via-purple-700 to-purple-950',
-        'BD' => 'from-emerald-600 via-emerald-700 to-emerald-950',
-    ];
+    $programImage = \App\Support\Images::existingUrl('hero1.jpeg', 'hero');
 @endphp
 
-<section id="program-keahlian" class="bg-slate-50 py-20 lg:py-24">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {{-- The heading and the standfirst travel in from opposite edges, so the
-             two halves cross as the reader arrives. --}}
-        <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
-            <div class="lg:col-span-7" data-reveal data-reveal-from="left">
-                <p class="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-school-700 uppercase">
-                    <span aria-hidden="true" class="h-px w-10 bg-gold-500"></span>
+<section id="program-keahlian" class="pk-section">
+    <div class="pk-shell">
+        <header class="pk-heading">
+            <div class="pk-heading__title" data-reveal data-reveal-from="left">
+                <p class="pk-eyebrow">
+                    <span aria-hidden="true"></span>
                     {{ $programs['eyebrow'] }}
                 </p>
-
-                <h2 class="mt-5 text-2xl leading-snug font-bold tracking-tight text-balance text-slate-900 sm:text-3xl">
-                    {{ $programs['title'] }}
-                </h2>
+                <h2>{{ $programs['title'] }}</h2>
             </div>
 
-            <p class="text-base leading-relaxed text-slate-600 lg:col-span-5" data-reveal data-reveal-from="right">
+            <p class="pk-heading__intro" data-reveal data-reveal-from="right">
                 {{ $programs['intro'] }}
             </p>
-        </div>
+        </header>
 
-        {{-- Hover accordion, zero JS: the six anchors share one flex row on
-             desktop, the first panel open and the rest slim vertical tabs. A
-             hover (or keyboard focus) grows a panel to fill most of the row
-             while the others shrink back, with the two content states
-             crossfading - see the .programs-* rules in app.css. Below lg the
-             same anchors simply stack as full-width cards. --}}
-        <div
-            class="programs-accordion mt-12 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2 lg:flex lg:h-[34rem] lg:flex-row lg:gap-0 lg:overflow-hidden lg:rounded-3xl lg:shadow-2xl lg:shadow-school-900/10"
-            data-reveal-group
-            data-reveal-slow
-        >
+        <div class="pk-grid" data-reveal-group data-reveal-slow>
             @foreach ($catalog as $slug => $program)
-                @php
-                    $accent = $accents[$program['name']] ?? 'from-school-700 via-school-800 to-school-950';
-                @endphp
                 <a
                     href="{{ route('program.'.$slug) }}"
-                    class="programs-panel group relative flex flex-col overflow-hidden rounded-3xl bg-gradient-to-br p-6 text-white ring-1 ring-white/10 transition-shadow duration-300 hover:shadow-2xl hover:shadow-school-900/20 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold-400 lg:justify-end lg:rounded-none lg:p-8 {{ $accent }}"
+                    class="pk-card pk-card--{{ $slug }}"
+                    data-pk-card
                 >
-                    {{-- The collapsed state's face: the programme name in
-                         vertical type beside a plus sign. Hidden on mobile, faded
-                         out whenever the panel is the open one. --}}
-                    <span class="programs-panel-tab" aria-hidden="true">
-                        <span class="programs-panel-tab-name">{{ $program['name'] }}</span>
-                        <span class="flex size-10 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/40">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" class="size-5" aria-hidden="true">
-                                <path d="M12 5v14M5 12h14" />
-                            </svg>
+                    <article class="pk-card__article">
+                        <span class="pk-card__art" aria-hidden="true">
+                            <img
+                                src="{{ $programImage }}"
+                                alt=""
+                                width="960"
+                                height="720"
+                                loading="lazy"
+                                decoding="async"
+                            >
                         </span>
-                    </span>
 
-                    <span
-                        aria-hidden="true"
-                        class="pointer-events-none absolute -top-24 -right-24 hidden size-72 rounded-full bg-white/10 blur-3xl lg:block"
-                    ></span>
+                        <span class="pk-card__copy">
+                            <span class="pk-card__eyebrow">Program Keahlian</span>
+                            <h3>{{ $program['name'] }}</h3>
+                            <span class="pk-card__rule" aria-hidden="true"></span>
+                            <p>{{ $program['description'] }}</p>
 
-                    <span
-                        data-program-icon
-                        class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25 transition-transform duration-300 group-hover:scale-105"
-                    >
-                        <x-icon :name="$program['icon']" class="size-6" />
-                    </span>
+                            <span class="pk-card__cta">
+                                <span>Pelajari {{ $program['name'] }}</span>
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M4 12h15m-6-6 6 6-6 6" />
+                                </svg>
+                            </span>
+                        </span>
 
-                    <h3 class="mt-5 text-2xl leading-tight font-extrabold tracking-tight max-lg:text-xl lg:mt-8">
-                        {{ $program['name'] }}
-                    </h3>
-
-                    <p class="mt-3 max-w-xl text-sm leading-relaxed text-white/85 max-lg:line-clamp-3 lg:mt-auto lg:text-base">
-                        {{ $program['description'] }}
-                    </p>
-
-                    <span class="inline-flex items-center gap-2 text-sm font-bold tracking-wide uppercase max-lg:mt-auto max-lg:pt-7 lg:mt-7">
-                        Pelajari {{ $program['name'] }}
-                        <x-icon name="arrow-right" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
+                        @if (in_array($slug, ['kuliner', 'dkv', 'tkj'], true))
+                            <span class="pk-card__motif" data-program-icon aria-hidden="true">
+                                @if ($slug === 'kuliner')
+                                    <svg viewBox="0 0 160 160" fill="none">
+                                        <path d="M47 82c-14 0-24-10-24-23 0-12 9-22 21-23 4-17 19-28 37-28 17 0 31 10 36 25 15 1 27 12 27 27 0 13-10 22-25 22H47Z" />
+                                        <path d="m47 82 7 48h51l8-48M59 130l-2 12h46l-2-12M35 104l34 34M40 94l42 42M29 108l7-7M77 143l32-39M81 148l37-45M109 104l10 8M59 126l-8 8M68 117l-8 8" />
+                                    </svg>
+                                @elseif ($slug === 'dkv')
+                                    <svg viewBox="0 0 160 160" fill="none">
+                                        <path d="M77 20c-33 0-58 24-58 56 0 31 24 54 55 54h9c8 0 13-8 9-15l-5-9c-3-6 1-13 8-13h13c18 0 32-14 32-32 0-23-27-41-63-41Z" />
+                                        <circle cx="51" cy="57" r="8" />
+                                        <circle cx="77" cy="43" r="8" />
+                                        <circle cx="103" cy="53" r="8" />
+                                        <circle cx="51" cy="84" r="8" />
+                                        <path d="m112 119 29-71 11 4-29 71-18 13 7-17Z" />
+                                    </svg>
+                                @else
+                                    <svg viewBox="0 0 160 160" fill="none">
+                                        <rect x="22" y="17" width="116" height="76" rx="5" />
+                                        <path d="M14 106h132l-9 11H23l-9-11ZM80 94v12M57 48l-13 11 13 11M103 48l13 11-13 11M88 45l-10 28" />
+                                        <circle cx="111" cy="122" r="25" />
+                                        <path d="M86 122h50M111 97c7 7 11 15 11 25s-4 18-11 25c-7-7-11-15-11-25s4-18 11-25Z" />
+                                        <path d="m111 97-9 8m18 0-18 34m18 0-18-9" />
+                                    </svg>
+                                @endif
+                            </span>
+                        @else
+                            <span class="sr-only" data-program-icon aria-hidden="true">
+                                <x-icon :name="$program['icon']" class="size-6" />
+                            </span>
+                        @endif
+                    </article>
                 </a>
             @endforeach
         </div>

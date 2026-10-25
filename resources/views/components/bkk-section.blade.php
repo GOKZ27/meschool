@@ -2,57 +2,129 @@
 
 @php
     $copy = config('school.bkk.home');
+    $title = \Illuminate\Support\Str::beforeLast($copy['title'], ' (BKK)');
+    $categories = $jobs
+        ->map(fn (array $job) => ['key' => $job['category'], 'label' => $job['category_label']])
+        ->unique('key')
+        ->values();
 @endphp
 
-{{-- The home page preview of the BKK archive. The masthead halves cross from
-     opposite edges like the programs and news sections, the square card grid
-     cascades in the slower rhythm, and the whole-pointing CTA sits centred
-     under the cards so the row is never cramped by a button in the masthead. --}}
-<section id="bkk" class="bg-white py-20 lg:py-24">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
-            <div class="lg:col-span-7" data-reveal data-reveal-from="left">
-                <p class="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-school-700 uppercase">
-                    <span aria-hidden="true" class="h-px w-10 bg-gold-500"></span>
-                    {{ $copy['eyebrow'] }}
-                </p>
-
-                <h2 class="mt-5 text-2xl leading-snug font-bold tracking-tight text-balance text-slate-900 sm:text-3xl">
-                    {{ $copy['title'] }}
+<section id="bkk" class="bkk-section" data-bkk-section aria-labelledby="bkk-title">
+    <div class="bkk-shell">
+        <header class="bkk-header" data-bkk-reveal>
+            <p class="bkk-eyebrow"><span aria-hidden="true"></span>{{ $copy['eyebrow'] }}</p>
+            <div class="bkk-header-grid">
+                <h2 id="bkk-title" aria-label="{{ $copy['title'] }}">
+                    {{ $title }} <span>(BKK)</span>
                 </h2>
+                <p class="bkk-intro">{{ $copy['intro'] }}</p>
             </div>
+        </header>
 
-            <div class="lg:col-span-5" data-reveal data-reveal-from="right">
-                <p class="text-base leading-relaxed text-slate-600">{{ $copy['intro'] }}</p>
-            </div>
-        </div>
+        @if ($jobs->isNotEmpty())
+            <nav class="bkk-filters" aria-label="Filter lowongan berdasarkan kategori" data-bkk-filters>
+                <button type="button" data-bkk-filter="all" aria-pressed="true">Semua</button>
+                @foreach ($categories as $category)
+                    <button
+                        type="button"
+                        data-bkk-filter="{{ $category['key'] }}"
+                        aria-pressed="false"
+                    >
+                        {{ $category['label'] }}
+                    </button>
+                @endforeach
+            </nav>
 
-        @if ($jobs->isEmpty())
-            {{-- No listings configured yet: say so instead of showing empty boxes. --}}
-            <div class="mt-12 rounded-2xl bg-slate-50 p-10 text-center ring-1 ring-slate-200" data-reveal>
-                <x-icon name="briefcase" class="size-8 text-school-600" />
-                <p class="mt-4 text-sm leading-relaxed text-slate-600">
-                    Belum ada lowongan yang dibuka. Info karier terbaru akan muncul di sini.
-                </p>
-            </div>
-        @else
-            <ul class="mt-12 grid grid-cols-1 gap-6 min-[400px]:grid-cols-2" data-reveal-group data-reveal-slow>
+            <ol class="bkk-job-list" id="bkk-job-list">
                 @foreach ($jobs as $job)
-                    <li>
-                        <x-bkk.job-card :job="$job" />
+                    @php
+                        $photoPath = (string) ($job['photo'] ?? '');
+                        $photo = $photoPath !== ''
+                            ? (\App\Support\Images::existingUrl($photoPath, 'bkk') ?? \App\Support\Images::existingUrl($photoPath))
+                            : null;
+                    @endphp
+
+                    <li
+                        class="bkk-job-item"
+                        data-bkk-job
+                        data-category="{{ $job['category'] }}"
+                        data-bkk-side="{{ $loop->odd ? 'odd' : 'even' }}"
+                        data-bkk-reveal
+                    >
+                        <article>
+                            <a
+                                href="{{ route('bkk.show', $job['slug']) }}"
+                                class="bkk-job-link"
+                                aria-label="Detail lowongan {{ $job['position'] }} di {{ $job['company'] }}"
+                            >
+                                <figure class="bkk-photo-frame">
+                                    <span class="bkk-photo-window">
+                                        @if ($photo)
+                                            <img
+                                                src="{{ $photo }}"
+                                                alt="Foto lowongan {{ $job['position'] }}"
+                                                width="1200"
+                                                height="900"
+                                                @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif
+                                                class="bkk-photo-image"
+                                            >
+                                        @else
+                                            <span class="bkk-photo-placeholder">Foto lowongan</span>
+                                        @endif
+                                    </span>
+
+                                </figure>
+
+                                <div class="bkk-copy">
+                                    <p class="bkk-category">{{ $job['category_label'] }} · {{ $job['type'] }}</p>
+                                    <h3>{{ $job['position'] }}</h3>
+                                    <p class="bkk-company">{{ $job['company'] }}</p>
+
+                                    <span class="bkk-rule" aria-hidden="true"></span>
+
+                                    <dl class="bkk-meta">
+                                        <div>
+                                            <dt>Lokasi</dt>
+                                            <dd>{{ $job['location'] }}</dd>
+                                        </div>
+                                        @if ($job['salary'])
+                                            <div>
+                                                <dt>Gaji</dt>
+                                                <dd>{{ $job['salary'] }}</dd>
+                                            </div>
+                                        @endif
+                                    </dl>
+
+                                    <div class="bkk-job-bottom">
+                                        <p>Tutup {{ $job['deadline_label'] }}</p>
+                                        <span class="bkk-detail-button">
+                                            <span>Lihat Detail</span>
+                                            <span class="bkk-arrow" aria-hidden="true">→</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
                     </li>
                 @endforeach
-            </ul>
+            </ol>
 
-            {{-- The CTA points at the whole archive, so it belongs under the
-                 cards where the eye lands after the row — not beside the masthead. --}}
-            <div class="mt-10 text-center" data-reveal>
-                <a
-                    href="{{ route('bkk') }}"
-                    class="inline-flex items-center gap-2 rounded-lg bg-school-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-school-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold-400"
-                >
-                    {{ $copy['all_link'] }}
-                    <x-icon name="arrow-right" class="size-4" />
+            <p class="bkk-filter-empty" data-bkk-empty-filter hidden>Tidak ada lowongan pada kategori ini.</p>
+
+            <div class="bkk-footer">
+                <p data-bkk-count aria-live="polite">Menampilkan {{ $jobs->count() }} lowongan terbaru.</p>
+                <a href="{{ route('bkk') }}" class="bkk-all-link">
+                    <span>{{ $copy['all_link'] }}</span>
+                    <span class="bkk-arrow" aria-hidden="true">→</span>
+                </a>
+            </div>
+        @else
+            <div class="bkk-empty" data-bkk-reveal>
+                <h3>Belum ada lowongan yang dibuka.</h3>
+                <p>Informasi lowongan dan peluang karier terbaru akan muncul di sini.</p>
+                <a href="{{ route('home') }}" class="bkk-all-link">
+                    <span>Kembali ke beranda</span>
+                    <span class="bkk-arrow" aria-hidden="true">→</span>
                 </a>
             </div>
         @endif

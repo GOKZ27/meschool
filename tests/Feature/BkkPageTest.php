@@ -8,8 +8,7 @@ use Tests\TestCase;
 class BkkPageTest extends TestCase
 {
     /**
-     * The home page carries a BKK section after the news preview, titled by
-     * the config and leading to the archive.
+     * The home page renders active jobs as filtered, linked editorial rows.
      */
     public function test_the_home_page_renders_the_bkk_section(): void
     {
@@ -25,15 +24,28 @@ class BkkPageTest extends TestCase
         $this->assertStringContainsString('href="'.route('bkk').'"', $html);
         $this->assertStringContainsString(config('school.bkk.home.all_link'), $html);
 
-        $cards = $xp->query('.//*[@data-reveal-group]//li', $section);
+        $cards = $xp->query('.//*[@data-bkk-job]', $section);
         $this->assertSame((int) config('school.bkk.home_count', 4), $cards->length);
+        $this->assertSame(0, $xp->query('.//*[contains(@class, "bkk-status") or contains(@class, "bkk-company-logo") or contains(@class, "bkk-number")]', $section)->length);
+        $expectedFilters = Bkk::forHome()->pluck('category')->unique()->count() + 1;
+        $this->assertSame($expectedFilters, $xp->query('.//*[@data-bkk-filter]', $section)->length);
+
+        foreach (iterator_to_array($cards) as $card) {
+            $links = $xp->query('.//a[@class="bkk-job-link"]', $card);
+            $this->assertSame(1, $links->length);
+            $this->assertStringContainsString('/bkk/', $links->item(0)->getAttribute('href'));
+            $this->assertNotNull($xp->query('.//h3', $card)->item(0));
+            $this->assertNotNull($xp->query('.//figure[contains(@class, "bkk-photo-frame")]', $card)->item(0));
+        }
+
+        $this->assertStringContainsString('Menampilkan '.$cards->length.' lowongan terbaru.', $html);
     }
 
     /**
-     * The preview follows the news section, and the two keep their alternating
-     * backgrounds: news sits on slate, BKK on white.
+     * The BKK section follows the news section and carries its dedicated style
+     * scope.
      */
-    public function test_the_bkk_section_follows_the_news_and_keeps_background_alternation(): void
+    public function test_the_bkk_section_follows_news_and_uses_its_style_scope(): void
     {
         $html = $this->get(route('home'))->assertOk()->getContent();
 
@@ -46,7 +58,7 @@ class BkkPageTest extends TestCase
 
         [, $xp] = $this->parseHtml($html);
         $section = $xp->query('//*[@id="bkk"]')->item(0);
-        $this->assertStringContainsString('bg-white', $section->getAttribute('class'));
+        $this->assertStringContainsString('bkk-section', $section->getAttribute('class'));
     }
 
     /**

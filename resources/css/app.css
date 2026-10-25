@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+@import './program-keahlian.css';
+@import './tenaga-kependidikan.css';
+@import './news-preview.css';
+@import './bkk-section.css';
+@import './spmb-section.css';
+@import './responsive-compact.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -617,120 +623,60 @@
     }
 }
 
-/* Programs accordion (Program Keahlian).
-
-   A hover-driven, zero-JS accordion. On desktop the four programme anchors
-   line up in one flex row; the first is open and the others are slim vertical
-   tabs showing the programme name beside a plus sign. Pointing at a panel (or
-   tabbing to it) grows it to fill most of the row while every other panel
-   shrinks back to a tab again, and the two content states crossfade, so the
-   swap reads as a single smooth motion. Below lg the same anchors stack as
-   full-width cards and none of this applies.
-
-   The rules are unlayered on purpose and gated on min-width: 64rem to match
-   Tailwind's lg breakpoint. They have to outrank the reveal cascade's
-   `transition` on the group children, so the flex-growth can actually animate. */
-
-.programs-panel-tab {
-    display: none;
+.hero-caption .hero-action {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.82);
+    padding: 0.65rem 1rem;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-decoration: none;
+    transition: color 240ms ease;
 }
 
-@media (min-width: 64rem) {
-    /* Collapsing a panel is a pure flex-growth change; the width follows. It
-       must also be allowed to shrink below the width of its (opacity-0)
-       description, and the transition has to beat the reveal cascade's. */
-    .programs-accordion .programs-panel {
-        flex: 1 1 0%;
-        min-width: 0;
-        transition: flex-grow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+.home-main > :not(:first-child) {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-caption .hero-action::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: #fff;
+    content: '';
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-caption .hero-action:focus-visible {
+    outline: 3px solid #F2B632;
+    outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .hero-caption .hero-action:hover::before,
+    .hero-caption .hero-action:focus-visible::before {
+        transform: scaleX(1);
     }
 
-    /* The expanded copy folds away inside a collapsed panel. */
-    .programs-panel > :not(.programs-panel-tab) {
-        opacity: 0;
-        transform: translateY(0.75rem);
-        transition:
-            opacity 450ms ease,
-            transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    /* The tab (vertical name + plus) is the collapsed panel's face. */
-    .programs-panel-tab {
-        position: absolute;
-        inset: 0;
-        z-index: 10;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: space-between;
-        padding: 1.5rem;
-        opacity: 1;
-        transition: opacity 300ms ease;
-    }
-
-    .programs-panel-tab-name {
-        writing-mode: vertical-rl;
-        rotate: 180deg;
-        font-size: 0.875rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-    }
-
-    /* At rest (pointer nowhere near the row), the first panel is the open one.
-       Six panels share the row at ~8:1 growth, so the open panel takes the
-       majority while the five collapsed tabs each keep a slim ~7.7%. */
-    .programs-accordion:not(:hover) .programs-panel:first-child {
-        flex-grow: 8;
-    }
-
-    .programs-accordion:not(:hover) .programs-panel:first-child > :not(.programs-panel-tab) {
-        opacity: 1;
-        transform: none;
-    }
-
-    .programs-accordion:not(:hover) .programs-panel:first-child .programs-panel-tab {
-        opacity: 0;
-    }
-
-    /* While the pointer is over the row, every panel becomes a tab again. */
-    .programs-accordion:hover .programs-panel {
-        flex-grow: 1;
-    }
-
-    .programs-accordion:hover .programs-panel > :not(.programs-panel-tab) {
-        opacity: 0;
-        transform: translateY(0.75rem);
-        transition-delay: 0ms;
-    }
-
-    .programs-accordion:hover .programs-panel .programs-panel-tab {
-        opacity: 1;
-    }
-
-    /* Settling on one panel opens it, and its copy returns. */
-    .programs-accordion:hover .programs-panel:hover,
-    .programs-accordion .programs-panel:focus-within {
-        flex-grow: 8;
-    }
-
-    .programs-accordion:hover .programs-panel:hover > :not(.programs-panel-tab),
-    .programs-accordion .programs-panel:focus-within > :not(.programs-panel-tab) {
-        opacity: 1;
-        transform: none;
-        transition-delay: 120ms;
-    }
-
-    .programs-accordion:hover .programs-panel:hover .programs-panel-tab,
-    .programs-accordion .programs-panel:focus-within .programs-panel-tab {
-        opacity: 0;
+    .hero-caption .hero-action:hover {
+        color: #0B1F3A;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .programs-accordion .programs-panel,
-    .programs-panel > :not(.programs-panel-tab),
-    .programs-panel-tab {
+    .hero-caption .hero-action,
+    .hero-caption .hero-action::before {
         transition: none;
     }
 }

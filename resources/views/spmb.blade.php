@@ -19,8 +19,9 @@
         @endphp
 
         {{-- The landing page opens on the same photo band as the home banner,
-             so the two places read as one campaign. --}}
-        <section class="relative isolate flex min-h-[520px] items-center overflow-hidden bg-school-950 py-24 sm:py-28 lg:min-h-[600px]">
+             so the two places read as one campaign: .spmb-banner carries the
+             shared scrim, type scale and button treatment. --}}
+        <section class="spmb-banner spmb-banner--centered relative isolate flex min-h-[520px] items-center overflow-hidden bg-school-950 lg:min-h-[600px]">
             @if ($bg)
                 <div
                     aria-hidden="true"
@@ -40,42 +41,34 @@
 
             <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 top-1/2 -z-10 bg-gradient-to-t from-school-950/80 via-transparent to-transparent"></div>
 
-            <div class="relative mx-auto w-full max-w-5xl px-4 text-center sm:px-6" data-reveal-group>
-                <p class="flex items-center justify-center gap-3 text-xs font-semibold tracking-[0.18em] text-gold-400 uppercase">
-                    <span aria-hidden="true" class="h-px w-10 bg-gold-500"></span>
-                    {{ $page['hero_eyebrow'] }}
-                    <span aria-hidden="true" class="h-px w-10 bg-gold-500"></span>
-                </p>
+            <div class="spmb-shell">
+                <div class="spmb-copy" data-reveal-group>
+                    <p class="spmb-eyebrow">
+                        <span aria-hidden="true" class="spmb-eyebrow-rule"></span>
+                        {{ $page['hero_eyebrow'] }}
+                    </p>
 
-                <h1 class="mt-6 text-3xl leading-tight font-extrabold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl">
-                    {{ $page['title'] }}
-                </h1>
+                    <h1 class="spmb-title">{{ $page['title'] }}</h1>
 
-                <p class="mt-3 text-lg font-semibold tracking-wide text-gold-300 sm:text-xl">
-                    {{ $page['subtitle'] }}
-                </p>
+                    <p class="spmb-year">
+                        <x-icon name="calendar" class="spmb-year-icon" />
+                        {{ $page['subtitle'] }}
+                    </p>
 
-                <p class="mx-auto mt-6 max-w-[50rem] text-base leading-relaxed text-school-100/90 sm:text-lg">
-                    {{ $page['intro'] }}
-                </p>
+                    <p class="spmb-desc">{{ $page['intro'] }}</p>
 
-                <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
-                    <a
-                        href="{{ config('school.contact.whatsapp_link') }}"
-                        class="group inline-flex items-center gap-2 rounded-full bg-gold-500 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-gold-500/30 transition-all hover:-translate-y-0.5 hover:bg-gold-600 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold-400"
-                    >
-                        <x-icon name="whatsapp" class="size-4" />
-                        {{ $page['register_label'] }}
-                        <x-icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
-                    </a>
+                    <div class="spmb-actions">
+                        <a href="{{ config('school.contact.whatsapp_link') }}" class="spmb-btn spmb-btn--primary">
+                            <x-icon name="whatsapp" class="spmb-btn-icon" />
+                            {{ $page['register_label'] }}
+                            <x-icon name="arrow-right" class="spmb-btn-icon" />
+                        </a>
 
-                    <a
-                        href="{{ route('kontak') }}"
-                        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-7 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition-all hover:-translate-y-0.5 hover:bg-white/20 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
-                    >
-                        <x-icon name="calendar" class="size-4" />
-                        {{ $page['contact_label'] }}
-                    </a>
+                        <a href="{{ route('kontak') }}" class="spmb-btn spmb-btn--ghost">
+                            <x-icon name="calendar" class="spmb-btn-icon" />
+                            {{ $page['contact_label'] }}
+                        </a>
+                    </div>
                 </div>
             </div>
 

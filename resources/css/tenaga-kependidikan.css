@@ -1,0 +1,698 @@
+@theme {
+    --font-editorial: 'Fraunces', Georgia, serif;
+}
+
+.tk-section {
+    --tk-paper: #f4efe4;
+    --tk-ink: #30261e;
+    --tk-muted: #74695d;
+    --tk-rule: rgb(48 38 30 / 0.2);
+    overflow: clip;
+    background: var(--tk-paper);
+    color: var(--tk-ink);
+    padding-block: clamp(4.5rem, 8vw, 7.5rem);
+}
+
+.tk-shell {
+    width: min(100% - 2rem, 78rem);
+    margin-inline: auto;
+}
+
+.tk-heading {
+    max-width: 46rem;
+    margin: 0 auto clamp(2rem, 4vw, 3rem);
+    text-align: center;
+}
+
+.tk-eyebrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0;
+    color: #365347;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.5;
+    text-transform: uppercase;
+}
+
+.tk-eyebrow > span {
+    width: 2.25rem;
+    height: 2px;
+    background: #315a47;
+}
+
+.tk-heading h2 {
+    margin: 0.5rem 0 0;
+    color: #23412f;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.1rem, 4vw, 3.45rem);
+    font-weight: 550;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+    text-wrap: balance;
+}
+
+.tk-heading-intro {
+    max-width: 39rem;
+    margin: 0.75rem auto 0;
+    color: var(--tk-muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+
+.tk-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tk-card {
+    min-width: 0;
+    min-height: 11.5rem;
+    overflow: hidden;
+    border: 1px solid rgb(48 38 30 / 0.08);
+    border-radius: 0.5rem;
+    background: rgb(255 255 255 / 0.45);
+    box-shadow: 0 2px 12px -10px rgb(48 38 30 / 0.2);
+    transition:
+        transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1),
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.tk-card-photo {
+    position: relative;
+    display: grid;
+    width: 39%;
+    min-width: 5.5rem;
+    flex: 0 0 39%;
+    place-items: center;
+    overflow: hidden;
+    aspect-ratio: 0.7;
+    background: var(--tk-accent);
+    color: #fffaf0;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.3rem, 4vw, 4.5rem);
+    letter-spacing: -0.07em;
+}
+
+.tk-card-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.tk-card-monogram {
+    position: relative;
+    z-index: 1;
+}
+
+.tk-index {
+    color: #8a755c;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    line-height: 1;
+}
+
+.tk-trigger {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+.tk-card-copy {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.32rem;
+}
+
+.tk-name {
+    min-width: 0;
+    font-family: var(--font-editorial);
+    font-size: clamp(1rem, 1.25vw, 1.18rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+}
+
+.tk-position {
+    color: #9a7136;
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.tk-card-expertise,
+.tk-card-open {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #3b4b40;
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+
+.tk-card-expertise {
+    margin-top: auto;
+}
+
+.tk-expertise-mark {
+    display: grid;
+    width: 1.55rem;
+    height: 1.55rem;
+    flex: 0 0 auto;
+    place-items: center;
+    background: #e9e4d5;
+    color: var(--tk-accent);
+}
+
+.tk-expertise-mark::before {
+    width: 0.42rem;
+    height: 0.42rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    content: "";
+}
+
+.tk-card-open {
+    margin-top: 0.12rem;
+    color: var(--tk-accent);
+    font-weight: 700;
+    transition:
+        gap 180ms ease,
+        color 180ms ease;
+}
+
+.tk-arrow {
+    position: relative;
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+    flex: 0 0 auto;
+    color: currentColor;
+    transition: transform 180ms ease;
+}
+
+.tk-arrow::before {
+    position: absolute;
+    top: 0.08rem;
+    right: 0.08rem;
+    width: 0.38rem;
+    height: 0.38rem;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    content: "";
+}
+
+.tk-arrow::after {
+    position: absolute;
+    top: 0.36rem;
+    left: 0.04rem;
+    width: 0.55rem;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    transform: rotate(-45deg);
+    transform-origin: center;
+}
+
+.tk-trigger:focus-visible {
+    outline: 3px solid var(--tk-accent);
+    outline-offset: -3px;
+}
+
+.tk-preview {
+    position: fixed;
+    z-index: 60;
+    top: 0;
+    left: 0;
+    display: grid;
+    width: min(21rem, calc(100vw - 2rem));
+    grid-template-columns: 5.2rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.85rem;
+    border: 1px solid rgb(48 38 30 / 0.18);
+    background: #fbf8f0;
+    box-shadow: 0 18px 40px -28px rgb(48 38 30 / 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(-120vw, -120vh, 0) rotate(0);
+    transform-origin: 0 0;
+    transition: opacity 140ms ease;
+    visibility: hidden;
+}
+
+.tk-preview[data-visible="true"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tk-preview-photo {
+    display: grid;
+    min-height: 6.4rem;
+    place-items: center;
+    overflow: hidden;
+    background: var(--tk-accent, #315a47);
+    color: #fffaf0;
+    font-family: var(--font-editorial);
+    font-size: 1.6rem;
+}
+
+.tk-preview-photo img {
+    width: 100%;
+    height: 100%;
+    min-height: 6.4rem;
+    object-fit: cover;
+    object-position: center;
+}
+
+.tk-preview-copy {
+    align-self: center;
+    min-width: 0;
+}
+
+.tk-preview-position,
+.tk-modal-position {
+    margin: 0;
+    color: var(--tk-accent, #315a47);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.tk-preview-copy h3 {
+    margin: 0.25rem 0 0;
+    font-family: var(--font-editorial);
+    font-size: 1.3rem;
+    font-weight: 550;
+    line-height: 1.1;
+}
+
+.tk-preview-description {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0.45rem 0 0;
+    color: var(--tk-muted);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.tk-preview-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.7rem;
+    color: var(--tk-accent, #315a47);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.tk-modal:not([open]) {
+    display: none;
+}
+
+.tk-modal[open] {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+    padding: clamp(0.75rem, 3vw, 2.5rem);
+    border: 0;
+    background: transparent;
+    color: var(--tk-ink);
+}
+
+.tk-modal::backdrop {
+    background: rgb(24 29 25 / 0.58);
+    backdrop-filter: blur(2px);
+}
+
+.tk-modal-panel {
+    display: grid;
+    width: min(59rem, 100%);
+    height: min(43rem, 100%);
+    grid-template-columns: minmax(13rem, 0.8fr) minmax(0, 1.2fr);
+    overflow: hidden;
+    background: #f8f4eb;
+    box-shadow: 0 24px 70px -42px rgb(0 0 0 / 0.6);
+    opacity: 0;
+    transform: translateX(1.25rem);
+    transition:
+        opacity 220ms ease,
+        transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.tk-modal[open] .tk-modal-panel {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.tk-modal-portrait {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    min-height: 0;
+    place-items: center;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 25% 24%, rgb(255 255 255 / 0.2) 0 1px, transparent 2px),
+        var(--tk-accent, #315a47);
+    background-size: 8px 8px, auto;
+    color: #fffaf0;
+    font-family: var(--font-editorial);
+    font-size: clamp(3rem, 8vw, 7rem);
+    letter-spacing: -0.06em;
+}
+
+.tk-modal-portrait::after {
+    position: absolute;
+    inset: 1.25rem;
+    border: 1px solid rgb(255 250 240 / 0.3);
+    content: "";
+    pointer-events: none;
+}
+
+.tk-modal-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.tk-modal-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.tk-modal-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.tk-close {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid var(--tk-rule);
+    background: transparent;
+    color: var(--tk-ink);
+    cursor: pointer;
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.tk-close:hover,
+.tk-close:focus-visible {
+    background: var(--tk-ink);
+    color: #fffaf0;
+}
+
+.tk-modal-position {
+    margin-top: clamp(2rem, 5vw, 4rem);
+    font-size: 0.75rem;
+}
+
+.tk-modal-copy h3 {
+    margin: 0.55rem 0 0;
+    font-family: var(--font-editorial);
+    font-size: clamp(2rem, 4vw, 3.7rem);
+    font-weight: 520;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+}
+
+.tk-modal-description {
+    max-width: 36rem;
+    margin: 1.5rem 0 0;
+    color: #51483f;
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+.tk-expertise-wrap {
+    margin-top: 1.8rem;
+}
+
+.tk-expertise-label {
+    margin: 0;
+    color: var(--tk-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.tk-expertise {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tk-expertise li {
+    padding: 0.4rem 0.7rem;
+    border: 1px solid rgb(48 38 30 / 0.18);
+    color: #51483f;
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+
+.tk-modal-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 2rem;
+}
+
+.tk-modal-navigation button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--tk-ink);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.tk-modal-navigation button:hover {
+    color: var(--tk-accent, #315a47);
+}
+
+.tk-modal-navigation button span {
+    font-size: 1.1rem;
+}
+
+.tk-modal-navigation [data-staff-count] {
+    color: var(--tk-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.tk-modal-open {
+    overflow: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .tk-card:hover {
+        border-color: color-mix(in srgb, var(--tk-accent) 40%, transparent);
+        box-shadow: 0 12px 24px -18px rgb(48 38 30 / 0.45);
+        transform: translateY(-3px);
+    }
+
+    .tk-card:hover .tk-card-open {
+        gap: 0.65rem;
+        color: #23412f;
+    }
+
+    .tk-card:hover .tk-arrow {
+        transform: translate(2px, -2px);
+    }
+
+    .tk-card:hover .tk-card-photo img {
+        transform: scale(1.035);
+    }
+
+    .tk-card-photo img {
+        transition: transform 350ms cubic-bezier(0.2, 0.75, 0.25, 1);
+    }
+}
+
+@media (width >= 40rem) and (width < 72rem) {
+    .tk-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.1rem;
+    }
+
+    .tk-card-photo {
+        width: 37%;
+        flex-basis: 37%;
+    }
+}
+
+@media (width >= 72rem) {
+    .tk-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (width < 48rem) {
+    .tk-heading-intro {
+        max-width: 35rem;
+        font-size: 0.9rem;
+    }
+
+    .tk-preview {
+        display: none;
+    }
+
+    .tk-trigger {
+        gap: 1rem;
+        padding: 0.75rem;
+    }
+
+    .tk-card-photo {
+        width: 31%;
+        min-width: 6rem;
+        flex-basis: 31%;
+    }
+
+    .tk-name {
+        font-size: 1.12rem;
+    }
+
+    .tk-position {
+        font-size: 0.82rem;
+    }
+
+    .tk-modal[open] {
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .tk-modal-panel {
+        width: 100%;
+        height: min(90dvh, 48rem);
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(7.5rem, 0.32fr) minmax(0, 1fr);
+        transform: translateY(1rem);
+    }
+
+    .tk-modal-portrait {
+        font-size: 3.5rem;
+    }
+
+    .tk-modal-portrait::after {
+        inset: 0.8rem;
+    }
+
+    .tk-modal-copy {
+        padding: 1.25rem 1.4rem max(1.25rem, env(safe-area-inset-bottom));
+    }
+
+    .tk-modal-position {
+        margin-top: 1.2rem;
+    }
+
+    .tk-modal-copy h3 {
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+    }
+
+    .tk-modal-description {
+        margin-top: 0.8rem;
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+    .tk-expertise-wrap {
+        margin-top: 1.2rem;
+    }
+
+    .tk-modal-navigation {
+        padding-top: 1rem;
+    }
+
+    .tk-modal-navigation button {
+        min-height: 2.75rem;
+        font-size: 0.78rem;
+    }
+}
+
+@media (width < 23rem) {
+    .tk-shell {
+        width: calc(100% - 1.5rem);
+    }
+
+    .tk-card-photo {
+        width: 30%;
+        min-width: 5.25rem;
+        flex-basis: 30%;
+    }
+
+    .tk-name {
+        font-size: 1rem;
+    }
+
+    .tk-position {
+        font-size: 0.76rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tk-card,
+    .tk-card-photo img,
+    .tk-card-open,
+    .tk-preview,
+    .tk-modal-panel {
+        transition: none;
+    }
+}

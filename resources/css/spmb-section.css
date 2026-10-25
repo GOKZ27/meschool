@@ -1,0 +1,323 @@
+/* The SPMB photo band, shared by the home banner (#spmb) and the /spmb hero so
+   the two read as one campaign. Deep green ground, white copy, gold accent.
+
+   The band already carries the config overlay class (school-950 at 60-90%), but
+   a photo alone cannot guarantee contrast where it is bright, so ::before adds
+   a directional scrim behind the copy on top of that overlay and below the
+   content. ::after is the gold hairline along the top edge.
+
+   Nothing here sets opacity/transform on the reveal children - those states are
+   owned by the shared reveal rules in app.css. */
+
+.spmb-banner {
+    --spmb-scrim: rgb(4 23 15 / 0.94);
+    --spmb-gold: var(--color-gold-400);
+    --spmb-gold-strong: var(--color-gold-500);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--color-school-950);
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.spmb-banner *,
+.spmb-banner *::before,
+.spmb-banner *::after {
+    box-sizing: border-box;
+}
+
+/* Layered between the photo (-z-20) and the config overlay (-z-10) and the
+   copy, so the photo stays visible on the empty side of the band. */
+.spmb-banner::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(
+        100deg,
+        var(--spmb-scrim) 0%,
+        rgb(4 23 15 / 0.82) 38%,
+        rgb(4 23 15 / 0.42) 66%,
+        rgb(4 23 15 / 0.66) 100%
+    );
+    content: '';
+    pointer-events: none;
+}
+
+.spmb-banner::after {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--spmb-gold-strong), rgb(217 154 43 / 0));
+    content: '';
+    pointer-events: none;
+}
+
+.spmb-banner .spmb-shell {
+    position: relative;
+    z-index: 1;
+    width: min(100% - 2rem, 80rem);
+    margin-inline: auto;
+    padding-block: clamp(4rem, 9vw, 7.5rem);
+}
+
+.spmb-banner .spmb-copy {
+    display: flex;
+    max-width: 44rem;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.spmb-banner .spmb-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    color: var(--spmb-gold);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.spmb-banner .spmb-eyebrow-rule {
+    width: 2.5rem;
+    height: 1px;
+    flex: none;
+    background: currentColor;
+    opacity: 0.8;
+}
+
+/* Centred copy gets the rule on both sides so the label reads symmetrically. */
+.spmb-banner--centered .spmb-eyebrow::after {
+    width: 2.5rem;
+    height: 1px;
+    flex: none;
+    background: currentColor;
+    content: '';
+    opacity: 0.8;
+}
+
+.spmb-banner .spmb-title {
+    margin: clamp(0.9rem, 1.8vw, 1.35rem) 0 0;
+    color: #fff;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(2.125rem, 5vw, 4rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    text-wrap: balance;
+}
+
+/* The academic year is the one line the school asked to be unmistakable: a
+   white label on a near-opaque deep-green pill with a gold ring, never the
+   inherited dark body colour that `text-gold-300` used to resolve to (that
+   token does not exist in the theme, so the copy vanished into the photo). */
+.spmb-banner .spmb-year {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: clamp(1.15rem, 2vw, 1.5rem) 0 0;
+    border: 1px solid rgb(232 193 92 / 0.55);
+    border-radius: 999px;
+    padding: 0.55rem 1.1rem;
+    background-color: rgb(4 23 15 / 0.74);
+    color: #fff;
+    font-size: clamp(0.875rem, 1.05vw, 1rem);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+}
+
+.spmb-banner .spmb-year-icon {
+    width: 1.05em;
+    height: 1.05em;
+    flex: none;
+    color: var(--spmb-gold);
+}
+
+.spmb-banner .spmb-desc {
+    max-width: 38rem;
+    margin: clamp(1.1rem, 1.8vw, 1.4rem) 0 0;
+    color: rgb(255 255 255 / 0.87);
+    font-size: clamp(0.9375rem, 1.15vw, 1.0625rem);
+    line-height: 1.7;
+}
+
+.spmb-banner .spmb-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: clamp(1.6rem, 2.8vw, 2.25rem);
+}
+
+.spmb-banner .spmb-btn {
+    display: inline-flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.75rem 1.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: transform 200ms ease, background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+/* Gold ground takes the deep green ink, never white: white on gold-500 is
+   barely 2:1. */
+.spmb-banner .spmb-btn--primary {
+    background-color: var(--spmb-gold-strong);
+    box-shadow: 0 18px 34px -18px rgb(0 0 0 / 0.8);
+    color: var(--color-school-950);
+}
+
+.spmb-banner .spmb-btn--ghost {
+    border-color: rgb(255 255 255 / 0.45);
+    background-color: rgb(255 255 255 / 0.08);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: none;
+}
+
+.spmb-banner .spmb-btn:focus-visible {
+    outline: 3px solid var(--spmb-gold);
+    outline-offset: 3px;
+}
+
+.spmb-banner .spmb-btn--primary:focus-visible {
+    outline-color: #fff;
+}
+
+.spmb-banner .spmb-btn-icon {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    transition: transform 200ms ease;
+}
+
+/* Centred variant: the /spmb landing hero. */
+.spmb-banner--centered .spmb-copy {
+    margin-inline: auto;
+    align-items: center;
+    text-align: center;
+}
+
+.spmb-banner--centered .spmb-desc {
+    margin-inline: auto;
+}
+
+.spmb-banner--centered .spmb-actions {
+    justify-content: center;
+}
+
+@media (min-width: 40rem) {
+    .spmb-banner .spmb-shell {
+        width: min(100% - 3rem, 80rem);
+    }
+
+    /* 500px stays the floor; the band grows to a real hero height from here. */
+    #spmb.spmb-section {
+        min-height: 34rem;
+    }
+}
+
+@media (min-width: 40rem) and (max-width: 63.999rem) {
+    .spmb-banner .spmb-shell {
+        padding-block: 5rem;
+    }
+
+    .spmb-banner .spmb-title {
+        font-size: clamp(2.25rem, 5.6vw, 3.25rem);
+    }
+}
+
+@media (min-width: 64rem) {
+    #spmb.spmb-section {
+        min-height: min(100svh, 44rem);
+    }
+
+    .spmb-banner .spmb-title {
+        max-width: 20ch;
+    }
+}
+
+@media (max-width: 39.999rem) {
+    .spmb-banner .spmb-shell {
+        padding-block: 4rem;
+    }
+
+    .spmb-banner .spmb-copy {
+        max-width: none;
+    }
+
+    .spmb-banner .spmb-title {
+        font-size: clamp(1.95rem, 8.4vw, 2.5rem);
+        line-height: 1.06;
+    }
+
+    /* Stacked, full-width targets on a phone: easier to hit than a row of two
+       pills that wrap onto a second line anyway. */
+    .spmb-banner .spmb-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.625rem;
+    }
+
+    .spmb-banner .spmb-btn {
+        width: 100%;
+    }
+
+    .spmb-banner::before {
+        background: linear-gradient(
+            180deg,
+            rgb(4 23 15 / 0.9) 0%,
+            rgb(4 23 15 / 0.8) 45%,
+            rgb(4 23 15 / 0.92) 100%
+        );
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .spmb-banner .spmb-btn--primary:hover {
+        background-color: var(--spmb-gold);
+        transform: translateY(-2px);
+    }
+
+    .spmb-banner .spmb-btn--ghost:hover {
+        border-color: #fff;
+        background-color: rgb(255 255 255 / 0.16);
+        transform: translateY(-2px);
+    }
+
+    .spmb-banner .spmb-btn:hover .spmb-btn-icon {
+        transform: translateX(3px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spmb-banner .spmb-btn,
+    .spmb-banner .spmb-btn-icon {
+        transition: none;
+    }
+
+    .spmb-banner .spmb-btn--primary:hover,
+    .spmb-banner .spmb-btn--ghost:hover,
+    .spmb-banner .spmb-btn:hover .spmb-btn-icon {
+        transform: none;
+    }
+}

@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div class="mt-12 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2 lg:grid-cols-4" data-reveal-group>
+        <div class="mt-12 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2 lg:grid-cols-4" data-reveal-group data-contact-channels>
             @foreach ($channels as $channel)
                 <a
                     href="{{ $channel['href'] }}"

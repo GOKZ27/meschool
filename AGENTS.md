@@ -1,15 +1,16 @@
 # meschool
 
 Public website for **SMK Islamiyah Ciputat** (Indonesian vocational high school). Laravel **13**
-(`laravel/laravel` skeleton, framework v13.34 installed) on PHP `^8.3`. Four controllers carry the
-real logic: the home page (`HomeController`), the news archive `/berita` (`NewsController` +
-`App\Models\News`), BKK (`BkkController` + `App\Support\Bkk`, config-driven) and the programme pages
-(`ProgramController`, config-driven). Every navbar entry lands on a real page: the programme
-dropdown runs one literal route per slug (see Routes), the flat sections (SPMB, Tenaga Kependidikan)
-are copy-driven `Route::view`s; only the legacy child URLs (`bkk.lowongan`, `bkk.tracer-study`,
-`spmb.tentang-kami`, `spmb.informasi-sekolah`) and `/pencarian` still render `placeholder`.
+(`laravel/laravel` skeleton, framework v13.34.0) on PHP `^8.3`. Five controllers carry the real
+logic: the home page (`HomeController`), the news archive `/berita` (`NewsController` +
+`App\Models\News`), BKK (`BkkController` + `App\Support\Bkk`, config-driven), the programme pages
+(`ProgramController`, config-driven) and `/sitemap.xml` (`SitemapController`). Every navbar entry
+lands on a real page: the programme dropdown runs one literal route per slug (see Routes), the flat
+sections (SPMB, Tenaga Kependidikan) are copy-driven `Route::view`s; only the legacy child URLs
+(`bkk.lowongan`, `bkk.tracer-study`, `spmb.tentang-kami`, `spmb.informasi-sekolah`) and
+`/pencarian` still render `placeholder` — and those are `noindex`.
 
-Local toolchain: PHP 8.3.35 ZTS (Laragon), Node 24, npm 11. This **is** a git repo (branch `main`)
+Local toolchain: PHP 8.3 ZTS (Laragon), Node 22, npm 11. This **is** a git repo (branch `main`)
 with **no CI** and no quality tooling beyond what the composer scripts run. Tests use in-memory
 SQLite; the local `.env` points at MySQL — see Environment.
 
@@ -20,34 +21,36 @@ costs context and returns nothing:
 
 - `config/school.php` (all brand copy, programs, hero slides, the news **and BKK** catalogues),
   `routes/web.php`, `bootstrap/app.php`
-- `resources/css/app.css`, `resources/js/app.js`, `resources/views/home.blade.php`
+- `resources/css/app.css` (plus the per-section files it imports), `resources/js/app.js`,
+  `resources/views/home.blade.php`
 - the component you are editing in `resources/views/components/`
 - the news feature, if touching it: `app/Http/Controllers/{Home,News}Controller.php`,
-  `app/Models/News.php`, `resources/views/berita/`,
-  `resources/views/components/news-preview.blade.php`, `database/seeders/NewsSeeder.php`
+  `app/Models/News.php`, `resources/views/berita/`, `resources/views/components/news/`,
+  `resources/views/components/{news-preview,kabar-berita}.blade.php`,
+  `database/seeders/NewsSeeder.php`
 - the BKK feature, if touching it: `app/Http/Controllers/BkkController.php`,
   `app/Support/Bkk.php`, `resources/views/bkk/`,
   `resources/views/components/bkk/`
 - `tests/Feature/HomePageTest.php` (1600+ lines) — grep it for the test name you care about, never
   read it whole
 
-**Never read:** `vendor/`, `node_modules/`, `public/build/**` (~110 KB of minified CSS — grep it with
+**Never read:** `vendor/`, `node_modules/`, `public/build/**` (~124 KB of minified CSS — grep it with
 `Select-String` if you must), `storage/framework/views/**`, `resources/views/welcome.blade.php`
-(72 KB of unused stock Laravel), `README.md`, `CLAUDE.md`.
+(~70 KB of unused stock Laravel), `README.md`, `CLAUDE.md`.
 
 Grep first (`Select-String`), then read only the matching file with `offset`/`limit`.
 
 ## Verify in this order
 
 ```sh
-npm run build      # required first: ten tests read the compiled CSS
-composer test      # expect {"tool":"phpunit","tests":122,...,"assertions":1210}
+npm run build      # required first: 12 builtCss() reads depend on the compiled CSS
+composer test      # expect 134 tests / ~1254 assertions (133 pass, 1 known BKK failure)
 vendor/bin/pint    # the only quality gate; run it last, after tests pass
 ```
 
-A change is done when the build succeeds, all 122 tests pass, and pint is clean — not before.
-**As of this writing one BKK test fails on date drift** (see Tests); treat that one as known, not
-as a regression you introduced.
+A change is done when the build succeeds, everything except the known BKK date-drift failure
+passes, and pint is clean — not before. **On this machine `npm.ps1` is blocked by the PowerShell
+execution policy; call `npm.cmd run build` if `npm run build` fails with `UnauthorizedAccess`.**
 
 ## Commands
 
@@ -78,13 +81,13 @@ php artisan view:clear
 emits a single JSON line instead of PHPUnit's report:
 
 ```json
-{"tool":"phpunit","result":"failed","tests":109,"passed":108,"assertions":938,"failed":1,
+{"tool":"phpunit","result":"failed","tests":134,"passed":133,"assertions":1254,"failed":1,
  "failures":[{"test":"Tests\\Feature\\X::test_y","file":"...","line":11,"message":"..."}]}
 ```
 
 `PAO_DISABLE=1` (PowerShell: `$env:PAO_DISABLE=1`) restores normal output; `PAO_FORCE=1` forces JSON
 outside agent sessions. `vendor/bin/pint` does the same (`{"tool":"pint","result":"passed"}`).
-A clean run is **122 tests / ~1210 assertions**.
+Expected today: **134 tests / ~1254 assertions**, 133 green.
 
 ### Tests need a CSS build first
 
@@ -94,11 +97,11 @@ A clean run is **122 tests / ~1210 assertions**.
 glob(public_path('build/assets/app-*.css'))   // "Run `npm run build` before the suite"
 ```
 
-Ten tests read it: the four navbar-animation guards, the reveal-cascade guard, the programs-heading
-reveal, the staff-rail edge, the dialog a11y and viewport pair, and the staff hover lift. **Run
-`npm run build` before `php artisan test`** after touching `resources/css/app.css` or any Blade
-markup, or they fail on a stale/absent bundle. `node_modules/` and `public/build/` currently exist
-locally (both gitignored).
+Ten test methods make 12 `builtCss()` reads: the four navbar-animation guards, the reveal-cascade
+guard, the programs-heading reveal, the staff-rail edge, the dialog a11y and viewport pair, and the
+staff hover lift. **Run `npm run build` before `php artisan test`** after touching
+`resources/css/app.css` or any Blade markup, or they fail on a stale/absent bundle. `node_modules/`
+and `public/build/` currently exist locally (both gitignored).
 
 If a run reports `ParseError` in `storage/framework/views/*.php`, that is a partially-written compiled
 cache from a bulk recompile, not a broken view — `php artisan view:clear` and re-run.
@@ -108,6 +111,14 @@ cache from a bulk recompile, not a broken view — `php artisan view:clear` and 
 - **Layout is `resources/views/components/layouts/app.blade.php`, used as `<x-layouts.app>`.**
   Anonymous components only resolve from `resources/views/components/`, so a file at
   `resources/views/layouts/app.blade.php` throws "Unable to locate a class or view for component".
+- **SEO is layout-driven.** `<x-layouts.app>` takes `title / description / image / type / robots /
+  canonical`; every page passes at least `:title="'X - '.config('school.name')"` (home passes none
+  and falls back to the school name) plus a description. The layout emits `<title>`, description,
+  robots, canonical (`url()->current()`), Open Graph, Twitter card and one `application/ld+json`
+  `@graph` (EducationalOrganization + WebSite with the SearchAction on `route('berita').'?q='`).
+  Share image falls back page image → first hero photo → logo, and disappears when no file exists.
+  `placeholder` passes `robots="noindex, follow"`. Article pages add a second JSON-LD block inside
+  `<main>` (`berita/show` → NewsArticle + BreadcrumbList, `bkk/show` → JobPosting). `SeoTest` pins it.
 - Every page is `<x-layouts.app>` + `<x-header-top>` + `<x-navbar>` + `<main>`. The
   `<x-contact-strip>` (the domain + phone line) is the **last block inside `<main>` on every page
   except the home one**, where it sits **between** the hero and the greeting — and it reads as the
@@ -132,8 +143,8 @@ cache from a bulk recompile, not a broken view — `php artisan view:clear` and 
   from the `<script type="application/json" data-staff-data>` payload beside it, so there is only one
   place the copy lives. Photos resolve to `null` when the file is absent and the card shows a
   monogram from the name; the popup rebuilds it in JS. No teachers table exists yet, so the eight
-entries in config are placeholders. The section has **no standfirst**: heading left, arrows right,
-   one flex row. The rail **sweeps sideways on its own as a marquee**: the script duplicates the
+  entries in config are placeholders. The section has **no standfirst**: heading left, arrows right,
+  one flex row. The rail **sweeps sideways on its own as a marquee**: the script duplicates the
    cards once at runtime (`cloneNode(true)`) so the run can wrap to the front without dead-ending,
    and a `requestAnimationFrame` loop drives it by frame delta (~200 px/s). **The sweep only yields
    to a hand actually on a card.** Pointing at a card `hold()`s the sweep and
@@ -144,7 +155,7 @@ entries in config are placeholders. The section has **no standfirst**: heading l
    `prefers-reduced-motion` disables it entirely, like the hero, leaving a still rail where the
    arrows step past the last card and wrap to the front.
 
-**The hover popup is a `show()`, never a `showModal()`.** A modal dialog makes the rest of the page
+  **The hover popup is a `show()`, never a `showModal()`.** A modal dialog makes the rest of the page
   inert, so the pointer could never travel to the next card and the rail would be stuck on one
   profile. Non-modal still gets the top layer and Escape, and `.staff-modal:not(:modal)` (which must
   come **after** `.staff-modal[open]` — same specificity, so source order decides) shrinks the box to
@@ -174,7 +185,11 @@ entries in config are placeholders. The section has **no standfirst**: heading l
   tone), so renaming one is a config edit and never a migration. `NewsSeeder` is the working copy of
   the content — upsert on slug, so re-seeding edits in place; `composer setup` does **not** seed, and
   a fresh database simply renders the home page's empty state and an empty archive.
-  `NewsController::show` increments `views` on every read, so GETs have a side effect.
+  `NewsController::show` increments `views` on every read, so GETs have a side effect. Scopes are
+  `published()` (`published_at <= now()`) and `latestFirst()`; the archive filters on the `q` /
+  `kategori` / `tahun` query strings (each filter form re-posts the others as hidden inputs).
+  `<x-kabar-berita>` is a standalone four-layout editorial block that **no page renders today** —
+  only `KabarBeritaTest` does, so editing it changes nothing on the site.
 - **BKK (Bursa Kerja Khusus) is config-driven — no DB, no migration, no model.**
   `config('school.bkk')` feeds `App\Support\Bkk` (`jobs()` / `active()` / `forHome()` /
   `find($slug)`, plus `categories()` / `locations()` / `statuses()` derived from the catalogue for
@@ -200,12 +215,30 @@ entries in config are placeholders. The section has **no standfirst**: heading l
   painted into a brick fallback gradient), the dark `overlay` is a config class, and both links go to
   the `route('spmb')` landing page (see below). `bg_photo` reuses the hero's `images/hero/hero1.jpeg`
   because it is the only school photo that ships with the repo — swap the config value the day a
-  dedicated upload lands. Copy cascades in through the shared `data-reveal-group`; `SpmbPageTest`
-  pins the markup contract (`id="spmb"`, `data-spmb-bg`, `data-spmb-overlay`) and both missing/
-  present branches of the photo.
+  dedicated upload lands. `SpmbPageTest` pins the markup contract (`id="spmb"`, `data-spmb-bg`,
+  `data-spmb-overlay`, the literal `min-h-[500px]` class, no `bg-white`, exactly **two**
+  `a[href=route('spmb')]` — `button_label` first, `link_label` second — and exactly one
+  `data-reveal-group`) plus both missing/present branches of the photo. **Do not "fix" the CTAs to a
+  WhatsApp link**: the pair both targeting `/spmb` is asserted. The *landing page* hero carries the
+  WhatsApp CTA instead.
+- **Both SPMB heroes are one visual system: `.spmb-banner` in `resources/css/spmb-section.css`.**
+  `<x-spmb-section>` (`#spmb`, left-aligned) and the `/spmb` landing hero (`.spmb-banner--centered`)
+  render the same shell → copy → eyebrow / `.spmb-title` (Fraunces) / `.spmb-year` / `.spmb-desc` /
+  `.spmb-btn` markup, so restyle one and both move. The band lays a `::before` scrim (deep green,
+  directional on desktop, vertical on mobile) *under* the copy and *over* the config overlay — a photo
+  plus a 60% overlay does not guarantee contrast where the photo is bright, and the scrim is the layer
+  that does. `::after` is the gold hairline along the top edge. `min-height` is raised by the
+  stylesheet at ≥40rem (`34rem`, then `min(100svh, 44rem)`) while the literal `min-h-[500px]` utility
+  stays in the class list for the test — unlayered section CSS wins over the utility, that is intended.
+  **Theme-token trap:** `text-gold-300` does not exist (the palette stops at `gold-400/500/600`), so
+  Tailwind emits nothing and the text silently inherits the dark body colour — that is exactly how the
+  "Tahun Ajaran" line became invisible on the photo. It is now a white-on-deep-green pill with a gold
+  ring (`.spmb-year`); verify a colour utility exists before trusting it. Gold ground takes
+  `text-school-950`, never white (~2:1). Below `40rem` the two CTAs stack full-width.
 - **The navbars' landing pages are all copy-driven too.** `config('school.spmb_page')` feeds
-  `resources/views/spmb.blade.php` (a `Route::view('/spmb')`): the hero reuses the SPMB photo +
-  overlay, then `steps` / `requirements` / `cta_*` lay out the registration flow; it falls back to
+  `resources/views/spmb.blade.php` (a `Route::view('/spmb')`): the hero is the same
+  `.spmb-banner spmb-banner--centered` photo band as the home banner (one campaign), then `steps` /
+  `requirements` / `cta_*` lay out the registration flow; it falls back to
   the brick gradient exactly like the home banner. `config('school.staff')` feeds
   `resources/views/tenaga-kependidikan.blade.php` (also a `Route::view`) as a **quiet grid**, with
   the `expertise` chips the home rail hides in its popup shown on the card — the monogram / photo
@@ -296,7 +329,17 @@ entries in config are placeholders. The section has **no standfirst**: heading l
 - Tailwind **v4** via `@tailwindcss/vite`: no `tailwind.config.js`, no `postcss.config.js`, no
   `@tailwind base/components/utilities` — only `@import 'tailwindcss'` in `resources/css/app.css`.
   Brand palettes (`school-50…950`, `gold-400…600`) are `@theme` CSS vars there; use those tokens
-  rather than arbitrary hex. New custom CSS goes in `@utility` blocks in that same file.
+  rather than arbitrary hex. **A utility for a token that does not exist compiles to nothing** — the
+  element silently keeps its inherited colour/size (`text-gold-300` was invisible this way), so check
+  the palette before using a shade.
+- **Per-section stylesheets sit beside `app.css` and are `@import`ed at its top** —
+  `program-keahlian`, `tenaga-kependidikan`, `news-preview`, `bkk-section`, `spmb-section`, then
+  `responsive-compact` (global mobile compression). Each file owns one root class (`#bkk.bkk-section`,
+  `.spmb-banner`, …) and styles everything inside it; new section work goes in a file like this, not
+  inline utilities. Because they are **unlayered**, a `min-height`/`color` there beats a Tailwind
+  utility on the same element — that is how `spmb-section.css` raises `min-h-[500px]` at ≥40rem while
+  the literal utility stays in the class list for the test. Keep the test-pinned tokens in the markup
+  even when the stylesheet is what actually renders them.
 - Custom `@utility` classes: `bg-brick-green`, `ring-school-focus`, `nav-link`. `nav-link` pulses its
   inner `> span` on hover (never the flex-1 box, which would shift the bar layout) and honours
   `prefers-reduced-motion`. The logo is a **portrait 219×274** mark: callers must pin `h-*` with
@@ -351,6 +394,10 @@ keeps passing, because the tests read `public/build/assets/` directly.
   legacy child URLs only (`bkk.lowongan` / `bkk.tracer-study` / `spmb.tentang-kami` /
   `spmb.informasi-sekolah`) plus `/pencarian` (`search`). `/maps` is a `Route::redirect` to
   `config('school.contact.maps_url')`.
+- **SEO plumbing**: `/sitemap.xml` → `SitemapController@index` builds the URL set from config, every
+  published article and every BKK job (not a static file); `/robots.txt` is an inline closure route
+  that points at it and disallows `/pencarian`. Both are routes so the URLs follow `APP_URL` — the
+  site may be served from a subfolder such as `/meschool`.
 
 The BKK / SPMB child pages are no longer linked from the bar but stay registered so old bookmarks
 work — `HomePageTest` still asserts they resolve.
@@ -364,7 +411,8 @@ exact structure, so navbar edits break them by design:
   `lg:flex-1` + `lg:justify-center`, and **no** `lg:flex-1` in the mobile drawer
 - exactly **2** `a[@aria-haspopup="true"]` (desktop bar + drawer) — only *Program Keahlian* has a
   dropdown
-- exactly **4** `a[@aria-current="page"]` when visiting a dropdown child
+- exactly **4** `a[@aria-current="page"]` when visiting a dropdown child — asserted by
+  `KontakPageTest`, not `HomePageTest` (desktop bar + drawer, each with a desktop and mobile panel)
 - **no** nested `<li>` (`nav-item` renders its own)
 - every nav label wrapped in a `<span>` (the pulse target) and every nav `id="nav-*"` unique
   (`nav-item` renders twice, so pass a `uid`)
@@ -378,13 +426,17 @@ friends) — do that rather than committing fixtures. `phpunit.xml` overrides to
 array cache/session and `sync` queue, so no services are needed; the abstract `Tests\TestCase` uses
 `RefreshDatabase`, so every run starts on an empty schema (the home page queries the `news` table
 and would 500 otherwise — the commented-out `use` inside the stock `ExampleTest` is a leftover,
-ignore it). The news feature itself — archive, article page, filters, the home blocks — has **no**
-dedicated tests; only route resolution is pinned, so add coverage if you change it.
+ignore it). `SeoTest` covers the head (canonical/OG/Twitter/JSON-LD/robots), the archive title, the
+article schema, the placeholder `noindex`, `/sitemap.xml` and `/robots.txt`; `KabarBeritaTest`
+renders `<x-kabar-berita>` through `Blade::render` because no page uses it. The archive's own
+filters (`q` / `kategori` / `tahun`) and the article body/gallery/video rendering still have **no**
+dedicated tests — add coverage if you change them.
 
 The other Feature suites are small and per-area: `BkkPageTest`, `SpmbPageTest`,
-`KependidikanPageTest`, `ProgramPageTest`, `FooterTest`, `KontakPageTest`, `LogoTest`. Some use
-PHPUnit `#[Test]` attributes with plain snake_case method names (no `test_` prefix), so
-`--filter=test_…` silently matches nothing for those — filter on the method name instead.
+`KependidikanPageTest`, `ProgramPageTest`, `FooterTest`, `KontakPageTest`, `LogoTest`, `SeoTest`,
+`KabarBeritaTest`. Some use PHPUnit `#[Test]` attributes with plain snake_case method names (no
+`test_` prefix), so `--filter=test_…` silently matches nothing for those — filter on the method name
+instead.
 
 There is one **date-drift trap** in `BkkPageTest`: it recomputes expectations from `Bkk::jobs()`,
 but `test_a_closed_listing_does_not_offer_to_apply` asserts the closed listing's raw `apply_url` is
@@ -446,8 +498,8 @@ conditional-class element.
 
 `.env` exists with `APP_KEY` set and `APP_URL=http://localhost:8000`. **It currently points at MySQL
 (`DB_CONNECTION=mysql`, `DB_DATABASE=meschool`), even though `.env.example` and `phpunit.xml` use
-SQLite.** `database/database.sqlite` (gitignored) is present and already holds 20 seeded news rows,
-so switching `DB_CONNECTION` back to `sqlite` gives a populated local site; either way the test
+SQLite.** No `database/database.sqlite` exists here yet, so a local SQLite site starts empty: create
+the file, then `php artisan migrate` and `php artisan db:seed --class=NewsSeeder`. Either way the test
 suite overrides to in-memory SQLite with a fresh schema every run and never sees local data.
 `SESSION_DRIVER`, `CACHE_STORE` and `QUEUE_CONNECTION` are all `database`, so
 **session and cache hit the DB and queued jobs do not run inline** — a common reason a feature

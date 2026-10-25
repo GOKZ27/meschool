@@ -1,7 +1,7 @@
 <x-layouts.app>
     <x-header-top />
     <x-navbar />
-    <main>
+    <main class="home-main">
         <x-hero-section />
         <x-contact-strip />
         <x-principal-greeting />

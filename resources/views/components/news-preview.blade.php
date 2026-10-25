@@ -16,192 +16,118 @@
         || $trending->isNotEmpty();
 @endphp
 
-{{-- The home page is a preview of the whole news feature. The heading runs
-     centred, then the stories read in five very different shapes — a lead
-     story with two spotlight cards tucked under it beside a hairline list,
-     the dated archive cards, a ranked trending list and the photo wall — so
-     the section feels like a front page rather than one card component
-     repeated. Every block is skipped when its own query came back empty, so
-     a fresh install with no articles still renders. --}}
-<section id="berita" class="bg-slate-50 py-20 lg:py-24">
+{{-- The home page previews the news archive as a compact editorial front
+     page; each block is skipped when its query is empty. --}}
+<section id="berita" class="news-preview bg-slate-50 py-20 lg:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {{-- Masthead: the eyebrow sits between two gold rules and the heading
-             runs centred, the quietest possible way to open the section. --}}
-        <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <p class="inline-flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-school-700 uppercase">
-                <span aria-hidden="true" class="h-px w-8 bg-gold-500"></span>
-                {{ $copy['eyebrow'] }}
-                <span aria-hidden="true" class="h-px w-8 bg-gold-500"></span>
-            </p>
-
-            <h2 class="mt-5 text-3xl leading-none font-bold tracking-tight text-balance text-slate-900 sm:text-4xl">
-                {{ $copy['title'] }}
-            </h2>
-
-            <p class="mt-4 text-base leading-relaxed text-slate-600">{{ $copy['intro'] }}</p>
+        <div class="news-preview-heading" data-reveal>
+            <div>
+                <p class="news-preview-eyebrow">{{ $copy['eyebrow'] }}</p>
+                <h2 id="berita-heading">{{ $copy['title'] }}</h2>
+            </div>
+            <p class="news-preview-intro">{{ $copy['intro'] }}</p>
         </div>
 
         @if (! $hasStories)
             {{-- Nothing published yet: say so instead of showing empty boxes. --}}
-            <div class="mt-12 rounded-2xl bg-white p-10 text-center ring-1 ring-slate-200" data-reveal>
+            <div class="news-preview-empty" data-reveal>
                 <x-icon name="document" class="size-8 text-school-600" />
                 <p class="mt-4 text-sm leading-relaxed text-slate-600">
                     Belum ada berita yang diterbitkan. Kabar terbaru sekolah akan muncul di sini.
                 </p>
             </div>
         @else
-            {{-- ── 1. Pengumuman + berita terbaru ────────────────────────
-                 A two-column front page: the left holds the "Pengumuman"
-                 panel — one lead story with the largest picture on the page,
-                 and two spotlight cards tucked under it — while the right is
-                 a hairline list, deliberately image-free, so the columns
-                 never compete for the same attention. A row of category pills
-                 above the list links straight into the filtered archive; the
-                 active-story caption rides the featured label. --}}
-            <div class="mt-12 grid gap-10 lg:grid-cols-12">
-                <div class="lg:col-span-7">
-                <article data-reveal data-reveal-from="left">
-                    <a
-                        href="{{ route('berita.show', $featured->slug) }}"
-                        class="group block overflow-hidden rounded-3xl bg-white ring-1 ring-slate-200 transition duration-300 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
-                    >
-                        <x-news.thumb
-                            :url="$featured->imageUrl()"
-                            :alt="$featured->title"
-                            :icon="$featured->categoryInfo()['icon']"
-                            aspect="aspect-[16/9] sm:aspect-[2/1]"
-                            class="rounded-t-3xl"
-                        />
-
-                        <div class="p-6 sm:p-8">
-                            <div class="flex flex-wrap items-center gap-3">
-                                <x-news.chip :category="$featured->category" />
-                                <span class="text-xs font-semibold tracking-wide text-gold-600 uppercase">
-                                    {{ $copy['featured_label'] }}
+            <div class="news-preview-feed">
+                <div class="news-preview-lead-column">
+                    <article class="news-preview-lead" data-reveal data-reveal-from="left">
+                        <a href="{{ route('berita.show', $featured->slug) }}" class="news-preview-lead-link">
+                            <div class="news-preview-lead-photo">
+                                @if ($featured->imageUrl())
+                                    <img src="{{ $featured->imageUrl() }}" alt="{{ $featured->title }}" width="1200" height="675" fetchpriority="high">
+                                @else
+                                    <span class="news-preview-art" aria-hidden="true">
+                                        <span class="news-preview-art-mark">{{ str_pad((string) $featured->published_at?->format('d'), 2, '0', STR_PAD_LEFT) }}</span>
+                                        <x-icon :name="$featured->categoryInfo()['icon']" class="news-preview-art-icon" />
+                                        <span class="news-preview-art-label">{{ $featured->categoryLabel() }}</span>
+                                    </span>
+                                @endif
+                                <span class="news-preview-image-caption">
+                                    <span>{{ $featured->categoryLabel() }}</span>
                                 </span>
                             </div>
 
-                            <h3 class="mt-4 text-xl leading-snug font-bold tracking-tight text-balance text-slate-900 transition group-hover:text-school-700 sm:text-2xl">
-                                {{ $featured->title }}
-                            </h3>
-
-                            @if ($featured->excerpt)
-                                <p class="mt-3 leading-relaxed text-slate-600">{{ $featured->excerpt }}</p>
-                            @endif
-
-                            <x-news.meta :article="$featured" class="mt-5" />
-                        </div>
-                    </a>
-                </article>
-
-                {{-- Two spotlight cards ride under the lead story, still inside
-                     the left column, so the column reads as one "Pengumuman"
-                     panel: photo under a dark gradient carrying the category
-                     headline, the story title below in black and the date with
-                     a small clock. Every card lifts and deepens its shadow on
-                     hover, so the row stays level. --}}
-                @if ($grid->isNotEmpty())
-                    <div class="mt-5 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2" data-reveal data-reveal-from="left">
-                        @foreach ($grid as $article)
-                            <div class="h-full">
-                                <a
-                                    href="{{ route('berita.show', $article->slug) }}"
-                                    class="group flex h-full flex-col overflow-hidden bg-white shadow-md shadow-slate-900/10 ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-slate-900/20 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
-                                >
-                                    <div class="relative aspect-[16/9] shrink-0">
-                                        @if ($article->imageUrl())
-                                            <img
-                                                src="{{ $article->imageUrl() }}"
-                                                alt="{{ $article->title }}"
-                                                loading="lazy"
-                                                class="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                                            >
-                                        @else
-                                            <span class="absolute inset-0 bg-brick-green" aria-hidden="true">
-                                                <span class="absolute inset-0 flex items-center justify-center text-white/40">
-                                                    <x-icon :name="$article->categoryInfo()['icon']" class="size-8" />
-                                                </span>
-                                            </span>
-                                        @endif
-
-                                        {{-- Dark gradient so the headline stays
-                                             readable over any photo. --}}
-                                        <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-school-950/85 via-school-950/40 to-school-950/10" aria-hidden="true"></span>
-
-                                        {{-- Category headline, big and bold,
-                                             centred on the image. --}}
-                                        <span class="absolute inset-0 flex items-center justify-center p-4 text-center">
-                                            <span class="max-w-full text-base leading-tight font-black tracking-wide text-white uppercase drop-shadow-md sm:text-lg">
-                                                {{ $article->categoryLabel() }}
-                                            </span>
-                                        </span>
-                                    </div>
-
-                                    <div class="flex flex-1 flex-col p-5">
-                                        <h3 class="text-sm leading-snug font-bold tracking-tight text-balance text-slate-900 transition group-hover:text-school-700 sm:text-base">
-                                            {{ $article->title }}
-                                        </h3>
-
-                                        <p class="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs text-slate-500">
-                                            <x-icon name="clock" class="size-3.5 shrink-0 text-slate-400" />
-                                            <time datetime="{{ $article->published_at?->toDateString() }}">{{ $article->dateLabel() }}</time>
-                                        </p>
-                                    </div>
-                                </a>
+                            <div class="news-preview-lead-copy">
+                                <div class="news-preview-kicker">
+                                    <span class="news-preview-live-dot" aria-hidden="true"></span>
+                                    {{ $copy['featured_label'] }}
+                                </div>
+                                <h3>{{ $featured->title }}</h3>
+                                @if ($featured->excerpt)
+                                    <p>{{ $featured->excerpt }}</p>
+                                @endif
+                                <x-news.meta :article="$featured" class="news-preview-meta" />
                             </div>
-                        @endforeach
-                    </div>
-                @endif
+                        </a>
+                    </article>
+
+                    @if ($grid->isNotEmpty())
+                        <div class="news-preview-secondary">
+                            @foreach ($grid as $article)
+                                <article class="news-preview-secondary-item">
+                                    <a href="{{ route('berita.show', $article->slug) }}" class="news-preview-secondary-link">
+                                        <span class="news-preview-small-photo">
+                                            @if ($article->imageUrl())
+                                                <img src="{{ $article->imageUrl() }}" alt="" width="320" height="220" loading="lazy">
+                                            @else
+                                                <span class="news-preview-small-art" aria-hidden="true">
+                                                    <x-icon :name="$article->categoryInfo()['icon']" class="size-6" />
+                                                </span>
+                                            @endif
+                                        </span>
+                                        <span class="news-preview-secondary-copy">
+                                            <span class="news-preview-category">{{ $article->categoryLabel() }}</span>
+                                            <span class="news-preview-secondary-title">{{ $article->title }}</span>
+                                            <time datetime="{{ $article->published_at?->toDateString() }}">{{ $article->dateLabel() }}</time>
+                                        </span>
+                                    </a>
+                                </article>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 @if ($latest->isNotEmpty())
-                    <div class="lg:col-span-5" data-reveal data-reveal-from="right">
-                        <div class="flex items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3">
-                            <h3 class="text-lg font-bold tracking-tight text-slate-900">{{ $copy['latest_title'] }}</h3>
-                            <a href="{{ route('berita') }}" class="text-xs font-semibold text-school-700 hover:text-school-800">
-                                {{ $copy['latest_archive'] }}
-                            </a>
+                    <aside class="news-preview-latest" data-reveal data-reveal-from="right" aria-labelledby="news-preview-latest-title">
+                        <div class="news-preview-latest-heading">
+                            <h3 id="news-preview-latest-title">{{ $copy['latest_title'] }}</h3>
+                            <a href="{{ route('berita') }}">{{ $copy['latest_archive'] }} <span aria-hidden="true">→</span></a>
                         </div>
 
-                        {{-- The category pills are plain archive links, one hop
-                             into the filtered archive — no JS, no reload hooks. --}}
-                        <div class="mt-3 flex flex-wrap gap-1.5">
+                        <nav class="news-preview-tabs" aria-label="Filter berita berdasarkan kategori">
                             @foreach ($copy['latest_tabs'] as $slug)
                                 @php $tab = $categories[$slug] ?? null; @endphp
                                 @if ($tab)
-                                    <a
-                                        href="{{ route('berita', ['kategori' => $slug]) }}"
-                                        class="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:text-school-700 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
-                                    >
-                                        <x-icon :name="$tab['icon']" class="size-3.5" />
-                                        {{ $tab['label'] }}
-                                    </a>
+                                    <a href="{{ route('berita', ['kategori' => $slug]) }}">{{ $tab['label'] }}</a>
                                 @endif
                             @endforeach
-                        </div>
+                        </nav>
 
-                        <ul class="mt-2">
-                            @foreach ($latest as $article)
+                        <ol class="news-preview-list">
+                            @foreach ($latest as $index => $article)
                                 <li>
-                                    <a
-                                        href="{{ route('berita.show', $article->slug) }}"
-                                        class="group flex gap-5 border-b border-slate-200 py-5 transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
-                                    >
-                                        <div class="min-w-0 flex-1">
-                                            <x-news.chip :category="$article->category" />
-
-                                            <h4 class="mt-2.5 text-[0.95rem] leading-snug font-semibold text-balance text-slate-900 transition group-hover:text-school-700">
-                                                {{ $article->title }}
-                                            </h4>
-
-                                            <x-news.meta :article="$article" :views="false" class="mt-2.5" />
-                                        </div>
+                                    <a href="{{ route('berita.show', $article->slug) }}" class="news-preview-list-link">
+                                        <span class="news-preview-list-number" aria-hidden="true">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                                        <span class="news-preview-list-copy">
+                                            <span class="news-preview-category">{{ $article->categoryLabel() }}</span>
+                                            <span class="news-preview-list-title">{{ $article->title }}</span>
+                                            <time datetime="{{ $article->published_at?->toDateString() }}">{{ $article->dateLabel() }}</time>
+                                        </span>
                                     </a>
                                 </li>
                             @endforeach
-                        </ul>
-                    </div>
+                        </ol>
+                    </aside>
                 @endif
             </div>
 
@@ -255,21 +181,18 @@
                 </nav>
             @endif
 
-            {{-- ── 2. Masa lampau ─────────────────────────────────────────
-                 A very different shape: dated archive cards. Each one leads
-                 with a big day numeral and its month, reads like a filing
-                 ledger, and has no picture — the photo lives in the trending
-                 block above, so the two never compete. --}}
+            {{-- ── 2. Masa lampau ───────────────────────────────────────── --}}
             @if ($past->isNotEmpty())
-                <div class="mt-16">
-                    <div class="flex items-end justify-between gap-4 border-b-2 border-slate-900 pb-3" data-reveal>
-                        <h3 class="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">{{ $copy['past_title'] }}</h3>
-                        <a href="{{ route('berita') }}" class="text-xs font-semibold text-school-700 hover:text-school-800">
+                <section class="news-preview-past" aria-labelledby="news-preview-past-title">
+                    <div class="news-preview-past-heading" data-reveal>
+                        <h3 id="news-preview-past-title">{{ $copy['past_title'] }}</h3>
+                        <a href="{{ route('berita') }}">
                             {{ $copy['latest_archive'] }}
+                            <span aria-hidden="true">→</span>
                         </a>
                     </div>
 
-                    <ul class="mt-6 grid grid-cols-1 gap-5 min-[400px]:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+                    <ul class="news-preview-past-list" data-reveal-group>
                         @foreach ($past as $article)
                             @php
                                 $day = $article->published_at?->format('j');
@@ -280,76 +203,75 @@
                             <li>
                                 <a
                                     href="{{ route('berita.show', $article->slug) }}"
-                                    class="group flex h-full flex-col rounded-2xl bg-white p-6 ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-school-900/5 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                    class="news-preview-past-link"
                                 >
-                                    <p class="flex items-baseline gap-3">
-                                        <span aria-hidden="true" class="text-4xl leading-none font-black text-slate-200 tabular-nums">
+                                    <time class="news-preview-past-date" datetime="{{ $article->published_at?->toDateString() }}">
+                                        <span aria-hidden="true">
                                             {{ $day }}
                                         </span>
-                                        <span class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                                        <span>
                                             {{ $monthYear }}
                                         </span>
-                                    </p>
+                                    </time>
 
-                                    <h4 class="mt-4 text-sm leading-snug font-bold text-balance text-slate-900 transition group-hover:text-school-700">
+                                    <h4>
                                         {{ $article->title }}
                                     </h4>
 
-                                    <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-school-700">
+                                    <span class="news-preview-past-read">
                                         {{ $copy['read_more'] }}
-                                        <x-icon name="arrow-right" class="size-3.5 transition group-hover:translate-x-0.5" />
+                                        <span aria-hidden="true">→</span>
                                     </span>
                                 </a>
                             </li>
                         @endforeach
                     </ul>
-                </div>
+                </section>
             @endif
 
-            {{-- ── 3. Trending + jelajahi per kategori ─────────────────────
-                 The ranked list leads with a big numeral and shows read counts,
-                 and the brick panel carries the category browse. --}}
-            <div class="mt-16 grid gap-10 lg:grid-cols-12">
+            {{-- ── 3. Trending + jelajahi per kategori ───────────────────── --}}
+            <div class="news-preview-discovery">
                 @if ($trending->isNotEmpty())
-                    <div class="lg:col-span-7" data-reveal data-reveal-from="left">
-                        <div class="flex items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3">
-                            <h3 class="text-lg font-bold tracking-tight text-slate-900">{{ $copy['trending_title'] }}</h3>
-                            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-school-700 uppercase">
+                    <section class="news-preview-trending" data-reveal data-reveal-from="left" aria-labelledby="news-preview-trending-title">
+                        <div class="news-preview-trending-heading">
+                            <h3 id="news-preview-trending-title">{{ $copy['trending_title'] }}</h3>
+                            <span>
                                 <x-icon name="eye" class="size-4" />
                                 {{ $copy['trending_note'] }}
                             </span>
                         </div>
 
-                        <ol class="mt-2">
+                        <ol class="news-preview-trending-list">
                             @foreach ($trending as $index => $article)
                                 <x-news.rank :article="$article" :rank="$index + 1" :views="true" />
                             @endforeach
                         </ol>
-                    </div>
+                    </section>
                 @endif
 
-                <div class="lg:col-span-5" data-reveal data-reveal-from="right">
-                    <div class="rounded-3xl bg-brick-green p-7 text-white sm:p-8">
-                        <p class="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-gold-400 uppercase">
-                            <span aria-hidden="true" class="h-px w-8 bg-gold-400"></span>
+                <aside class="news-preview-browse" data-reveal data-reveal-from="right" aria-labelledby="news-preview-browse-title">
+                    <div class="news-preview-browse-heading">
+                        <span aria-hidden="true"></span>
+                        <h3 id="news-preview-browse-title">
                             {{ $copy['browse_title'] }}
-                        </p>
-
-                        {{-- Each chip carries its label so a reader can see where
-                             the archive is busy before clicking through. --}}
-                        <div class="mt-5 flex flex-wrap gap-2.5">
-                            @foreach ($categories as $slug => $info)
-                                <a
-                                    href="{{ route('berita', ['kategori' => $slug]) }}"
-                                    class="group inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-2 text-sm font-semibold text-white ring-1 ring-white/15 transition hover:bg-white/20 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold-400"
-                                >
-                                    <x-icon :name="$info['icon']" class="size-4 text-gold-400" />
-                                    {{ $info['label'] }}
-                                </a>
-                            @endforeach
-                        </div>
+                        </h3>
                     </div>
-                </div>
+
+                    {{-- Each category is a direct route into the filtered archive. --}}
+                    <nav aria-label="Kategori berita">
+                        <ul class="news-preview-category-list">
+                            @foreach ($categories as $slug => $info)
+                                <li>
+                                    <a href="{{ route('berita', ['kategori' => $slug]) }}">
+                                        <x-icon :name="$info['icon']" class="size-4" />
+                                        <span>{{ $info['label'] }}</span>
+                                        <span aria-hidden="true">↗</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </nav>
+                </aside>
             </div>
 
             {{-- ── 4. Kegiatan & Karya Peserta Didik — the seamless photo wall

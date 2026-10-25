@@ -426,7 +426,7 @@ class HomePageTest extends TestCase
         }
     }
 
-    public function test_the_caption_is_centred_and_its_buttons_are_transparent(): void
+    public function test_the_caption_is_centred_and_its_buttons_match_the_site_cta_style(): void
     {
         config()->set('school.hero.slides', [
             ['photo' => $this->fakeHeroPhoto(), 'caption' => true],
@@ -434,6 +434,7 @@ class HomePageTest extends TestCase
         ]);
 
         $html = $this->get(route('home'))->assertOk()->getContent();
+        [, $xp] = $this->parseHtml($html);
 
         // Centred text, and the buttons centred under it rather than left-hung.
         $this->assertStringContainsString('hero-caption mx-auto max-w-3xl text-center', $html);
@@ -444,10 +445,11 @@ class HomePageTest extends TestCase
         $this->assertSame(2, count($buttons[0]), 'Both caption buttons were not found.');
 
         foreach ($buttons[0] as $button) {
-            // No fill, so the photo shows through the button.
-            $this->assertMatchesRegularExpression('/\bbg-transparent\b/', $button);
-            $this->assertMatchesRegularExpression('/\bring-1\b/', $button, "Expected an outlined button: {$button}");
+            $this->assertMatchesRegularExpression('/\bhero-action\b/', $button);
+            $this->assertDoesNotMatchRegularExpression('/\brounded-full\b/', $button);
         }
+
+        $this->assertSame(0, $xp->query('//*[@data-hero-caption]//svg')->length);
     }
 
     public function test_the_contact_strip_sits_below_the_hero_and_above_the_greeting(): void
@@ -612,6 +614,7 @@ class HomePageTest extends TestCase
 
         $this->assertSame(6, count($items));
         $this->assertSame(6, $cards->length);
+        $this->assertSame(0, $xp->query('//*[@id="program-keahlian"]//*[@data-pk-cursor]')->length);
 
         // The six programs are pinned, because they are what the school offers.
         $this->assertSame(
@@ -624,10 +627,16 @@ class HomePageTest extends TestCase
             $item = $items[$slug];
 
             $this->assertSame(route('program.'.$slug), $card->getAttribute('href'));
-            $this->assertSame($item['name'], trim($xp->query('./h3', $card)->item(0)->textContent));
+            $this->assertSame(0, $xp->query('.//a', $card)->length);
+            $this->assertLessThanOrEqual(1, $xp->query('.//img', $card)->length);
+            $this->assertSame($item['name'], trim($xp->query('.//h3', $card)->item(0)->textContent));
             $this->assertSame(
                 $item['description'],
-                trim($xp->query('./p', $card)->item(0)->textContent)
+                trim($xp->query('.//p', $card)->item(0)->textContent)
+            );
+            $this->assertSame(
+                'Pelajari '.$item['name'],
+                trim($xp->query('.//*[contains(concat(" ", normalize-space(@class), " "), " pk-card__cta ")]/span[1]', $card)->item(0)->textContent)
             );
 
             // A logo, drawn inline: there is no icon library, so the card has to ship
@@ -857,8 +866,9 @@ class HomePageTest extends TestCase
             $this->assertStringContainsString($attribute, $tag, "The clip is missing {$attribute}.");
         }
 
-        // The overlay still shades the side the text sits on.
-        $this->assertStringContainsString(config('school.hero.overlay'), $html);
+        $this->assertArrayNotHasKey('overlay', config('school.hero'));
+        $this->assertStringNotContainsString('bg-slate-950/85', $html);
+        $this->assertStringNotContainsString('blur-3xl', $html);
     }
 
     public function test_a_slide_never_renders_a_photo_and_a_clip_together(): void
@@ -1116,73 +1126,51 @@ class HomePageTest extends TestCase
         $this->assertNotFalse($staff);
         $this->assertLessThan($staff, $programs);
 
-        // The heading is copy, so it follows the config rather than the markup.
+        // The eyebrow remains config-driven; the editorial heading is concise
+        // to match the staff-card layout.
         $this->assertStringContainsString(config('school.staff.eyebrow'), $html);
-        $this->assertStringContainsString(config('school.staff.title'), $html);
+        $this->assertSame('Guru Profesional', trim($xp->query('.//h2', $section)->item(0)->textContent));
 
-        // The standfirst was cut: the heading and the arrows now share one line,
-        // so there is no intro paragraph left to pin.
         $this->assertArrayNotHasKey('intro', config('school.staff'));
-
-        // The two halves of the heading cross as the reader arrives.
-        $this->assertSame(1, $xp->query('.//*[@data-reveal-from="left"]', $section)->length);
-        $this->assertSame(1, $xp->query('.//*[@data-reveal-from="right"]', $section)->length);
+        $this->assertSame(1, $xp->query('.//p[contains(@class, "tk-heading-intro")]', $section)->length);
     }
 
-    public function test_the_staff_rail_scrolls_sideways_instead_of_stacking(): void
+    public function test_the_staff_section_is_an_eight_person_editorial_index(): void
     {
-        // A rail that wrapped onto a second row would be a plain grid, which is
-        // exactly what this section must not be on a wide screen.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         [, $xp] = $this->parseHtml($html);
 
-        $rail = $xp->query('//ul[@data-staff-rail]')->item(0);
+        $list = $xp->query('//ul[@data-staff-rail]')->item(0);
 
-        $this->assertNotNull($rail, 'The staff rail is missing.');
+        $this->assertNotNull($list, 'The staff index is missing.');
 
-        $classes = $rail->getAttribute('class');
+        $this->assertSame(count(config('school.staff.items')), $xp->query('./li', $list)->length);
+        $this->assertSame(8, $xp->query('./li[@data-staff-row]', $list)->length);
+        $this->assertSame(8, $xp->query('.//button[@data-staff-open]', $list)->length);
+        $this->assertSame(0, $xp->query('.//li[not(@data-staff-row)]', $list)->length);
+        $this->assertSame(8, $xp->query('./li//span[contains(@class, "tk-card-photo")]', $list)->length);
+        $this->assertStringContainsString('.tk-card{', $this->builtCss());
 
-        $this->assertStringContainsString('overflow-x-auto', $classes);
-        $this->assertStringContainsString('snap-x', $classes);
-        $this->assertStringContainsString('flex', $classes);
+        $names = [];
 
-        // One card per configured person, never fewer.
-        $this->assertSame(
-            count(config('school.staff.items')),
-            $xp->query('./li', $rail)->length,
-        );
-
-        // The rail is scrollable by keyboard as well as by pointer.
-        $this->assertSame('0', $rail->getAttribute('tabindex'));
-        $this->assertNotSame('', $rail->getAttribute('aria-label'));
-
-        // Cards keep a readable width rather than shrinking to fit the row.
-        foreach ($xp->query('./li', $rail) as $card) {
-            $this->assertMatchesRegularExpression('/\bw-\d/', $card->getAttribute('class'));
-            $this->assertStringContainsString('shrink-0', $card->getAttribute('class'));
-            $this->assertStringContainsString('snap-start', $card->getAttribute('class'));
+        foreach ($xp->query('./li[@data-staff-row]', $list) as $row) {
+            $names[] = trim($xp->query('.//span[@class="tk-name"]', $row)->item(0)->textContent);
         }
+
+        $this->assertCount(8, array_unique($names), 'A configured person is rendered more than once.');
     }
 
     public function test_the_staff_rail_shows_the_next_card_at_the_right_edge(): void
     {
-        // The affordance that says "there is more": the rail runs past the
-        // container's right padding, so the next card stays half in view.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         [, $xp] = $this->parseHtml($html);
 
-        $rail = $xp->query('//ul[@data-staff-rail]')->item(0);
-        $classes = $rail->getAttribute('class');
-
-        $this->assertMatchesRegularExpression('/-mr-\d/', $classes);
-        $this->assertMatchesRegularExpression('/\bpx-\d/', $classes);
-
-        // The scrollbar is hidden by the .staff-rail utility, not by Tailwind,
-        // so the compiled stylesheet has to carry it.
-        $this->assertStringContainsString('.staff-rail{', $this->builtCss());
-        $this->assertStringContainsString('scrollbar-width:none', $this->builtCss());
+        $this->assertSame(8, $xp->query('//ul[@data-staff-rail]/li[@data-staff-row]')->length);
+        $this->assertStringContainsString('.tk-list{', $this->builtCss());
+        $this->assertStringContainsString('.tk-card{', $this->builtCss());
+        $this->assertDoesNotMatchRegularExpression('/\.tk-list\{[^}]*overflow-x:auto/', $this->builtCss());
     }
 
     public function test_every_staff_card_carries_the_configured_copy(): void
@@ -1191,27 +1179,22 @@ class HomePageTest extends TestCase
 
         [, $xp] = $this->parseHtml($html);
 
-        $cards = iterator_to_array($xp->query('//ul[@data-staff-rail]/li'));
+        $cards = iterator_to_array($xp->query('//ul[@data-staff-rail]/li[@data-staff-row]'));
 
         foreach ($cards as $index => $card) {
             $item = config('school.staff.items')[$index];
 
-            $this->assertSame($item['name'], trim($xp->query('.//h3', $card)->item(0)->textContent));
+            $this->assertSame($item['name'], trim($xp->query('.//span[@class="tk-name"]', $card)->item(0)->textContent));
             $this->assertSame(
                 $item['position'],
-                trim($xp->query('.//p[contains(@class, "text-school-700")]', $card)->item(0)->textContent),
+                trim($xp->query('.//span[@class="tk-position"]', $card)->item(0)->textContent),
             );
-            $this->assertStringContainsString($item['description'], $card->textContent);
-
-            // The card reads as openable before it is clicked.
-            $this->assertStringContainsString('Lihat profil', $card->textContent);
+            $this->assertStringContainsString('Lihat profil '.$item['name'], $xp->query('.//button[@data-staff-open]', $card)->item(0)->getAttribute('aria-label'));
         }
     }
 
     public function test_every_staff_card_is_opened_by_one_labelled_button(): void
     {
-        // A card is not a link, so the affordance is a real button stretched over
-        // it. Its index has to line up with the data the popup is filled from.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         [, $xp] = $this->parseHtml($html);
@@ -1224,12 +1207,9 @@ class HomePageTest extends TestCase
             $this->assertSame('button', $trigger->getAttribute('type'));
             $this->assertSame((string) $index, $trigger->getAttribute('data-staff-index'));
 
-            // The visible card text is not the accessible name, so the button
-            // carries its own.
-            $label = trim($xp->query('./span', $trigger)->item(0)->textContent);
-
-            $this->assertStringContainsString('Lihat profil', $label);
-            $this->assertStringContainsString(config('school.staff.items')[$index]['name'], $label);
+            $this->assertSame('dialog', $trigger->getAttribute('aria-haspopup'));
+            $this->assertSame('staff-profile-dialog', $trigger->getAttribute('aria-controls'));
+            $this->assertStringContainsString(config('school.staff.items')[$index]['name'], $trigger->getAttribute('aria-label'));
         }
     }
 
@@ -1239,8 +1219,8 @@ class HomePageTest extends TestCase
 
         [, $xp] = $this->parseHtml($html);
 
-        $prev = $xp->query('//button[@data-staff-prev]')->item(0);
-        $next = $xp->query('//button[@data-staff-next]')->item(0);
+        $prev = $xp->query('//dialog[@data-staff-modal]//button[@data-staff-prev]')->item(0);
+        $next = $xp->query('//dialog[@data-staff-modal]//button[@data-staff-next]')->item(0);
 
         $this->assertNotNull($prev);
         $this->assertNotNull($next);
@@ -1250,18 +1230,6 @@ class HomePageTest extends TestCase
             $this->assertNotSame('', trim($arrow->getAttribute('aria-label')));
         }
 
-        // Each arrow draws an icon, and neither one is a bare glyph.
-        $this->assertSame(1, $xp->query('.//svg', $prev)->length);
-        $this->assertSame(1, $xp->query('.//svg', $next)->length);
-
-        // Both icons have to exist by name, or the buttons render an empty box.
-        $icons = file_get_contents(resource_path('views/components/icon.blade.php'));
-
-        foreach (['chevron-left', 'chevron-right'] as $name) {
-            $this->assertStringContainsString("'{$name}' =>", $icons);
-        }
-
-        // They sit at the end of the rail, not scattered through it.
         $this->assertSame(0, $xp->query('//ul[@data-staff-rail]//button[@data-staff-prev]')->length);
         $this->assertSame(0, $xp->query('//ul[@data-staff-rail]//button[@data-staff-next]')->length);
     }
@@ -1299,22 +1267,19 @@ class HomePageTest extends TestCase
         $this->assertNotSame('', trim($close->getAttribute('aria-label')));
 
         // The script is what opens and closes it, so its hooks have to survive.
-        $script = file_get_contents(resource_path('js/app.js'));
+        $script = file_get_contents(resource_path('js/tenaga-kependidikan.js'));
 
         foreach (['data-staff-open', 'data-staff-close', 'data-staff-prev', 'data-staff-next'] as $hook) {
             $this->assertStringContainsString($hook, $script);
         }
 
-        $this->assertStringContainsString('Escape', $script);
-        $this->assertStringContainsString('showModal()', $script);
+        $this->assertStringContainsString('dialog.showModal()', $script);
 
-        // The entrance is CSS: a fade and a small scale-up, not a full-screen
-        // takeover, and it honours reduced motion.
         $css = $this->builtCss();
 
-        $this->assertMatchesRegularExpression('/\.staff-modal\[open\] \.staff-modal-panel\{[^}]*opacity:1/', $css);
-        $this->assertMatchesRegularExpression('/\.staff-modal-panel\{[^}]*scale:\.9?7/', $css);
-        $this->assertStringContainsString('.staff-modal::backdrop', $css);
+        $this->assertMatchesRegularExpression('/\.tk-modal\[open\] \.tk-modal-panel\{[^}]*opacity:1/', $css);
+        $this->assertMatchesRegularExpression('/\.tk-modal-panel\{[^}]*opacity:0/', $css);
+        $this->assertStringContainsString('.tk-modal::backdrop', $css);
         $this->assertStringContainsString('prefers-reduced-motion', $css);
     }
 
@@ -1361,29 +1326,19 @@ class HomePageTest extends TestCase
 
     public function test_a_staff_photo_that_is_missing_falls_back_to_a_monogram(): void
     {
-        // Nothing is uploaded into public/images/guru yet, so the shipped page
-        // must already be showing monograms rather than broken images.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         [, $xp] = $this->parseHtml($html);
+        $payload = json_decode($xp->query('//script[@data-staff-data]')->item(0)->textContent, true);
 
         foreach (config('school.staff.items') as $index => $item) {
             if (Images::existingUrl($item['photo'], 'guru') !== null) {
                 continue;
             }
 
-            $card = $xp->query('//ul[@data-staff-rail]/li['.($index + 1).']')->item(0);
-
             $this->assertStringNotContainsString($item['photo'], $html);
-            $this->assertSame(0, $xp->query('.//img', $card)->length);
-
-            $monogram = $xp->query('.//span[contains(@class, "staff-monogram")]', $card)->item(0);
-
-            $this->assertNotNull($monogram, 'The card is missing its monogram placeholder.');
-            $this->assertSame(
-                Str::upper(Str::initials(Str::before($item['name'], ','))),
-                trim($monogram->textContent),
-            );
+            $this->assertNull($payload[$index]['photo']);
+            $this->assertSame(Str::upper(Str::initials(Str::before($item['name'], ','))), $payload[$index]['initials']);
         }
     }
 
@@ -1403,190 +1358,85 @@ class HomePageTest extends TestCase
 
         [, $xp] = $this->parseHtml($html);
 
-        $photo = $xp->query('//ul[@data-staff-rail]//img')->item(0);
+        $payload = json_decode($xp->query('//script[@data-staff-data]')->item(0)->textContent, true);
 
-        $this->assertNotNull($photo, 'The uploaded photo was not rendered.');
-        $this->assertSame(asset('images/guru/guru-test.jpg'), $photo->getAttribute('src'));
-        $this->assertSame('Foto Ahmad Fauzan, S.Pd.', $photo->getAttribute('alt'));
-
-        // With a portrait in place there is no monogram to show.
-        $this->assertSame(0, $xp->query('//ul[@data-staff-rail]//span[contains(@class, "staff-monogram")]')->length);
-
-        // Loading is deferred: the rail sits below the fold.
-        $this->assertSame('lazy', $photo->getAttribute('loading'));
+        $this->assertSame(asset('images/guru/guru-test.jpg'), $payload[0]['photo']);
+        $this->assertSame(
+            asset('images/guru/guru-test.jpg'),
+            $xp->query('//li[@data-staff-row][1]//span[contains(@class, "tk-card-photo")]/img')->item(0)->getAttribute('src'),
+        );
+        $this->assertStringContainsString("image.alt = 'Foto ' + person.name", file_get_contents(resource_path('js/tenaga-kependidikan.js')));
+        $this->assertStringContainsString("image.loading = 'lazy'", file_get_contents(resource_path('js/tenaga-kependidikan.js')));
     }
 
-    public function test_the_staff_hover_lifts_the_card_without_zooming_the_photo(): void
+    public function test_the_staff_index_has_a_subtle_fine_pointer_hover_and_clear_focus_ring(): void
     {
-        // Hover is compiled away unless it is guarded, and it has to stay a
-        // nudge: a bigger scale crops the face, and a permanent lift would
-        // linger after a tap on a phone.
         $css = $this->builtCss();
 
-        $this->assertMatchesRegularExpression('/@media \(hover:hover\)\{\.staff-card:hover\{/', $css);
-        $this->assertMatchesRegularExpression('/\.staff-card:hover\{[^}]*translateY\(-4px\)/', $css);
-        $this->assertMatchesRegularExpression('/\.staff-card:hover \.staff-photo img\{transform:scale\(1\.03\)\}/', $css);
-
-        // No runaway scale anywhere in the block.
-        $this->assertDoesNotMatchRegularExpression('/\.staff-card:hover[^}]*scale\(1\.[1-9]/', $css);
+        $this->assertStringContainsString('@media (hover:hover) and (pointer:fine)', $css);
+        $this->assertStringContainsString('.tk-card:hover', $css);
+        $this->assertStringContainsString('.tk-trigger:focus-visible', $css);
+        $this->assertStringContainsString('prefers-reduced-motion:reduce', $css);
     }
 
-    public function test_the_staff_heading_shares_one_line_with_the_arrows(): void
+    public function test_the_staff_heading_and_index_are_revealed_from_opposite_edges(): void
     {
-        // The standfirst was cut, so the header is a single row: heading on the
-        // left, arrows on the right, both travelling in from opposite edges.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         [, $xp] = $this->parseHtml($html);
 
         $section = $xp->query('//*[@id="tenaga-kependidikan"]')->item(0);
 
-        $this->assertSame(0, $xp->query('.//h2/following-sibling::p', $section)->length);
-
-        $heading = $xp->query('.//div[@data-reveal-from="left"]', $section)->item(0);
-        $arrows = $xp->query('.//div[@data-reveal-from="right"]', $section)->item(0);
-
-        $this->assertNotNull($heading);
-        $this->assertNotNull($arrows);
-
-        // Same row: one flex wrapper holding both halves.
-        $row = $xp->query('.//div[contains(@class, "justify-between")]', $section)->item(0);
-
-        $this->assertNotNull($row);
-        $this->assertStringContainsString('items-end', $row->getAttribute('class'));
-
-        // The arrows live in that row, not in a row of their own below it.
-        $this->assertSame(0, $xp->query('.//div[contains(@class, "-mt-14")]', $section)->length);
-        $this->assertSame($heading, $xp->query('./div[@data-reveal-from="left"]', $row)->item(0));
-        $this->assertSame($arrows, $xp->query('./div[@data-reveal-from="right"]', $row)->item(0));
+        $this->assertSame(1, $xp->query('.//h2/following-sibling::p[contains(@class, "tk-heading-intro")]', $section)->length);
+        $this->assertSame('Guru Profesional', trim($xp->query('.//h2', $section)->item(0)->textContent));
+        $this->assertSame(1, $xp->query('.//ul[@data-staff-rail]', $section)->length);
     }
 
-    public function test_the_staff_cards_loop_as_an_endless_marquee(): void
+    public function test_the_staff_preview_and_modal_are_not_a_marquee(): void
     {
-        // The sweep is browser behaviour, but the contract the CSS and the reader
-        // depend on is not: the cards duplicate once at runtime so they can wrap
-        // without dead-ending, the loop yields to a hand already on the rail, and
-        // a reduced-motion visitor keeps a still rail with the arrows instead.
-        $script = file_get_contents(resource_path('js/app.js'));
+        $script = file_get_contents(resource_path('js/tenaga-kependidikan.js'));
 
-        $this->assertStringContainsString('prefers-reduced-motion', $script);
-
-        // A second run of cards makes the end of the list seamless, and the wrap
-        // is a plain subtraction so the swapped position is never scrolled past.
-        $this->assertStringContainsString('cloneNode(true)', $script);
-        $this->assertStringContainsString('singleSet', $script);
-        $this->assertMatchesRegularExpression('/staffRail\.scrollLeft\s*-=\s*singleSet/', $script);
-
-        // One sweep is a startMarquee / stopMarquee pair driven by requestAnimationFrame.
-        $this->assertStringContainsString('function startMarquee()', $script);
-        $this->assertStringContainsString('function stopMarquee()', $script);
-        $this->assertStringContainsString('requestAnimationFrame', $script);
-
-        // Only what genuinely blocks the rail stops the sweep: a card being
-        // dragged, the popup being open and a tab nobody is looking at. A cursor
-        // merely resting nearby must not freeze it, or the rail reads as broken.
-        $this->assertStringContainsString('if (still || held || staffRail.querySelectorAll(\'li\').length < 2)', $script);
-
-        foreach ([
-            "staffRail.addEventListener('pointerdown'",
-            "document.addEventListener('visibilitychange'",
-        ] as $hook) {
-            $this->assertStringContainsString($hook, $script);
-        }
-
-        foreach ([
-            "staffRail.addEventListener('mouseenter'",
-            "staffRail.addEventListener('mouseleave'",
-            "staffRail.addEventListener('wheel'",
-            "staffRail.addEventListener('keydown'",
-        ] as $absent) {
-            $this->assertStringNotContainsString($absent, $script);
-        }
-
-        // Holding and releasing are the only two ways the loop is touched, so
-        // there is no path that restarts it without cancelling it first.
-        $this->assertStringContainsString('function hold()', $script);
-        $this->assertStringContainsString('function release()', $script);
-        $this->assertStringContainsString('cancelAnimationFrame(raf)', $script);
-
-        // A modal dialog makes the page behind inert, which would trap the rail
-        // on the first card: the pointer could never travel to the next one. The
-        // hover path therefore opens with show(), and only the keyboard/touch
-        // path takes the modal treatment.
-        $this->assertStringContainsString('staffModal.show();', $script);
-        $this->assertStringContainsString('staffModal.showModal();', $script);
-        $this->assertMatchesRegularExpression(
-            '/staffRail\.addEventListener\(.pointerover.[\s\S]*?hold\(\);[\s\S]*?showHover\(index\);/',
-            $script,
-            'Pointing at a card has to stop the sweep and open that card.',
-        );
-        $this->assertMatchesRegularExpression(
-            '/function closeOnLeave[\s\S]*?staffModal\.close\(\);[\s\S]*?\n    }/',
-            $script,
-            'Leaving the rail has to close the popup.',
-        );
-        $this->assertMatchesRegularExpression(
-            '/staffModal\.addEventListener\(.close.[\s\S]*?release\(\);/',
-            $script,
-            'Closing the popup has to restart the sweep.',
-        );
+        $this->assertStringContainsString('requestAnimationFrame(placePreview)', $script);
+        $this->assertStringContainsString('preview.dataset.visible', $script);
+        $this->assertStringContainsString('dialog.showModal()', $script);
+        $this->assertStringContainsString('ArrowLeft', $script);
+        $this->assertStringContainsString('ArrowRight', $script);
+        $this->assertStringContainsString('swipeDistance > 80', $script);
+        $this->assertStringNotContainsString('cloneNode(true)', $script);
+        $this->assertStringNotContainsString('singleSet', $script);
     }
 
-    public function test_the_staff_rail_stays_inside_the_page_container(): void
+    public function test_the_staff_index_stays_inside_the_page_container(): void
     {
-        // The rail reaches the container's padding edge with a negative margin so
-        // the next card peeks. Escaping the container altogether turns that
-        // margin into a sideways scrollbar on the whole document, and slides the
-        // cards out of line with the heading above them.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         [, $xp] = $this->parseHtml($html);
 
         $rail = $xp->query('//ul[@data-staff-rail]')->item(0);
-
-        // Ancestor, not descendant: a relative `.//` never walks upwards, which
-        // is why this has to name `ancestor::` explicitly.
-        $containers = $xp->query('ancestor::div[contains(@class, "max-w-7xl")]', $rail);
+        $containers = $xp->query('ancestor::div[contains(@class, "tk-shell")]', $rail);
 
         $this->assertGreaterThan(
             0,
             $containers->length,
-            'The staff rail is not inside the page container.',
+            'The staff index is not inside its bounded page container.',
         );
 
-        $container = $containers->item(0);
-
-        // The negative margin cancels the container padding, it does not push
-        // past it, so the two have to agree per breakpoint.
-        $this->assertMatchesRegularExpression('/-mr-\d/', $rail->getAttribute('class'));
-        $this->assertStringContainsString(
-            'px-4',
-            str_replace(['sm:px-6', 'lg:px-8'], '', $container->getAttribute('class')),
-            'The rail margin and the container padding no longer match.',
-        );
+        $this->assertSame(0, $xp->query('.//li[not(@data-staff-row)]', $rail)->length);
     }
 
-    public function test_a_closed_profile_dialog_is_hidden_and_an_open_one_fills_the_viewport(): void
+    public function test_the_closed_profile_dialog_is_hidden_and_the_open_layer_covers_the_viewport(): void
     {
-        // Two rules that only bite in a browser, so they are pinned here on the
-        // compiled stylesheet. An author `display` outranks the browser's own
-        // `dialog:not([open]) { display: none }`, and a closed dialog that stays
-        // in the flow adds a screen of blank space to the page. On the other
-        // hand `inset: 0` cannot stretch a <dialog>, because the user agent
-        // gives it `width: fit-content` - so both are reset, and the overlay has
-        // to be sized with `auto` rather than a viewport unit, which would count
-        // the scrollbar and leave the overlay narrower than the page.
         $css = $this->builtCss();
 
-        $this->assertStringContainsString('.staff-modal:not([open])', $css);
+        $this->assertStringContainsString('.tk-modal:not([open])', $css);
         $this->assertMatchesRegularExpression(
-            '/\.staff-modal:not\(\[open\]\)\{[^}]*display:none/',
+            '/\.tk-modal:not\(\[open\]\)\{[^}]*display:none/',
             $css,
         );
 
         $open = [];
         $this->assertTrue(
-            (bool) preg_match('/\.staff-modal\[open\]\{([^}]*)\}/', $css, $open),
+            (bool) preg_match('/\.tk-modal\[open\]\{([^}]*)\}/', $css, $open),
             'The open dialog has no rule of its own.',
         );
 
@@ -1595,30 +1445,7 @@ class HomePageTest extends TestCase
         $this->assertStringContainsString('width:auto', $open[1]);
         $this->assertStringContainsString('height:auto', $open[1]);
 
-        // Nothing sizes the full-screen overlay in viewport units. The hover popup
-        // may use one: it is a panel beside a card, not a layer over the page,
-        // so `100vw` there means the viewport minus its own margins rather than
-        // a box that has to cover the scrollbar.
-        $this->assertDoesNotMatchRegularExpression('/\.staff-modal\[open\]\{[^}]*100vw/', $css);
-
-        // Pointing at a card opens the dialog with show(), which does not match
-        // `:modal`. Those rules have to come after the `[open]` ones they undo,
-        // so they are asserted to exist and to shrink the box to the panel.
-        $this->assertMatchesRegularExpression(
-            '/\.staff-modal:not\(:modal\)\{[^}]*inset:auto/',
-            $css,
-            'The hover popup is not un-pinned from the viewport.',
-        );
-        $this->assertMatchesRegularExpression(
-            '/\.staff-modal:not\(:modal\)\{[^}]*width:max-content/',
-            $css,
-            'The hover popup still spans the whole page.',
-        );
-        $this->assertMatchesRegularExpression(
-            '/\.staff-modal:not\(:modal\)::backdrop\{background-color:#0f172a00\}/',
-            $css,
-            'The hover popup dims a page nothing else dims.',
-        );
+        $this->assertDoesNotMatchRegularExpression('/\.tk-modal\[open\]\{[^}]*100vw/', $css);
     }
 
     public function test_the_staff_rail_and_the_profile_dialog_stay_out_of_each_others_way(): void
@@ -1636,30 +1463,26 @@ class HomePageTest extends TestCase
 
         // `.//` throughout: a bare `//` starts at the document and would count
         // every reveal on the page instead of the ones inside the dialog.
-        $this->assertSame(0, $xp->query('ancestor::div[contains(@class, "max-w-7xl")]', $dialog)->length);
+        $this->assertSame(0, $xp->query('ancestor::div[contains(@class, "tk-shell")]', $dialog)->length);
         $this->assertSame(0, $xp->query('.//*[@data-reveal]', $dialog)->length);
         $this->assertSame(0, $xp->query('.//*[@data-reveal-group]', $dialog)->length);
     }
 
-    public function test_the_staff_harness_finds_the_arrows_outside_the_rail(): void
+    public function test_the_staff_profile_navigation_is_scoped_to_the_dialog(): void
     {
-        // The arrows act on the rail but sit beside the heading, and the script
-        // has to look them up accordingly - scoping that query to the list finds
-        // nothing and leaves both arrows dead with no error to show for it.
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         [, $xp] = $this->parseHtml($html);
 
         $section = $xp->query('//*[@id="tenaga-kependidikan"]')->item(0);
 
-        $this->assertSame(1, $xp->query('.//button[@data-staff-prev]', $section)->length);
-        $this->assertSame(1, $xp->query('.//button[@data-staff-next]', $section)->length);
+        $this->assertSame(1, $xp->query('.//dialog//button[@data-staff-prev]', $section)->length);
+        $this->assertSame(1, $xp->query('.//dialog//button[@data-staff-next]', $section)->length);
         $this->assertSame(0, $xp->query('//ul[@data-staff-rail]//button[@data-staff-prev]', $section)->length);
 
-        $script = file_get_contents(resource_path('js/app.js'));
+        $script = file_get_contents(resource_path('js/tenaga-kependidikan.js'));
 
-        $this->assertStringContainsString("document.querySelector('[data-staff-prev]')", $script);
-        $this->assertStringContainsString("document.querySelector('[data-staff-next]')", $script);
-        $this->assertStringNotContainsString("staffRail.querySelector('[data-staff-prev]')", $script);
+        $this->assertStringContainsString("dialog.querySelector('[data-staff-prev]')", $script);
+        $this->assertStringContainsString("dialog.querySelector('[data-staff-next]')", $script);
     }
 }

@@ -46,7 +46,7 @@
     @if ($rotates)
         data-hero-slider
     @endif
-    class="relative isolate sticky top-0 -z-10 flex h-svh items-center overflow-hidden bg-brick-green"
+    class="relative isolate sticky top-0 z-0 flex h-svh items-center overflow-hidden bg-brick-green"
 >
     <div aria-hidden="true" class="absolute inset-0 -z-20">
         @foreach ($slides as $index => $slide)
@@ -86,16 +86,6 @@
         @endforeach
     </div>
 
-    {{-- The direction lives in the config alongside the stops, so the shade can
-         follow the caption wherever it sits. --}}
-    <div
-        aria-hidden="true"
-        class="absolute inset-0 -z-10 {{ $hero['overlay'] }}"
-    ></div>
-
-    <div aria-hidden="true" class="absolute -top-32 right-0 -z-10 size-[26rem] rounded-full bg-gold-400/10 blur-3xl"></div>
-    <div aria-hidden="true" class="absolute -bottom-40 -left-32 -z-10 size-[24rem] rounded-full bg-school-400/10 blur-3xl"></div>
-
     {{-- The caption sits above the rotating photos instead of inside a slide,
          so it rises into place rather than travelling sideways with them. It
          only appears while its own slide is on screen. --}}
@@ -117,19 +107,17 @@
                 <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
                     <a
                         href="{{ route('spmb') }}"
-                        class="group inline-flex items-center gap-2 rounded-full bg-transparent px-6 py-3 text-sm font-semibold text-white ring-1 ring-gold-400/80 transition hover:bg-gold-500/20 ring-school-focus"
+                        class="hero-action"
                     >
                         Daftar Sekarang
-                        <x-icon name="arrow-right" class="size-4 transition group-hover:translate-x-0.5" />
                     </a>
 
                     <a
                         href="{{ config('school.contact.whatsapp_link') }}"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="group inline-flex items-center gap-2 rounded-full bg-transparent px-6 py-3 text-sm font-semibold text-white ring-1 ring-white/40 transition hover:bg-white/10 ring-school-focus"
+                        class="hero-action"
                     >
-                        <x-icon name="whatsapp" class="size-4 text-white/80 transition group-hover:text-white" />
                         Konsultasi
                     </a>
                 </div>

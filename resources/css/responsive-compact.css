@@ -1,0 +1,163 @@
+html {
+    overflow-x: clip;
+}
+
+body {
+    overflow-x: clip;
+}
+
+@media (max-width: 39.999rem) {
+    main [class~="py-20"],
+    main [class~="py-24"] {
+        padding-block: 3rem;
+    }
+
+    main [class~="py-14"],
+    main [class~="py-16"] {
+        padding-block: 2.5rem;
+    }
+
+    main [class~="p-10"],
+    main [class~="p-8"] {
+        padding: 1.25rem;
+    }
+
+    main [class~="p-6"],
+    main [class~="p-5"] {
+        padding: 1rem;
+    }
+
+    [data-berita-feed] [data-berita-top],
+    [data-berita-feed] [data-berita-grid] {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    [data-berita-feed] [data-berita-dense] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+
+    [data-berita-dense] h3 {
+        font-size: 0.8rem;
+        line-height: 1.35;
+    }
+
+    [data-bkk-job-grid],
+    [data-staff-grid] {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    [data-contact-channels] {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.75rem;
+    }
+
+    [data-contact-channels] > a {
+        padding: 1rem;
+    }
+
+    main form {
+        gap: 0.5rem;
+    }
+
+    main form input[type="search"] {
+        height: 2.75rem;
+        padding-left: 2.75rem;
+        font-size: 0.875rem;
+    }
+
+    main form button[type="submit"] {
+        height: 2.75rem;
+        padding-inline: 1rem;
+    }
+}
+
+@media (min-width: 40rem) and (max-width: 63.999rem) {
+    main [class~="py-20"],
+    main [class~="py-24"] {
+        padding-block: 3.5rem;
+    }
+
+    main [class~="py-14"],
+    main [class~="py-16"] {
+        padding-block: 3rem;
+    }
+
+    main [class~="p-10"],
+    main [class~="p-8"] {
+        padding: 1.5rem;
+    }
+
+    [data-berita-feed] [data-berita-top],
+    [data-berita-feed] [data-berita-grid] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    [data-berita-feed] [data-berita-dense] {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    [data-bkk-job-grid],
+    [data-staff-grid] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    [data-contact-channels] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 64rem) and (max-width: 79.999rem) {
+    main [class~="py-20"],
+    main [class~="py-24"] {
+        padding-block: 4rem;
+    }
+
+    main [class~="py-14"],
+    main [class~="py-16"] {
+        padding-block: 3.5rem;
+    }
+
+    main [class~="lg:grid-cols-12"] {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    main [class~="lg:grid-cols-12"] > [class~="lg:col-span-4"],
+    main [class~="lg:grid-cols-12"] > [class~="lg:col-span-5"],
+    main [class~="lg:grid-cols-12"] > [class~="lg:col-span-7"],
+    main [class~="lg:grid-cols-12"] > [class~="lg:col-span-8"] {
+        grid-column: 1 / -1;
+    }
+
+    #sambutan figure {
+        max-width: 20rem;
+    }
+
+    [data-berita-feed] {
+        display: block;
+    }
+
+    [data-berita-archive] {
+        display: none;
+    }
+}
+
+@media (min-width: 64rem) and (max-width: 89.999rem) {
+    #sambutan figure {
+        max-width: 20rem;
+    }
+
+    #sambutan figure > span[aria-hidden="true"] {
+        right: 0;
+    }
+}
+
+@media (min-width: 80rem) {
+    [data-contact-channels] {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    [data-staff-grid] {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
