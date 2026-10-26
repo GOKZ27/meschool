@@ -912,25 +912,73 @@ return [
     | SPMB — Seleksi Penerimaan Murid Baru
     |--------------------------------------------------------------------------
     |
-    | The full-width admission banner that closes the home page. 'bg_photo'
-    | reuses the school photo the hero already serves (the only one that ships
-    | with the repo); drop a dedicated upload in public/images/ and point this
-    | at it whenever one lands. It resolves through Images::existingUrl(), so a
-    | missing file still renders the brick fallback instead of a broken layer.
+    | The admission block that closes the home page: a deep-green hero with the
+    | student photo on the right, followed by the "why this school" benefits
+    | band. 'bg_photo' reuses the school photo the hero already serves (the only
+    | building photo that ships with the repo); 'photo' is the student shot for
+    | the right-hand panel. Both resolve through Images::existingUrl(), so a
+    | missing file falls back to a gradient / monogram instead of a broken layer.
+    |
+    |   'title'         the short "Informasi SPMB" heading
+    |   'school_name'   the school line under it, painted in mint
+    |   'subtitle'      the academic year
+    |   'register_url'  registration destination; null falls back to the
+    |                   WhatsApp link in school.contact
+    |   'benefits'      the five cards under the hero: label, title, intro and
+    |                   items[] of icon / title / description
     |
     */
 
     'spmb' => [
         'bg_photo' => 'images/hero/hero1.jpeg',
+        'photo' => 'images/berita/mos-2026-kelas-dasar.jpg',
+        'photo_alt' => 'Siswa baru SMK Islamiyah Ciputat mengikuti pengenalan kelas saat masa orientasi sekolah',
         'overlay' => 'bg-gradient-to-b from-school-950/90 via-school-950/60 to-school-950/90',
         'eyebrow' => 'SPMB',
-        'title' => 'Informasi SPMB SMK Islamiyah Ciputat',
+        'title' => 'Informasi SPMB',
+        'school_name' => 'SMK Islamiyah Ciputat',
         'subtitle' => 'Tahun Ajaran 2027/2028',
         'description' => 'SMK Islamiyah Ciputat membuka kesempatan bagi calon peserta didik baru '
             .'untuk bergabung dan berkembang dalam lingkungan pendidikan yang aktif, modern, dan '
             .'berorientasi pada dunia kerja.',
-        'button_label' => 'DAFTAR SEKARANG',
+        'button_label' => 'Daftar Sekarang',
+        'register_url' => null,
         'link_label' => 'Lihat Informasi SPMB',
+
+        'benefits' => [
+            'label' => 'Kenapa memilih SMK Islamiyah Ciputat?',
+            'title' => 'Tempat Terbaik untuk Masa Depanmu',
+            'description' => 'Kami hadir dengan pendidikan berkualitas, fasilitas lengkap, dan program '
+                .'keahlian yang sesuai dengan kebutuhan dunia kerja.',
+
+            'items' => [
+                [
+                    'icon' => 'graduation-cap',
+                    'title' => 'Program Keahlian Unggulan',
+                    'description' => 'Pilihan jurusan sesuai minat dan bakat untuk masa depan kariermu.',
+                ],
+                [
+                    'icon' => 'user-group',
+                    'title' => 'Tenaga Pendidik Profesional',
+                    'description' => 'Dibimbing oleh guru berpengalaman dan kompeten di bidangnya.',
+                ],
+                [
+                    'icon' => 'desktop',
+                    'title' => 'Fasilitas Lengkap',
+                    'description' => 'Ruang kelas nyaman, laboratorium modern, dan akses internet.',
+                ],
+                [
+                    'icon' => 'briefcase',
+                    'title' => 'Kerja Sama Industri',
+                    'description' => 'Peluang magang dan penyaluran kerja setelah lulus.',
+                ],
+                [
+                    'icon' => 'chart-bar',
+                    'title' => 'Lingkungan Islami dan Berkarakter',
+                    'description' => 'Membentuk pribadi unggul, disiplin, dan berakhlak mulia.',
+                ],
+            ],
+        ],
     ],
 
     /*

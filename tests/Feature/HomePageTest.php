@@ -440,13 +440,18 @@ class HomePageTest extends TestCase
         $this->assertStringContainsString('hero-caption mx-auto max-w-3xl text-center', $html);
         $this->assertStringContainsString('justify-center', $html);
 
-        preg_match_all('/<a\b[^>]*>(?:\s*<[^>]*>)*\s*(?:Daftar Sekarang|Konsultasi)/', $html, $buttons);
+        // The SPMB hero reuses the "Daftar Sekarang" label further down the page,
+        // so scope the scan to the caption buttons instead of the whole document.
+        $buttons = $xp->query('//*[@data-hero-caption]//a');
+        $this->assertSame(2, $buttons->length, 'Both caption buttons were not found.');
+        $this->assertSame(
+            ['Daftar Sekarang', 'Konsultasi'],
+            array_map(fn ($button) => trim($button->textContent), iterator_to_array($buttons)),
+        );
 
-        $this->assertSame(2, count($buttons[0]), 'Both caption buttons were not found.');
-
-        foreach ($buttons[0] as $button) {
-            $this->assertMatchesRegularExpression('/\bhero-action\b/', $button);
-            $this->assertDoesNotMatchRegularExpression('/\brounded-full\b/', $button);
+        foreach ($buttons as $button) {
+            $this->assertMatchesRegularExpression('/\bhero-action\b/', $button->getAttribute('class'));
+            $this->assertDoesNotMatchRegularExpression('/\brounded-full\b/', $button->getAttribute('class'));
         }
 
         $this->assertSame(0, $xp->query('//*[@data-hero-caption]//svg')->length);

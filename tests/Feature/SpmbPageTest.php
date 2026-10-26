@@ -7,8 +7,9 @@ use Tests\TestCase;
 class SpmbPageTest extends TestCase
 {
     /**
-     * The home page closes on a full-width SPMB banner carrying the configured
-     * copy and both calls-to-action into the SPMB page.
+     * The home page carries the SPMB hero: the configured copy, the school name
+     * and the student photo, with the two calls-to-action leading to different
+     * destinations (registration vs. the information page).
      */
     public function test_the_home_page_renders_the_spmb_banner(): void
     {
@@ -21,15 +22,92 @@ class SpmbPageTest extends TestCase
 
         $this->assertStringContainsString(config('school.spmb.eyebrow'), $html);
         $this->assertStringContainsString(config('school.spmb.title'), $html);
+        $this->assertStringContainsString(config('school.spmb.school_name'), $html);
         $this->assertStringContainsString(config('school.spmb.subtitle'), $html);
         $this->assertStringContainsString(config('school.spmb.description'), $html);
 
-        $links = $xp->query('.//a[@href="'.route('spmb').'"]', $section);
-        $this->assertSame(2, $links->length);
-        $this->assertStringContainsString(config('school.spmb.button_label'), (string) $links->item(0)->textContent);
-        $this->assertStringContainsString(config('school.spmb.link_label'), (string) $links->item(1)->textContent);
+        $register = config('school.spmb.register_url') ?: config('school.contact.whatsapp_link');
+        $actions = $xp->query('.//a[@href]', $section);
+
+        $this->assertSame(2, $actions->length);
+
+        $this->assertSame($register, $actions->item(0)->getAttribute('href'));
+        $this->assertStringContainsString(config('school.spmb.button_label'), (string) $actions->item(0)->textContent);
+
+        $this->assertSame(route('spmb'), $actions->item(1)->getAttribute('href'));
+        $this->assertStringContainsString(config('school.spmb.link_label'), (string) $actions->item(1)->textContent);
+
+        $this->assertNotSame(
+            $actions->item(0)->getAttribute('href'),
+            $actions->item(1)->getAttribute('href'),
+            'Registration and information must not share one destination.',
+        );
 
         $this->assertSame(1, $xp->query('.//*[@data-reveal-group]', $section)->length);
+    }
+
+    /**
+     * The student photo sits in the hero with meaningful alt text, and a missing
+     * upload leaves the monogram panel rather than a broken image.
+     */
+    public function test_the_hero_shows_the_student_photo(): void
+    {
+        $html = $this->get(route('home'))->assertOk()->getContent();
+
+        $this->assertStringContainsString(config('school.spmb.photo'), $html);
+        $this->assertStringContainsString(config('school.spmb.photo_alt'), $html);
+
+        config()->set('school.spmb.photo', 'tidak-ada.jpg');
+
+        $html = $this->get(route('home'))->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('tidak-ada.jpg', $html);
+        $this->assertStringContainsString('spmb-hero__photo--empty', $html);
+    }
+
+    /**
+     * The five reasons to choose the school follow the hero on the pale band, in
+     * the order the config declares them.
+     */
+    public function test_the_benefits_band_lists_the_five_reasons_after_the_hero(): void
+    {
+        $html = $this->get(route('home'))->assertOk()->getContent();
+        $benefits = config('school.spmb.benefits');
+
+        $this->assertStringContainsString($benefits['label'], $html);
+        $this->assertStringContainsString($benefits['title'], $html);
+        $this->assertStringContainsString($benefits['description'], $html);
+
+        [, $xp] = $this->parseHtml($html);
+
+        $section = $xp->query('//*[@data-spmb-benefits]')->item(0);
+        $this->assertNotNull($section, 'The SPMB benefits band is missing from the home page.');
+
+        $this->assertGreaterThan(
+            strpos($html, 'id="spmb"'),
+            strpos($html, 'data-spmb-benefits'),
+            'The benefits band must follow the hero.',
+        );
+
+        $cards = $xp->query('.//*[@data-spmb-benefit]', $section);
+
+        $this->assertSame(5, count($benefits['items']));
+        $this->assertSame(count($benefits['items']), $cards->length);
+
+        foreach ($benefits['items'] as $index => $item) {
+            $card = $cards->item($index);
+
+            $this->assertStringContainsString($item['title'], (string) $card->textContent);
+            $this->assertStringContainsString($item['description'], (string) $card->textContent);
+        }
+
+        // Every configured icon must exist in the inline icon map, otherwise the
+        // card silently renders an empty box.
+        $icons = (string) file_get_contents(resource_path('views/components/icon.blade.php'));
+
+        foreach ($benefits['items'] as $item) {
+            $this->assertStringContainsString("'{$item['icon']}' =>", $icons);
+        }
     }
 
     /**

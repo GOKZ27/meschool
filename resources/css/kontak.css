@@ -1,0 +1,545 @@
+/*
+ * Kontak page.
+ *
+ * A photo hero with a green scrim on the left and a wide white curve under it,
+ * the four contact channels, then the location / social panels. Everything is
+ * scoped under .kontak-page so no rule here can leak into another page, and the
+ * palette is declared once as local custom properties.
+ */
+
+.kontak-page {
+    --k-green: #07834f;
+    --k-deep: #063c35;
+    --k-button: #07894f;
+    --k-mint: #2ed6a3;
+    --k-mint-soft: #e0f6ef;
+    --k-ink: #173a50;
+    --k-muted: #7890ae;
+    --k-line: #dcebf2;
+    --k-ground: #f5fafd;
+
+    background-color: var(--k-ground);
+    color: var(--k-ink);
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.kontak-page *,
+.kontak-page *::before,
+.kontak-page *::after {
+    box-sizing: border-box;
+}
+
+/* -- Hero ---------------------------------------------------------------- */
+
+.kontak-hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    min-height: 408px;
+    align-items: center;
+    overflow: hidden;
+    padding-block: 3rem 4.5rem;
+    background-color: var(--k-deep);
+}
+
+/* The building stays the subject on the right; the scrim below darkens only
+   the left half, so the facade is never lost behind a flat overlay. */
+.kontak-hero__photo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-color: var(--k-deep);
+    background-position: 68% center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.kontak-hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+        linear-gradient(
+            90deg,
+            rgb(6 60 53 / 0.95) 0%,
+            rgb(6 60 53 / 0.88) 34%,
+            rgb(6 60 53 / 0.5) 58%,
+            rgb(6 60 53 / 0.08) 78%,
+            rgb(6 60 53 / 0) 100%
+        ),
+        linear-gradient(0deg, rgb(6 60 53 / 0.32) 0%, rgb(6 60 53 / 0) 55%);
+}
+
+.kontak-hero__inner {
+    width: 100%;
+}
+
+.kontak-hero__copy {
+    max-width: 34rem;
+    color: #fff;
+}
+
+.kontak-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0;
+    border-radius: 999px;
+    padding: 0.42rem 0.85rem;
+    background-color: var(--k-green);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.kontak-hero__title {
+    margin: 1.15rem 0 0;
+    color: #fff;
+    font-size: clamp(2.3rem, 5.1vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+}
+
+.kontak-hero__title span {
+    display: block;
+}
+
+.kontak-hero__title-accent {
+    color: var(--k-mint);
+}
+
+.kontak-hero__rule {
+    display: block;
+    width: 4.5rem;
+    height: 3px;
+    margin-top: 1.15rem;
+    border-radius: 999px;
+    background-color: var(--k-mint);
+}
+
+.kontak-hero__desc {
+    max-width: 420px;
+    margin: 1.1rem 0 0;
+    color: #fff;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+}
+
+/* The white curve that hands the photo over to the pale ground. The arc sits
+   highest at the left and right edges, exactly as in the reference. */
+.kontak-hero__curve {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    pointer-events: none;
+    line-height: 0;
+}
+
+.kontak-hero__curve svg {
+    display: block;
+    width: 100%;
+    height: 64px;
+    fill: var(--k-ground);
+}
+
+/* -- Contact channels ---------------------------------------------------- */
+
+.kontak-cards {
+    position: relative;
+    padding-block: 2.5rem 0;
+}
+
+.kontak-cards__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.kontak-card {
+    position: relative;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    gap: 0.6rem;
+    border: 1px solid var(--k-line);
+    border-radius: 12px;
+    padding: 1.15rem 1.15rem 2rem;
+    background-color: #fff;
+    box-shadow:
+        0 1px 2px rgb(23 58 80 / 0.04),
+        0 12px 24px -22px rgb(23 58 80 / 0.35);
+    color: inherit;
+    text-decoration: none;
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.kontak-card__icon {
+    display: flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background-color: var(--k-mint-soft);
+}
+
+.kontak-card__icon-inner {
+    display: flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background-color: var(--k-green);
+    color: #fff;
+}
+
+.kontak-card__body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.kontak-card__title {
+    color: var(--k-ink);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.kontak-card__value {
+    color: var(--k-ink);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.kontak-card__value--email {
+    font-size: 0.8125rem;
+}
+
+.kontak-card__value--address {
+    color: var(--k-deep);
+}
+
+.kontak-card__hint {
+    margin-top: 0.15rem;
+    color: var(--k-muted);
+    font-size: 0.75rem;
+    line-height: 1.45;
+}
+
+.kontak-card__arrow {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--k-muted);
+    transition:
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .kontak-card:hover {
+        border-color: rgb(46 214 163 / 0.55);
+        box-shadow:
+            0 1px 2px rgb(23 58 80 / 0.05),
+            0 16px 30px -24px rgb(23 58 80 / 0.4);
+    }
+
+    .kontak-card:hover .kontak-card__arrow {
+        color: var(--k-green);
+        transform: translateX(2px);
+    }
+}
+
+/* -- Location and social panels ------------------------------------------ */
+
+.kontak-panels {
+    position: relative;
+    overflow: hidden;
+    padding-block: 2.25rem 5rem;
+}
+
+/* Soft mint wave plus a few hairlines in the bottom-right corner. They sit
+   behind the panels and are clipped by the section, so they can never add a
+   horizontal scrollbar. */
+.kontak-panels__decor {
+    position: absolute;
+    right: -5rem;
+    bottom: -7rem;
+    z-index: 0;
+    width: min(34rem, 80vw);
+    pointer-events: none;
+    line-height: 0;
+}
+
+.kontak-panels__decor svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.kontak-panels__decor-wave {
+    color: rgb(46 214 163 / 0.16);
+}
+
+.kontak-panels__decor-lines {
+    position: absolute;
+    inset: 0;
+    color: rgb(7 131 79 / 0.12);
+}
+
+.kontak-panels__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem;
+}
+
+.kontak-panel {
+    position: relative;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    border: 1px solid var(--k-line);
+    border-radius: 12px;
+    padding: 1.25rem;
+    background-color: #fff;
+    box-shadow:
+        0 1px 2px rgb(23 58 80 / 0.04),
+        0 14px 30px -26px rgb(23 58 80 / 0.35);
+}
+
+.kontak-panel__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0;
+    color: var(--k-green);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.kontak-panel__eyebrow::before {
+    width: 1.5rem;
+    height: 2px;
+    flex: none;
+    border-radius: 999px;
+    background-color: var(--k-mint);
+    content: '';
+}
+
+.kontak-panel__title {
+    margin: 0.7rem 0 0;
+    color: var(--k-ink);
+    font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.kontak-map {
+    margin-top: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--k-line);
+    border-radius: 10px;
+}
+
+.kontak-map iframe {
+    display: block;
+    width: 100%;
+    height: 230px;
+    border: 0;
+}
+
+.kontak-map-link {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    border: 1px solid var(--k-green);
+    border-radius: 999px;
+    padding: 0.5rem 0.95rem;
+    background-color: #fff;
+    color: var(--k-green);
+    font-size: 0.78125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+        background-color 180ms ease,
+        color 180ms ease;
+}
+
+.kontak-map-link svg:last-child {
+    transition: transform 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .kontak-map-link:hover {
+        background-color: var(--k-green);
+        color: #fff;
+    }
+
+    .kontak-map-link:hover svg:last-child {
+        transform: translateX(2px);
+    }
+}
+
+.kontak-social {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.kontak-social__card {
+    display: flex;
+    min-height: 4.25rem;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid rgb(7 131 79 / 0.14);
+    border-radius: 11px;
+    padding: 0.55rem 0.85rem;
+    background-color: #fbfefd;
+    color: inherit;
+    text-decoration: none;
+    transition:
+        border-color 180ms ease,
+        background-color 180ms ease;
+}
+
+.kontak-social__icon {
+    display: flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background-color: var(--k-mint-soft);
+    color: var(--k-deep);
+}
+
+.kontak-social__body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.kontak-social__name {
+    color: var(--k-ink);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.kontak-social__handle {
+    color: var(--k-muted);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.kontak-social__arrow {
+    margin-left: auto;
+    flex: none;
+    color: var(--k-muted);
+    transition:
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .kontak-social__card:hover {
+        border-color: rgb(46 214 163 / 0.5);
+        background-color: #fff;
+    }
+
+    .kontak-social__card:hover .kontak-social__arrow {
+        color: var(--k-green);
+        transform: translateX(2px);
+    }
+}
+
+.kontak-page a:focus-visible {
+    outline: 2px solid var(--k-green);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* -- Breakpoints --------------------------------------------------------- */
+
+@media (min-width: 30rem) {
+    .kontak-cards__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 40rem) {
+    .kontak-hero {
+        padding-block: 3.5rem 5rem;
+    }
+
+    .kontak-map iframe {
+        height: 258px;
+    }
+}
+
+@media (min-width: 64rem) {
+    .kontak-hero {
+        min-height: 408px;
+    }
+
+    .kontak-cards__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .kontak-panels__grid {
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    }
+
+    .kontak-panel {
+        padding: 1.35rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kontak-card,
+    .kontak-card__arrow,
+    .kontak-map-link,
+    .kontak-map-link svg:last-child,
+    .kontak-social__card,
+    .kontak-social__arrow {
+        transition: none;
+    }
+
+    .kontak-card:hover .kontak-card__arrow,
+    .kontak-map-link:hover svg:last-child,
+    .kontak-social__card:hover .kontak-social__arrow {
+        transform: none;
+    }
+}

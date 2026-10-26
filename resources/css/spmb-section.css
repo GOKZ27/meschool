@@ -1,10 +1,16 @@
-/* The SPMB photo band, shared by the home banner (#spmb) and the /spmb hero so
-   the two read as one campaign. Deep green ground, white copy, gold accent.
+/* The SPMB section: a photo band shared by the home banner (#spmb) and the
+   /spmb hero so the two read as one campaign, plus the benefits band that
+   follows the home banner.
 
    The band already carries the config overlay class (school-950 at 60-90%), but
    a photo alone cannot guarantee contrast where it is bright, so ::before adds
    a directional scrim behind the copy on top of that overlay and below the
    content. ::after is the gold hairline along the top edge.
+
+   The home hero (.spmb-hero) was rebuilt to the admission landing reference:
+   deep-green ground, copy on the left, the student photo on the right and a
+   curved white edge into the five-card .spmb-benefits band. Its palette is
+   scoped here as custom properties, so nothing leaks into other sections.
 
    Nothing here sets opacity/transform on the reveal children - those states are
    owned by the shared reveal rules in app.css. */
@@ -318,6 +324,528 @@
     .spmb-banner .spmb-btn--primary:hover,
     .spmb-banner .spmb-btn--ghost:hover,
     .spmb-banner .spmb-btn:hover .spmb-btn-icon {
+        transform: none;
+    }
+}
+
+/* ==========================================================================
+   Home SPMB hero + benefits band
+   ========================================================================== */
+
+.spmb-hero,
+.spmb-benefits {
+    --spmb-deep: #073d32;
+    --spmb-green: #087c50;
+    --spmb-mint: #36c99a;
+    --spmb-ink: #193547;
+    --spmb-muted: #71859b;
+    --spmb-surface: #f5f9fc;
+    --spmb-line: #dbe8e2;
+}
+
+.spmb-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--spmb-deep);
+    color: #fff;
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.spmb-hero *,
+.spmb-hero *::before,
+.spmb-hero *::after {
+    box-sizing: border-box;
+}
+
+/* The building photo, kept behind the config overlay (-z-10) and the scrim. */
+.spmb-hero .spmb-hero__bg {
+    position: absolute;
+    z-index: -20;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+}
+
+/* A left-to-right scrim: heavy under the copy, light over the student photo so
+   the right-hand side still reads as a photograph rather than a dark panel. */
+.spmb-hero::before {
+    position: absolute;
+    z-index: -5;
+    inset: 0;
+    background: linear-gradient(
+        100deg,
+        rgb(7 61 50 / 0.97) 0%,
+        rgb(7 61 50 / 0.9) 42%,
+        rgb(7 61 50 / 0.58) 68%,
+        rgb(7 61 50 / 0.34) 100%
+    );
+    content: '';
+    pointer-events: none;
+}
+
+.spmb-hero .spmb-hero__inner {
+    position: relative;
+    z-index: 2;
+    width: min(100% - 2rem, 80rem);
+    margin-inline: auto;
+    padding-block: clamp(2.5rem, 4vw, 3rem) clamp(4rem, 6vw, 5rem);
+}
+
+.spmb-hero .spmb-hero__grid {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.25rem);
+    align-items: center;
+}
+
+.spmb-hero .spmb-hero__copy {
+    display: flex;
+    max-width: 36rem;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.spmb-hero .spmb-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    background-color: var(--spmb-mint);
+    color: var(--spmb-deep);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.spmb-hero .spmb-hero__badge-icon {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+}
+
+.spmb-hero .spmb-hero__title {
+    margin: 1rem 0 0;
+    color: #fff;
+    font-size: clamp(2.125rem, 3.6vw, 2.875rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    text-wrap: balance;
+}
+
+.spmb-hero .spmb-hero__school {
+    margin: 0.35rem 0 0;
+    color: var(--spmb-mint);
+    font-size: clamp(1.875rem, 3.2vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    text-wrap: balance;
+}
+
+.spmb-hero .spmb-hero__year {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 1rem 0 0;
+    border: 1px solid rgb(54 201 154 / 0.38);
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    background-color: rgb(7 61 50 / 0.55);
+    color: #fff;
+    font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+}
+
+.spmb-hero .spmb-hero__year-icon {
+    width: 1.05em;
+    height: 1.05em;
+    flex: none;
+    color: var(--spmb-mint);
+}
+
+.spmb-hero .spmb-hero__rule {
+    display: block;
+    width: 3.25rem;
+    height: 3px;
+    margin-top: 1.1rem;
+    border-radius: 999px;
+    background-color: var(--spmb-mint);
+}
+
+.spmb-hero .spmb-hero__desc {
+    max-width: 34rem;
+    margin: 1rem 0 0;
+    color: rgb(255 255 255 / 0.84);
+    font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+    line-height: 1.75;
+}
+
+.spmb-hero .spmb-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.6rem;
+}
+
+.spmb-hero .spmb-hero__cta {
+    display: inline-flex;
+    min-height: 3.125rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.8rem 1.6rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+        background-color 200ms ease,
+        border-color 200ms ease,
+        color 200ms ease,
+        box-shadow 200ms ease;
+}
+
+/* White on #087c50 clears 5:1, so the label stays readable at this size. */
+.spmb-hero .spmb-hero__cta--primary {
+    background-color: var(--spmb-green);
+    box-shadow: 0 16px 30px -18px rgb(0 0 0 / 0.7);
+    color: #fff;
+}
+
+.spmb-hero .spmb-hero__cta--ghost {
+    border-color: rgb(255 255 255 / 0.5);
+    background-color: transparent;
+    color: #fff;
+}
+
+.spmb-hero .spmb-hero__cta:focus-visible {
+    outline: 3px solid var(--spmb-mint);
+    outline-offset: 3px;
+}
+
+.spmb-hero .spmb-hero__cta-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex: none;
+}
+
+.spmb-hero .spmb-hero__cta-arrow {
+    transition: transform 200ms ease;
+}
+
+/* The student photo: a reserved 4:3 box so the band never jumps while the
+   image is still loading. */
+.spmb-hero .spmb-hero__visual {
+    margin: 0;
+}
+
+.spmb-hero .spmb-hero__photo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border: 1px solid rgb(255 255 255 / 0.18);
+    border-radius: 18px;
+    background-color: rgb(7 61 50 / 0.7);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.65);
+    object-fit: cover;
+}
+
+.spmb-hero .spmb-hero__photo--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0b5241, #073d32);
+    color: var(--spmb-mint);
+}
+
+/* The curve into the benefits band. It sits behind the copy (z-index 2) and
+   the inner block carries enough bottom padding that it never covers text. */
+.spmb-hero .spmb-hero__wave {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: clamp(2rem, 4.5vw, 3.5rem);
+    pointer-events: none;
+}
+
+.spmb-hero .spmb-hero__wave svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.spmb-hero .spmb-hero__wave path {
+    fill: var(--spmb-surface);
+}
+
+@media (min-width: 40rem) {
+    .spmb-hero .spmb-hero__inner {
+        width: min(100% - 3rem, 80rem);
+    }
+
+    .spmb-hero {
+        min-height: 32rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .spmb-hero {
+        min-height: 30rem;
+    }
+
+    .spmb-hero .spmb-hero__grid {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    }
+}
+
+@media (max-width: 39.999rem) {
+    /* A phone reads the hero as one column: copy first, photo under it. The
+       scrim turns vertical because the photo no longer sits beside the copy. */
+    .spmb-hero::before {
+        background: linear-gradient(
+            180deg,
+            rgb(7 61 50 / 0.94) 0%,
+            rgb(7 61 50 / 0.88) 55%,
+            rgb(7 61 50 / 0.96) 100%
+        );
+    }
+
+    .spmb-hero .spmb-hero__copy {
+        max-width: none;
+    }
+
+    .spmb-hero .spmb-hero__actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.625rem;
+    }
+
+    .spmb-hero .spmb-hero__cta {
+        width: 100%;
+    }
+
+    .spmb-hero .spmb-hero__photo {
+        aspect-ratio: 5 / 4;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .spmb-hero .spmb-hero__cta--primary:hover {
+        background-color: #0b8f5c;
+    }
+
+    .spmb-hero .spmb-hero__cta--ghost:hover {
+        border-color: #fff;
+        background-color: rgb(255 255 255 / 0.14);
+    }
+
+    .spmb-hero .spmb-hero__cta:hover .spmb-hero__cta-arrow {
+        transform: translateX(3px);
+    }
+}
+
+/* -- Benefits band ------------------------------------------------------- */
+
+.spmb-benefits {
+    position: relative;
+    padding-block: clamp(3.25rem, 6vw, 5.5rem);
+    background-color: var(--spmb-surface);
+    color: var(--spmb-ink);
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.spmb-benefits *,
+.spmb-benefits *::before,
+.spmb-benefits *::after {
+    box-sizing: border-box;
+}
+
+.spmb-benefits .spmb-benefits__inner {
+    display: grid;
+    width: min(100% - 2rem, 80rem);
+    margin-inline: auto;
+    gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+.spmb-benefits .spmb-benefits__label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0;
+    color: var(--spmb-green);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.5;
+    text-transform: uppercase;
+}
+
+.spmb-benefits .spmb-benefits__label::before {
+    width: 2rem;
+    height: 2px;
+    flex: none;
+    border-radius: 999px;
+    background-color: var(--spmb-mint);
+    content: '';
+}
+
+.spmb-benefits .spmb-benefits__title {
+    margin: 1.15rem 0 0;
+    color: var(--spmb-ink);
+    font-size: clamp(1.75rem, 2.9vw, 2.375rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.16;
+    text-wrap: balance;
+}
+
+.spmb-benefits .spmb-benefits__desc {
+    max-width: 30rem;
+    margin: 1rem 0 0;
+    color: var(--spmb-muted);
+    font-size: clamp(0.9375rem, 1.1vw, 1rem);
+    line-height: 1.75;
+}
+
+.spmb-benefits .spmb-benefits__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.875rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.spmb-benefits .spmb-benefit-card {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    gap: 0.55rem;
+    border: 1px solid var(--spmb-line);
+    border-radius: 14px;
+    padding: 1rem 0.95rem;
+    background-color: #fff;
+    box-shadow:
+        0 1px 2px rgb(7 61 50 / 0.05),
+        0 18px 30px -26px rgb(7 61 50 / 0.45);
+    transition:
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+}
+
+.spmb-benefits .spmb-benefit-card__icon {
+    display: flex;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background-color: #e7f8f1;
+    color: var(--spmb-deep);
+}
+
+.spmb-benefits .spmb-benefit-card__title {
+    margin: 0;
+    color: var(--spmb-ink);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    text-wrap: pretty;
+}
+
+.spmb-benefits .spmb-benefit-card__desc {
+    margin: 0.25rem 0 0;
+    color: var(--spmb-muted);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+}
+
+/* Tablets get two cards per row. */
+@media (min-width: 40rem) {
+    .spmb-benefits .spmb-benefits__inner {
+        width: min(100% - 3rem, 80rem);
+    }
+
+    .spmb-benefits .spmb-benefits__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 48rem) {
+    .spmb-benefits .spmb-benefits__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* From lg the intro runs as one compact row above the cards, and the five
+   cards sit side by side rather than stacking down the page. */
+@media (min-width: 64rem) {
+    .spmb-benefits .spmb-benefits__inner {
+        grid-template-columns: minmax(0, 1fr);
+        gap: clamp(1.75rem, 2.6vw, 2.5rem);
+    }
+
+    .spmb-benefits .spmb-benefits__intro {
+        display: grid;
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        align-items: end;
+        column-gap: clamp(1.5rem, 4vw, 4rem);
+    }
+
+    .spmb-benefits .spmb-benefits__label {
+        grid-column: 1 / -1;
+    }
+
+    .spmb-benefits .spmb-benefits__title {
+        grid-column: 1;
+    }
+
+    .spmb-benefits .spmb-benefits__desc {
+        grid-column: 2;
+        max-width: none;
+        margin-top: 0;
+    }
+
+    .spmb-benefits .spmb-benefits__grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .spmb-benefits .spmb-benefit-card:hover {
+        border-color: rgb(54 201 154 / 0.55);
+        box-shadow:
+            0 1px 2px rgb(7 61 50 / 0.06),
+            0 22px 38px -26px rgb(7 61 50 / 0.5);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spmb-hero .spmb-hero__cta,
+    .spmb-hero .spmb-hero__cta-arrow,
+    .spmb-benefits .spmb-benefit-card {
+        transition: none;
+    }
+
+    .spmb-hero .spmb-hero__cta:hover .spmb-hero__cta-arrow {
         transform: none;
     }
 }

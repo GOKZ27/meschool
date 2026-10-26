@@ -18,10 +18,8 @@
             $stepIcons = ['pencil-square', 'document', 'check-badge', 'graduation-cap'];
         @endphp
 
-        {{-- The landing page opens on the same photo band as the home banner,
-             so the two places read as one campaign: .spmb-banner carries the
-             shared scrim, type scale and button treatment. --}}
-        <section class="spmb-banner spmb-banner--centered relative isolate flex min-h-[520px] items-center overflow-hidden bg-school-950 lg:min-h-[600px]">
+        {{-- The landing page opens on the same photo band as the home banner. --}}
+        <section class="spmb-banner spmb-banner--centered spmb-banner--modern relative isolate flex min-h-[520px] items-center overflow-hidden bg-school-950 lg:min-h-[600px]">
             @if ($bg)
                 <div
                     aria-hidden="true"
@@ -36,36 +34,43 @@
             <div
                 aria-hidden="true"
                 data-spmb-overlay
-                class="absolute inset-0 -z-10 {{ $banner['overlay'] }}"
+                class="absolute inset-0 -z-10 {{ $banner['overlay'] ?? 'bg-gradient-to-b from-school-950/90 via-school-950/70 to-school-950/90' }}"
             ></div>
 
             <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 top-1/2 -z-10 bg-gradient-to-t from-school-950/80 via-transparent to-transparent"></div>
 
             <div class="spmb-shell">
-                <div class="spmb-copy" data-reveal-group>
-                    <p class="spmb-eyebrow">
-                        <span aria-hidden="true" class="spmb-eyebrow-rule"></span>
-                        {{ $page['hero_eyebrow'] }}
+                <div class="spmb-copy mx-auto max-w-4xl text-center" data-reveal-group>
+                    <span class="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-400/60 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold-400">
+                        <x-icon name="graduation-cap" class="size-4" />
+                        <span>{{ $page['hero_eyebrow'] }}</span>
+                    </span>
+
+                    <h1 class="mt-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                        {{ $page['title'] }}
+                    </h1>
+
+                    <div class="mt-5 flex items-center justify-center gap-3">
+                        <div class="h-px w-10 bg-gold-400"></div>
+                        <p class="text-lg font-semibold text-gold-400 sm:text-xl">
+                            {{ $page['subtitle'] }}
+                        </p>
+                        <div class="h-px w-10 bg-gold-400"></div>
+                    </div>
+
+                    <p class="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-white/85 sm:text-lg">
+                        {{ $page['intro'] }}
                     </p>
 
-                    <h1 class="spmb-title">{{ $page['title'] }}</h1>
-
-                    <p class="spmb-year">
-                        <x-icon name="calendar" class="spmb-year-icon" />
-                        {{ $page['subtitle'] }}
-                    </p>
-
-                    <p class="spmb-desc">{{ $page['intro'] }}</p>
-
-                    <div class="spmb-actions">
-                        <a href="{{ config('school.contact.whatsapp_link') }}" class="spmb-btn spmb-btn--primary">
-                            <x-icon name="whatsapp" class="spmb-btn-icon" />
+                    <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+                        <a href="{{ config('school.contact.whatsapp_link') }}" class="group inline-flex items-center gap-2 rounded-full bg-gold-500 px-7 py-3 text-sm font-semibold uppercase tracking-wide text-school-950 shadow-lg shadow-gold-500/20 transition-all hover:-translate-y-0.5 hover:bg-gold-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400">
+                            <x-icon name="whatsapp" class="size-4" />
                             {{ $page['register_label'] }}
-                            <x-icon name="arrow-right" class="spmb-btn-icon" />
+                            <x-icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
                         </a>
 
-                        <a href="{{ route('kontak') }}" class="spmb-btn spmb-btn--ghost">
-                            <x-icon name="calendar" class="spmb-btn-icon" />
+                        <a href="{{ route('kontak') }}" class="inline-flex items-center gap-2 rounded-full border border-white/60 px-7 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                            <x-icon name="phone" class="size-4" />
                             {{ $page['contact_label'] }}
                         </a>
                     </div>
@@ -79,6 +84,12 @@
                 Lihat Alur
                 <x-icon name="chevron-down" class="size-4 animate-bounce motion-reduce:animate-none" />
             </a>
+
+            <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 -z-10">
+                <svg class="block w-full" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" fill="#ffffff"></path>
+                </svg>
+            </div>
         </section>
 
         {{-- The registration flow, step by step. --}}

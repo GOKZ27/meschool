@@ -1,6 +1,10 @@
 @php
     $contact = config('school.contact');
-    $socials = collect(config('school.socials'));
+    $schoolName = config('school.name');
+
+    // The building photo ships with the repo; when it is replaced with a missing
+    // file the hero keeps the deep-green ground instead of showing a broken image.
+    $heroPhoto = \App\Support\Images::existingUrl('hero/hero1.jpeg');
 
     $channels = [
         [
@@ -26,6 +30,7 @@
             'href' => 'mailto:'.$contact['email'],
             'hint' => 'Untuk surat resmi dan akademik',
             'external' => false,
+            'compact' => true,
         ],
         [
             'icon' => 'map-pin',
@@ -34,92 +39,194 @@
             'href' => $contact['maps_url'],
             'hint' => 'Kunjungi sekolah pada jam kerja',
             'external' => true,
+            'address' => true,
         ],
     ];
+
+    // Handles are page copy; the URLs always come from config so the footer and
+    // this page can never point at different accounts.
+    $socialLinks = [
+        ['icon' => 'instagram', 'label' => 'Instagram', 'handle' => '@smkislamiyahciputat'],
+        ['icon' => 'facebook', 'label' => 'Facebook', 'handle' => 'smkislamiyahciputat'],
+        ['icon' => 'youtube', 'label' => 'YouTube', 'handle' => '@smkislamiyahciputat'],
+    ];
+
+    foreach ($socialLinks as $index => $social) {
+        $socialLinks[$index]['url'] = config('school.socials.'.$social['icon'].'.url', '#');
+    }
+
+    // The reference breaks the address after the street, before the regency.
+    $addressLines = preg_split('/,\s*/', (string) $contact['address'], 2);
+
+    $mapEmbed = 'https://maps.google.com/maps?q='.urlencode('SMK ISLAMIYAH CIPUTAT').'&t=&z=15&ie=UTF8&iwloc=&output=embed';
 @endphp
 
 <x-layouts.app
-    :title="'Kontak — '.config('school.name')"
-    :description="'Hubungi '.config('school.name').' — alamat, telepon, email, dan media sosial resmi sekolah di '.config('school.contact.address').'.'"
+    :title="'Kontak — '.$schoolName"
+    :description="'Hubungi '.$schoolName.' — alamat, telepon, email, dan media sosial resmi sekolah di '.$contact['address'].'.'"
 >
     <x-header-top />
     <x-navbar />
 
-    <main>
-        <section class="bg-brick-green">
-            <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
-                <p class="text-xs font-semibold tracking-widest text-school-200/80 uppercase">Informasi</p>
-                <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Kontak</h1>
-                <p class="mt-3 max-w-2xl text-sm leading-relaxed text-school-100/85 sm:text-base">
-                    Hubungi kami melalui salah satu kanal berikut. Tim kami siap membantu pertanyaan
-                    seputar pendaftaran, program keahlian, dan informasi akademik lainnya.
-                </p>
+    <main class="kontak-page">
+        {{-- Hero: the campus photo with a green scrim on the copy side and the
+             wide white curve that hands it over to the pale ground below. --}}
+        <section class="kontak-hero" aria-labelledby="kontak-title">
+            <div
+                class="kontak-hero__photo"
+                aria-hidden="true"
+                @if ($heroPhoto) style="background-image: url('{{ $heroPhoto }}')" @endif
+            ></div>
+            <div class="kontak-hero__veil" aria-hidden="true"></div>
+
+            <div class="kontak-hero__inner mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="kontak-hero__copy">
+                    <p class="kontak-hero__badge">
+                        <x-icon name="phone" class="size-3.5" />
+                        <span>Kontak Kami</span>
+                    </p>
+
+                    <h1 id="kontak-title" class="kontak-hero__title">
+                        <span>Hubungi</span>
+                        <span class="kontak-hero__title-accent">Sekolah</span>
+                    </h1>
+
+                    <span class="kontak-hero__rule" aria-hidden="true"></span>
+
+                    <p class="kontak-hero__desc">
+                        Hubungi kami melalui salah satu kanal berikut. Tim kami siap membantu pertanyaan
+                        seputar pendaftaran, program keahlian, dan informasi akademik lainnya.
+                    </p>
+                </div>
+            </div>
+
+            <div class="kontak-hero__curve" aria-hidden="true">
+                <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0C420 66 1020 66 1440 0V72H0Z" />
+                </svg>
             </div>
         </section>
 
-        <section class="bg-slate-50">
-            <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-                <div class="grid gap-5 sm:grid-cols-2">
+        {{-- The four channels. Every card is one anchor, so the whole tile is a
+             tap target on a phone and the arrow needs no script. --}}
+        <section class="kontak-cards" aria-label="Kanal kontak sekolah">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <ul class="kontak-cards__grid">
                     @foreach ($channels as $channel)
-                        <a
-                            href="{{ $channel['href'] }}"
-                            @if ($channel['external'])
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            @endif
-                            class="group flex items-start gap-4 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md hover:ring-school-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-school-500"
-                        >
-                            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-school-50 text-school-700 ring-1 ring-school-100 transition group-hover:bg-school-700 group-hover:text-white group-hover:ring-school-700">
-                                <x-icon :name="$channel['icon']" class="size-5" />
-                            </span>
-
-                            <span class="min-w-0">
-                                <span class="block text-xs font-semibold tracking-wide text-slate-400 uppercase">{{ $channel['label'] }}</span>
-                                <span class="mt-1 block text-base font-semibold break-words text-slate-800">{{ $channel['value'] }}</span>
-                                <span class="mt-1 block text-sm text-slate-500">{{ $channel['hint'] }}</span>
-                            </span>
-                        </a>
-                    @endforeach
-                </div>
-
-                <div class="mt-6 grid gap-5 lg:grid-cols-3">
-                    <div class="lg:col-span-2">
-                        <div class="flex h-full flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                            <h2 class="text-lg font-bold tracking-tight text-slate-800">Lokasi Sekolah</h2>
-                            <p class="mt-1 text-sm text-slate-500">{{ $contact['address'] }}</p>
-
-                            <div class="mt-5 flex flex-1 items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-                                <div class="flex flex-col items-center gap-2">
-                                    <x-icon name="map-pin" class="size-7 text-slate-300" />
-                                    <p class="max-w-xs text-xs leading-relaxed text-slate-400">
-                                        Peta akan ditampilkan di area ini.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                        <h2 class="text-lg font-bold tracking-tight text-slate-800">Media Sosial</h2>
-                        <p class="mt-1 text-sm text-slate-500">Ikuti kanal resmi sekolah.</p>
-
-                        <div class="mt-5 flex flex-col gap-2.5">
-                            @foreach ($socials as $key => $social)
-                                <a
-                                    href="{{ $social['url'] }}"
+                        <li>
+                            <a
+                                href="{{ $channel['href'] }}"
+                                class="kontak-card"
+                                @if ($channel['external'])
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-school-50 hover:text-school-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
-                                >
-                                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 ring-1 ring-slate-200 transition group-hover:bg-white group-hover:text-school-700 group-hover:ring-school-200">
-                                        <x-icon :name="$key" class="size-4" />
+                                @endif
+                            >
+                                <span class="kontak-card__icon" aria-hidden="true">
+                                    <span class="kontak-card__icon-inner">
+                                        <x-icon :name="$channel['icon']" class="size-5" />
                                     </span>
-                                    <span>{{ $social['label'] }}</span>
-                                    <x-icon name="arrow-right" class="ml-auto size-4 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-school-500" />
-                                </a>
-                            @endforeach
+                                </span>
+
+                                <span class="kontak-card__body">
+                                    <span class="kontak-card__title">{{ $channel['label'] }}</span>
+                                    <span
+                                        @class([
+                                            'kontak-card__value',
+                                            'kontak-card__value--email' => $channel['compact'] ?? false,
+                                            'kontak-card__value--address' => $channel['address'] ?? false,
+                                        ])
+                                    >{{ $channel['value'] }}</span>
+                                    <span class="kontak-card__hint">{{ $channel['hint'] }}</span>
+                                </span>
+
+                                <span class="kontak-card__arrow" aria-hidden="true">
+                                    <x-icon name="arrow-right" class="size-4" />
+                                </span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+
+        {{-- Location and social channels, two panels on one ground. --}}
+        <section class="kontak-panels" aria-label="Lokasi sekolah dan media sosial">
+            <div class="kontak-panels__decor" aria-hidden="true">
+                <svg class="kontak-panels__decor-wave" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 320C90 250 180 340 280 300S470 210 600 270V400H0Z" fill="currentColor" />
+                </svg>
+                <svg
+                    class="kontak-panels__decor-lines"
+                    viewBox="0 0 600 400"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path d="M120 400 520 20" />
+                    <path d="M215 400 570 90" />
+                    <path d="M310 400 600 155" />
+                </svg>
+            </div>
+
+            <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="kontak-panels__grid">
+                    <article class="kontak-panel">
+                        <p class="kontak-panel__eyebrow">Lokasi Sekolah</p>
+                        <h2 class="kontak-panel__title">
+                            {{ $addressLines[0] ?? $contact['address'] }},<br />
+                            {{ $addressLines[1] ?? '' }}
+                        </h2>
+
+                        <div class="kontak-map">
+                            <iframe
+                                src="{{ $mapEmbed }}"
+                                title="Peta lokasi {{ $schoolName }}"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen
+                            ></iframe>
                         </div>
-                    </div>
+
+                        <a
+                            class="kontak-map-link"
+                            href="{{ $contact['maps_url'] }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <x-icon name="map-pin" class="size-4" />
+                            <span>Peta lokasi {{ $schoolName }}</span>
+                            <x-icon name="arrow-right" class="size-4" />
+                        </a>
+                    </article>
+
+                    <aside class="kontak-panel" aria-labelledby="kontak-social-title">
+                        <p class="kontak-panel__eyebrow">Media Sosial</p>
+                        <h2 id="kontak-social-title" class="kontak-panel__title">Ikuti kanal resmi sekolah.</h2>
+
+                        <ul class="kontak-social">
+                            @foreach ($socialLinks as $social)
+                                <li>
+                                    <a
+                                        class="kontak-social__card"
+                                        href="{{ $social['url'] }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <span class="kontak-social__icon" aria-hidden="true">
+                                            <x-icon :name="$social['icon']" class="size-5" />
+                                        </span>
+                                        <span class="kontak-social__body">
+                                            <span class="kontak-social__name">{{ $social['label'] }}</span>
+                                            <span class="kontak-social__handle">{{ $social['handle'] }}</span>
+                                        </span>
+                                        <x-icon name="arrow-right" class="kontak-social__arrow size-4" />
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </aside>
                 </div>
             </div>
         </section>

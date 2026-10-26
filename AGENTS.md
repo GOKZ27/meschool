@@ -208,33 +208,39 @@ cache from a bulk recompile, not a broken view — `php artisan view:clear` and 
   the berita feature uses. `BkkPageTest` recomputes its expectations from `Bkk::jobs()` so deadline
   drift never rots them; it uses `e()` when asserting rendered positions because `&` in titles is
   escaped.
-- **SPMB is a single config-driven banner — no controller, no route of its own.** `config('school.spmb')`
-  (`bg_photo` / `overlay` / `eyebrow` / `title` / `subtitle` / `description` / `button_label` /
-  `link_label`) feeds `<x-spmb-section>`, which closes the informational sections on the home page.
-  It is a **full-width photo band**, not a white/slate block: the photo is a plain `bg-cover` (never
-  painted into a brick fallback gradient), the dark `overlay` is a config class, and both links go to
-  the `route('spmb')` landing page (see below). `bg_photo` reuses the hero's `images/hero/hero1.jpeg`
-  because it is the only school photo that ships with the repo — swap the config value the day a
-  dedicated upload lands. `SpmbPageTest` pins the markup contract (`id="spmb"`, `data-spmb-bg`,
-  `data-spmb-overlay`, the literal `min-h-[500px]` class, no `bg-white`, exactly **two**
-  `a[href=route('spmb')]` — `button_label` first, `link_label` second — and exactly one
-  `data-reveal-group`) plus both missing/present branches of the photo. **Do not "fix" the CTAs to a
-  WhatsApp link**: the pair both targeting `/spmb` is asserted. The *landing page* hero carries the
-  WhatsApp CTA instead.
-- **Both SPMB heroes are one visual system: `.spmb-banner` in `resources/css/spmb-section.css`.**
-  `<x-spmb-section>` (`#spmb`, left-aligned) and the `/spmb` landing hero (`.spmb-banner--centered`)
-  render the same shell → copy → eyebrow / `.spmb-title` (Fraunces) / `.spmb-year` / `.spmb-desc` /
-  `.spmb-btn` markup, so restyle one and both move. The band lays a `::before` scrim (deep green,
-  directional on desktop, vertical on mobile) *under* the copy and *over* the config overlay — a photo
-  plus a 60% overlay does not guarantee contrast where the photo is bright, and the scrim is the layer
-  that does. `::after` is the gold hairline along the top edge. `min-height` is raised by the
-  stylesheet at ≥40rem (`34rem`, then `min(100svh, 44rem)`) while the literal `min-h-[500px]` utility
-  stays in the class list for the test — unlayered section CSS wins over the utility, that is intended.
+- **SPMB is a config-driven block — no controller, no route of its own.** `config('school.spmb')`
+  (`bg_photo` / `photo` / `photo_alt` / `overlay` / `eyebrow` / `title` / `school_name` / `subtitle` /
+  `description` / `button_label` / `link_label` / `register_url` / `benefits`) feeds
+  `<x-spmb-section>`, which closes the informational sections on the home page as **two sibling
+  sections**: a deep-green hero (`#spmb`) whose bottom edge curves into a pale `#f5f9fc` benefits band
+  (`data-spmb-benefits`). Hero copy sits left (badge / `title` / `school_name` / `subtitle` / gold rule
+  / `description` / two CTAs) and the student photo right (`photo`, today
+  `images/berita/mos-2026-kelas-dasar.jpg` — a real school photo; a missing file falls back to a
+  graduation-cap monogram). `bg_photo` stays `images/hero/hero1.jpeg` because it is the only school
+  photo that ships with the repo. **The CTAs deliberately do not share a destination**:
+  `button_label` → `register_url`, which is `null` by default and falls back to
+  `config('school.contact.whatsapp_link')`; `link_label` → `route('spmb')`. `benefits` is `label` /
+  `title` / `description` plus `items[]` of `icon` / `title` / `description`, rendered as five uniform
+  white cards with mint icon circles (every icon name must exist in `components/icon.blade.php`).
+  `SpmbPageTest` pins the markup contract (`id="spmb"`, `data-spmb-bg`, `data-spmb-overlay`, the
+  literal `min-h-[500px]` class, no `bg-white`, exactly **two** `<a href>` inside `#spmb` — register
+  first, `route('spmb')` second, distinct from each other — exactly one `data-reveal-group` inside
+  `#spmb`, one `data-spmb-benefit` per configured item, the benefits band after `#spmb`) plus both
+  missing/present branches of each photo.
+- **`.spmb-hero` owns the home block; `.spmb-banner` still owns the `/spmb` landing hero** — both in
+  `resources/css/spmb-section.css`. `.spmb-hero` is a split layout (≈55/45 copy vs photo) that stacks
+  below 64rem; its stylesheet raises `min-height` (`512px` ≥40rem, `480px` ≥64rem) while the literal
+  `min-h-[500px]` utility stays in the class list for the test — unlayered section CSS wins, that is
+  intended. The benefits cards sit in one column in the hero's right-hand slot at ≥64rem, 2-up on
+  tablet and 1-up on mobile; the wave SVG is filled `#f5f9fc` to match the band's ground, so change
+  both together. Below 40rem the two CTAs stack full-width. `.spmb-banner` (unchanged) keeps its
+  `::before` scrim (deep green, directional on desktop, vertical on mobile) *under* the copy and
+  *over* the config overlay, plus the `::after` gold hairline — a photo plus a 60% overlay does not
+  guarantee contrast where the photo is bright, and the scrim is the layer that does.
   **Theme-token trap:** `text-gold-300` does not exist (the palette stops at `gold-400/500/600`), so
   Tailwind emits nothing and the text silently inherits the dark body colour — that is exactly how the
-  "Tahun Ajaran" line became invisible on the photo. It is now a white-on-deep-green pill with a gold
-  ring (`.spmb-year`); verify a colour utility exists before trusting it. Gold ground takes
-  `text-school-950`, never white (~2:1). Below `40rem` the two CTAs stack full-width.
+  "Tahun Ajaran" line became invisible on the photo. Verify a colour utility exists before trusting
+  it. Gold ground takes `text-school-950`, never white (~2:1).
 - **The navbars' landing pages are all copy-driven too.** `config('school.spmb_page')` feeds
   `resources/views/spmb.blade.php` (a `Route::view('/spmb')`): the hero is the same
   `.spmb-banner spmb-banner--centered` photo band as the home banner (one campaign), then `steps` /
@@ -264,6 +270,20 @@ cache from a bulk recompile, not a broken view — `php artisan view:clear` and 
   forbids `Pengumuman` / `Kegiatan Sekolah` / `Prestasi` / `Tracer Study` / `Informasi Lowongan
   Pekerjaan` anywhere in home markup. `FooterTest` pins the spmb < kontak order, the channel + social
   targets, footer presence on every page and the footer-outside-main contract.
+- **`/kontak` is its own photo-hero page, not `<x-contact-section>`.** `resources/views/kontak.blade.php`
+  renders the campus photo band (`images/hero/hero1.jpeg` through `Images::existingUrl`, so a missing
+  file keeps the deep-green ground) with `background-position: 68% center` to keep the facade on the
+  right, under a left-weighted green scrim. Content is `Hubungi` + mint `Sekolah` at
+  `clamp(2.3rem, 5.1vw, 3.6rem)` (≈52 px at a 1024 viewport), a mint rule, then the fixed description;
+  a wide white SVG curve (`fill: #f5fafd`, must stay in sync with the `.kontak-page` ground) closes the
+  band. Below it sit the four channel cards — one anchor each, nested mint/green icon circles, a small
+  arrow bottom-right, 4-up at ≥64rem / 2-up at ≥30rem / 1-up on phones — then a `1.55fr / 1fr`
+  location + social panel pair that stacks below 64rem: the keyless `maps.google.com/maps?...&output=embed`
+  iframe at 258 px with a maps pill under it, and three social rows whose URLs come from
+  `config('school.socials')` while the handles are page copy. Everything is scoped by
+  `resources/css/kontak.css` under `.kontak-page`; the navbar, `<x-header-top>`,
+  `<x-contact-strip>` and `<x-footer>` stay the shared ones. `KontakPageTest` needs every configured
+  channel value plus `whatsapp_link` / `phone_link` / `mailto:` in the markup, so keep reading config.
 
 ## Site conventions
 
@@ -319,10 +339,18 @@ cache from a bulk recompile, not a broken view — `php artisan view:clear` and 
   nobody has checked.
 - **The programs section is copy-driven and mirrors the navbar.** `config('school.programs')` holds
   only heading copy (`eyebrow` / `title` / `intro`) plus `slugs`; `<x-programs-section>` intersects
-  `program_catalog.items` with those slugs, so the home accordion shows the **same six** programmes
+  `program_catalog.items` with those slugs, so the home grid shows the **same six** programmes
   as the dropdown (Kuliner, DKV, TKJ, AK, MP, BD), in catalogue order.
   `HomePageTest::test_the_home_page_offers_all_six_programs` pins them in order (do not reintroduce
-  the old Animasi/DKV/TKJT/PPLG card list — it is gone).
+  the old Animasi/DKV/TKJT/PPLG card list - it is gone).
+  The six cards are a **uniform grid, not the old 12-column mosaic**: one column below 40rem, two
+  from 40rem, three from 64rem, 20-24px gaps, ~78rem container. Each card is a 2:1 photo band on top
+  of full-width copy (the same `hero1.jpeg` for every programme) because a side-by-side photo leaves
+  only ~200px of text at three columns and clips the description. Type is deliberately compact:
+  section h2 `clamp(1.75rem, 2.05vw, 2.1rem)` / 1.2, eyebrow 12px, intro 14.4px / 1.6, card name
+  `clamp(1.25rem, 1.4vw, 1.375rem)` / 1.3 at weight 600, card copy 13.4px / 1.6, CTA 40px tall at
+  13.4px. The description is **not** line-clamped any more - it must stay readable in full, and the
+  CTA is pinned to the card floor with `margin-top: auto` so a row's buttons line up.
 - **`program_catalog` holds more pages than the six showcased** — it also carries `animasi`, `tkjt`
   and `pplg` routes that no navbar item or home card links to. **`MP` and `BD` stay deliberately
   generic** — do not guess their real names.
@@ -333,9 +361,10 @@ cache from a bulk recompile, not a broken view — `php artisan view:clear` and 
   element silently keeps its inherited colour/size (`text-gold-300` was invisible this way), so check
   the palette before using a shade.
 - **Per-section stylesheets sit beside `app.css` and are `@import`ed at its top** —
-  `program-keahlian`, `tenaga-kependidikan`, `news-preview`, `bkk-section`, `spmb-section`, then
-  `responsive-compact` (global mobile compression). Each file owns one root class (`#bkk.bkk-section`,
-  `.spmb-banner`, …) and styles everything inside it; new section work goes in a file like this, not
+  `program-keahlian`, `tenaga-kependidikan`, `news-preview`, `bkk-section`, `spmb-section`, `kontak`,
+  then `responsive-compact` (global mobile compression). Each file owns one root class
+  (`#bkk.bkk-section`, `.spmb-banner`, `.kontak-page`, …) and styles everything inside it; new section
+  work goes in a file like this, not
   inline utilities. Because they are **unlayered**, a `min-height`/`color` there beats a Tailwind
   utility on the same element — that is how `spmb-section.css` raises `min-h-[500px]` at ≥40rem while
   the literal utility stays in the class list for the test. Keep the test-pinned tokens in the markup
