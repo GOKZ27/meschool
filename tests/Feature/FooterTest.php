@@ -24,6 +24,9 @@ class FooterTest extends TestCase
 
         $this->assertNotNull($section, 'The home page is missing the contact section.');
         $this->assertStringContainsString('Hubungi Sekolah', $section->textContent);
+        $this->assertSame(4, $xp->query('.//*[@data-contact-channel]', $section)->length);
+        $this->assertSame(1, $xp->query('.//*[@data-contact-map]', $section)->length);
+        $this->assertSame(3, $xp->query('.//*[@data-contact-social]', $section)->length);
 
         $hrefs = array_map(
             fn ($card) => $card->getAttribute('href'),

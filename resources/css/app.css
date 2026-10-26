@@ -5,6 +5,7 @@
 @import './bkk-section.css';
 @import './spmb-section.css';
 @import './kontak.css';
+@import './home-contact.css';
 @import './responsive-compact.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
