@@ -122,7 +122,6 @@
             <div class="home-contact__social-intro">
                 <h3>Media Sosial</h3>
                 <p>Ikuti kanal resmi sekolah.</p>
-                <span aria-hidden="true"></span>
             </div>
 
             @foreach ($socials as $key => $social)
