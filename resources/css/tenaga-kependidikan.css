@@ -3,10 +3,10 @@
 }
 
 .tk-section {
-    --tk-paper: #f4efe4;
-    --tk-ink: #30261e;
-    --tk-muted: #74695d;
-    --tk-rule: rgb(48 38 30 / 0.2);
+    --tk-paper: var(--color-school-50);
+    --tk-ink: var(--color-school-950);
+    --tk-muted: var(--color-school-700);
+    --tk-rule: color-mix(in srgb, var(--color-school-700) 20%, transparent);
     overflow: clip;
     background: var(--tk-paper);
     color: var(--tk-ink);
@@ -30,7 +30,7 @@
     align-items: center;
     gap: 0.65rem;
     margin: 0;
-    color: #365347;
+    color: var(--color-school-700);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.16em;
@@ -41,12 +41,12 @@
 .tk-eyebrow > span {
     width: 2.25rem;
     height: 2px;
-    background: #315a47;
+    background: var(--color-school-600);
 }
 
 .tk-heading h2 {
     margin: 0.5rem 0 0;
-    color: #23412f;
+    color: var(--color-school-900);
     font-family: var(--font-editorial);
     font-size: clamp(2.1rem, 4vw, 3.45rem);
     font-weight: 550;
@@ -76,10 +76,10 @@
     min-width: 0;
     min-height: 11.5rem;
     overflow: hidden;
-    border: 1px solid rgb(48 38 30 / 0.08);
+    border: 1px solid color-mix(in srgb, var(--color-school-700) 8%, transparent);
     border-radius: 0.5rem;
     background: rgb(255 255 255 / 0.45);
-    box-shadow: 0 2px 12px -10px rgb(48 38 30 / 0.2);
+    box-shadow: 0 2px 12px -10px color-mix(in srgb, var(--color-school-950) 20%, transparent);
     transition:
         transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1),
         box-shadow 220ms ease,
@@ -96,7 +96,7 @@
     overflow: hidden;
     aspect-ratio: 0.7;
     background: var(--tk-accent);
-    color: #fffaf0;
+    color: white;
     font-family: var(--font-editorial);
     font-size: clamp(2.3rem, 4vw, 4.5rem);
     letter-spacing: -0.07em;
@@ -117,7 +117,7 @@
 }
 
 .tk-index {
-    color: #8a755c;
+    color: var(--color-school-600);
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.15em;
@@ -159,7 +159,7 @@
 }
 
 .tk-position {
-    color: #9a7136;
+    color: var(--color-school-700);
     font-size: 0.78rem;
     line-height: 1.5;
 }
@@ -169,7 +169,7 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    color: #3b4b40;
+    color: var(--color-school-800);
     font-size: 0.7rem;
     line-height: 1.4;
 }
@@ -184,7 +184,7 @@
     height: 1.55rem;
     flex: 0 0 auto;
     place-items: center;
-    background: #e9e4d5;
+    background: var(--color-school-100);
     color: var(--tk-accent);
 }
 
@@ -253,9 +253,9 @@
     grid-template-columns: 5.2rem minmax(0, 1fr);
     gap: 1rem;
     padding: 0.85rem;
-    border: 1px solid rgb(48 38 30 / 0.18);
-    background: #fbf8f0;
-    box-shadow: 0 18px 40px -28px rgb(48 38 30 / 0.6);
+    border: 1px solid color-mix(in srgb, var(--color-school-700) 18%, transparent);
+    background: var(--color-school-50);
+    box-shadow: 0 18px 40px -28px color-mix(in srgb, var(--color-school-950) 60%, transparent);
     opacity: 0;
     pointer-events: none;
     transform: translate3d(-120vw, -120vh, 0) rotate(0);
@@ -274,8 +274,8 @@
     min-height: 6.4rem;
     place-items: center;
     overflow: hidden;
-    background: var(--tk-accent, #315a47);
-    color: #fffaf0;
+    background: var(--tk-accent, var(--color-school-600));
+    color: white;
     font-family: var(--font-editorial);
     font-size: 1.6rem;
 }
@@ -296,7 +296,7 @@
 .tk-preview-position,
 .tk-modal-position {
     margin: 0;
-    color: var(--tk-accent, #315a47);
+    color: var(--tk-accent, var(--color-school-600));
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -328,7 +328,7 @@
     align-items: center;
     gap: 0.4rem;
     margin-top: 0.7rem;
-    color: var(--tk-accent, #315a47);
+    color: var(--tk-accent, var(--color-school-600));
     font-size: 0.72rem;
     font-weight: 700;
 }
@@ -365,7 +365,7 @@
     height: min(43rem, 100%);
     grid-template-columns: minmax(13rem, 0.8fr) minmax(0, 1.2fr);
     overflow: hidden;
-    background: #f8f4eb;
+    background: var(--color-school-50);
     box-shadow: 0 24px 70px -42px rgb(0 0 0 / 0.6);
     opacity: 0;
     transform: translateX(1.25rem);
@@ -388,9 +388,9 @@
     overflow: hidden;
     background:
         radial-gradient(circle at 25% 24%, rgb(255 255 255 / 0.2) 0 1px, transparent 2px),
-        var(--tk-accent, #315a47);
+        var(--tk-accent, var(--color-school-600));
     background-size: 8px 8px, auto;
-    color: #fffaf0;
+    color: white;
     font-family: var(--font-editorial);
     font-size: clamp(3rem, 8vw, 7rem);
     letter-spacing: -0.06em;
@@ -399,7 +399,7 @@
 .tk-modal-portrait::after {
     position: absolute;
     inset: 1.25rem;
-    border: 1px solid rgb(255 250 240 / 0.3);
+    border: 1px solid rgb(255 255 255 / 30%);
     content: "";
     pointer-events: none;
 }
@@ -443,7 +443,7 @@
 .tk-close:hover,
 .tk-close:focus-visible {
     background: var(--tk-ink);
-    color: #fffaf0;
+    color: white;
 }
 
 .tk-modal-position {
@@ -464,7 +464,7 @@
 .tk-modal-description {
     max-width: 36rem;
     margin: 1.5rem 0 0;
-    color: #51483f;
+    color: var(--color-school-800);
     font-size: 1rem;
     line-height: 1.75;
 }
@@ -493,8 +493,8 @@
 
 .tk-expertise li {
     padding: 0.4rem 0.7rem;
-    border: 1px solid rgb(48 38 30 / 0.18);
-    color: #51483f;
+    border: 1px solid color-mix(in srgb, var(--color-school-700) 18%, transparent);
+    color: var(--color-school-800);
     font-size: 0.8rem;
     line-height: 1.35;
 }
@@ -523,7 +523,7 @@
 }
 
 .tk-modal-navigation button:hover {
-    color: var(--tk-accent, #315a47);
+    color: var(--tk-accent, var(--color-school-600));
 }
 
 .tk-modal-navigation button span {
@@ -543,13 +543,13 @@
 @media (hover: hover) and (pointer: fine) {
     .tk-card:hover {
         border-color: color-mix(in srgb, var(--tk-accent) 40%, transparent);
-        box-shadow: 0 12px 24px -18px rgb(48 38 30 / 0.45);
+        box-shadow: 0 12px 24px -18px color-mix(in srgb, var(--color-school-950) 45%, transparent);
         transform: translateY(-3px);
     }
 
     .tk-card:hover .tk-card-open {
         gap: 0.65rem;
-        color: #23412f;
+        color: var(--color-school-900);
     }
 
     .tk-card:hover .tk-arrow {

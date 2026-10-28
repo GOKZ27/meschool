@@ -58,7 +58,7 @@
                     rel="noopener noreferrer"
                     title="{{ $social['label'] }}"
                     aria-label="{{ $social['label'] }}"
-                    class="flex size-8 items-center justify-center rounded-full text-slate-500 ring-1 ring-slate-200 transition hover:bg-school-50 hover:text-school-700 hover:ring-school-200 ring-school-focus"
+                    class="flex size-8 items-center justify-center rounded-full text-slate-500 ring-1 ring-school-200 transition hover:bg-school-50 hover:text-school-700 hover:ring-school-200 ring-school-focus"
                 >
                     <x-icon :name="$social['icon']" class="size-4" />
                 </a>

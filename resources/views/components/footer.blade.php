@@ -44,7 +44,7 @@
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="{{ $social['label'] }} {{ $name }}"
-                            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/15 transition hover:bg-gold-500 hover:text-school-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400"
+                            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/15 transition hover:bg-gold-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400"
                         >
                             <x-icon :name="$key" class="size-4" />
                         </a>

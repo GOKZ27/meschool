@@ -61,7 +61,7 @@
      three-column grid and a compact thumbnail list, closing on a centred
      archive button. Every block is skipped when its slice is empty, and a
      fresh install with no articles still renders. --}}
-<section id="kabar-berita" class="bg-slate-50 py-20 lg:py-24" aria-labelledby="kabar-berita-title">
+<section id="kabar-berita" class="bg-school-50 py-20 lg:py-24" aria-labelledby="kabar-berita-title">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {{-- Masthead: the eyebrow sits between two gold rules and the heading
@@ -73,7 +73,7 @@
                 <span aria-hidden="true" class="h-px w-8 bg-gold-500"></span>
             </p>
 
-            <h2 id="kabar-berita-title" class="mt-5 text-3xl leading-none font-bold tracking-tight text-balance text-slate-900 sm:text-4xl">
+            <h2 id="kabar-berita-title" class="mt-5 text-3xl leading-none font-bold tracking-tight text-balance text-school-950 sm:text-4xl">
                 {{ $titleText }}
             </h2>
 
@@ -84,7 +84,7 @@
 
         @if (! $hasStories)
             {{-- Nothing published yet: say so instead of showing empty boxes. --}}
-            <div class="mt-12 rounded-2xl bg-white p-10 text-center ring-1 ring-slate-200" data-reveal>
+            <div class="mt-12 rounded-2xl bg-white p-10 text-center ring-1 ring-school-200" data-reveal>
                 <x-icon name="document" class="size-8 text-school-600" />
                 <p class="mt-4 text-sm leading-relaxed text-slate-600">
                     Belum ada berita yang diterbitkan. Kabar terbaru sekolah akan muncul di sini.
@@ -99,7 +99,7 @@
                 <article class="lg:col-span-8" data-kabar-hero data-reveal data-reveal-from="left">
                     <a
                         href="{{ route('berita.show', $hero->slug) }}"
-                        class="group block overflow-hidden rounded-3xl bg-white ring-1 ring-slate-200 transition duration-300 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                        class="group block overflow-hidden rounded-3xl bg-white ring-1 ring-school-200 transition duration-300 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                     >
                         <x-news.thumb
                             :url="$hero->imageUrl()"
@@ -113,7 +113,7 @@
                         <div class="p-6 sm:p-8">
                             <x-news.chip :category="$hero->category" />
 
-                            <h3 class="mt-4 text-xl leading-snug font-bold tracking-tight text-balance text-slate-900 transition group-hover:text-school-700 sm:text-2xl">
+                            <h3 class="mt-4 text-xl leading-snug font-bold tracking-tight text-balance text-school-950 transition group-hover:text-school-700 sm:text-2xl">
                                 {{ $hero->title }}
                             </h3>
 
@@ -123,8 +123,8 @@
                 </article>
 
                 <div class="lg:col-span-4" data-kabar-popular data-reveal data-reveal-from="right">
-                    <div class="flex items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3">
-                        <h3 class="text-lg font-bold tracking-tight text-slate-900">{{ $copy['trending_title'] ?? 'Terpopuler' }}</h3>
+                    <div class="flex items-baseline justify-between gap-4 border-b-2 border-school-950 pb-3">
+                        <h3 class="text-lg font-bold tracking-tight text-school-950">{{ $copy['trending_title'] ?? 'Terpopuler' }}</h3>
                         <a href="{{ $allUrl }}" class="text-xs font-semibold text-school-700 hover:text-school-800">
                             {{ $copy['latest_archive'] ?? 'Semua' }}
                         </a>
@@ -136,10 +136,10 @@
                                 <li>
                                     <a
                                         href="{{ route('berita.show', $article->slug) }}"
-                                        class="group flex flex-col gap-2.5 border-b border-slate-200 py-5 transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                        class="group flex flex-col gap-2.5 border-b border-school-200 py-5 transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                                     >
                                         <x-news.chip :category="$article->category" :href="route('berita', ['kategori' => $article->category])" class="self-start" />
-                                        <span class="text-[0.95rem] leading-snug font-semibold text-balance text-slate-900 transition group-hover:text-school-700">
+                                        <span class="text-[0.95rem] leading-snug font-semibold text-balance text-school-950 transition group-hover:text-school-700">
                                             {{ $article->title }}
                                         </span>
                                     </a>
@@ -154,7 +154,7 @@
                             @foreach ($categories as $slug => $info)
                                 <a
                                     href="{{ route('berita', ['kategori' => $slug]) }}"
-                                    class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:text-school-700 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                    class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-school-200 transition hover:text-school-700 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                                 >
                                     <span aria-hidden="true">#</span>{{ $info['label'] }}
                                 </a>
@@ -172,11 +172,11 @@
                 <article class="mt-10" data-kabar-highlight data-reveal>
                     <a
                         href="{{ route('berita.show', $highlight->slug) }}"
-                        class="group flex flex-col gap-4 overflow-hidden rounded-2xl bg-white p-5 ring-1 ring-slate-200 transition duration-300 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500 sm:flex-row sm:items-center sm:gap-6 sm:p-6"
+                        class="group flex flex-col gap-4 overflow-hidden rounded-2xl bg-white p-5 ring-1 ring-school-200 transition duration-300 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500 sm:flex-row sm:items-center sm:gap-6 sm:p-6"
                     >
                         <x-news.chip :category="$highlight->category" class="self-start shrink-0" />
 
-                        <h3 class="flex-1 text-base leading-snug font-bold text-balance text-slate-900 transition group-hover:text-school-700 sm:text-lg">
+                        <h3 class="flex-1 text-base leading-snug font-bold text-balance text-school-950 transition group-hover:text-school-700 sm:text-lg">
                             {{ $highlight->title }}
                         </h3>
 
@@ -197,7 +197,7 @@
                         <article class="h-full">
                             <a
                                 href="{{ route('berita.show', $article->slug) }}"
-                                class="group flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-school-900/5 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                class="group flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-school-200 transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-school-900/5 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                             >
                                 <x-news.thumb
                                     :url="$article->imageUrl()"
@@ -210,7 +210,7 @@
                                 <div class="flex flex-1 flex-col p-5">
                                     <x-news.chip :category="$article->category" class="self-start" />
 
-                                    <h3 class="mt-3 text-sm leading-snug font-bold tracking-tight text-balance text-slate-900 transition group-hover:text-school-700 sm:text-base">
+                                    <h3 class="mt-3 text-sm leading-snug font-bold tracking-tight text-balance text-school-950 transition group-hover:text-school-700 sm:text-base">
                                         {{ $article->title }}
                                     </h3>
 
@@ -232,7 +232,7 @@
                             <article>
                                 <a
                                     href="{{ route('berita.show', $article->slug) }}"
-                                    class="group flex gap-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200 transition duration-300 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500 sm:gap-5 sm:p-5"
+                                    class="group flex gap-4 rounded-2xl bg-white p-4 ring-1 ring-school-200 transition duration-300 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500 sm:gap-5 sm:p-5"
                                 >
                                     <x-news.thumb
                                         :url="$article->imageUrl()"
@@ -246,7 +246,7 @@
                                     <div class="min-w-0 flex-1">
                                         <x-news.chip :category="$article->category" class="self-start" />
 
-                                        <h3 class="mt-2.5 text-sm leading-snug font-semibold text-balance text-slate-900 transition group-hover:text-school-700 sm:text-base">
+                                        <h3 class="mt-2.5 text-sm leading-snug font-semibold text-balance text-school-950 transition group-hover:text-school-700 sm:text-base">
                                             {{ $article->title }}
                                         </h3>
 

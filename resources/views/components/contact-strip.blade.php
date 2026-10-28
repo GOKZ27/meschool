@@ -3,7 +3,7 @@
     and above the principal's greeting; on the pages that have no greeting it
     closes <main> instead, so it reads as a footer there.
 --}}
-<div class="border-t border-slate-200 bg-slate-50">
+<div class="border-t border-school-200 bg-school-50">
     <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
         <a
             href="https://{{ config('school.domain') }}"

@@ -30,8 +30,8 @@
     @endif
 
     @if ($play)
-        <span aria-hidden="true" class="absolute inset-0 flex items-center justify-center bg-slate-900/25 transition group-hover:bg-slate-900/40">
-            <span class="flex size-12 items-center justify-center rounded-full bg-white/95 text-school-800 shadow-lg shadow-slate-900/20 transition duration-300 group-hover:scale-110">
+        <span aria-hidden="true" class="absolute inset-0 flex items-center justify-center bg-school-950/25 transition group-hover:bg-school-950/40">
+            <span class="flex size-12 items-center justify-center rounded-full bg-white/95 text-school-800 shadow-lg shadow-school-950/20 transition duration-300 group-hover:scale-110">
                 <x-icon name="play" class="size-5 translate-x-0.5" />
             </span>
         </span>

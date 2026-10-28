@@ -42,11 +42,11 @@
             </nav>
 
             {{-- ── The header: who hires, for what, and by when ─────────── --}}
-            <header class="mt-8 flex flex-col gap-6 border-b border-slate-200 pb-8 sm:flex-row sm:items-start">
+            <header class="mt-8 flex flex-col gap-6 border-b border-school-200 pb-8 sm:flex-row sm:items-start">
                 <x-bkk.logo :job="$job" size="lg" />
 
                 <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl leading-[1.15] font-black tracking-tight text-balance text-slate-900 sm:text-3xl">
+                    <h1 class="text-2xl leading-[1.15] font-black tracking-tight text-balance text-school-950 sm:text-3xl">
                         {{ $job['position'] }}
                     </h1>
 
@@ -83,7 +83,7 @@
                 {{-- ── The listing ──────────────────────────────────────── --}}
                 <div class="lg:col-span-8">
                     <section>
-                        <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                        <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                             {{ $copy['description'] }}
                         </h2>
 
@@ -96,7 +96,7 @@
 
                     @if ($job['requirements'])
                         <section class="mt-10">
-                            <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                            <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                                 {{ $copy['requirements'] }}
                             </h2>
 
@@ -110,7 +110,7 @@
 
                     @if ($job['qualifications'])
                         <section class="mt-10">
-                            <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                            <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                                 {{ $copy['qualifications'] }}
                             </h2>
 
@@ -127,7 +127,7 @@
 
                     @if ($job['benefits'])
                         <section class="mt-10">
-                            <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                            <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                                 {{ $copy['benefits'] }}
                             </h2>
 
@@ -144,7 +144,7 @@
 
                     @if ($job['how_to_apply'])
                         <section class="mt-10">
-                            <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                            <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                                 {{ $copy['how_to_apply'] }}
                             </h2>
 
@@ -175,8 +175,8 @@
                 {{-- ── The apply rail ───────────────────────────────────── --}}
                 <aside class="lg:col-span-4">
                     <div class="sticky top-24 space-y-8">
-                        <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
-                            <h2 class="text-base font-bold tracking-tight text-slate-900">
+                        <div class="rounded-2xl bg-white p-6 ring-1 ring-school-200">
+                            <h2 class="text-base font-bold tracking-tight text-school-950">
                                 {{ $copy['overview'] }}
                             </h2>
 
@@ -188,22 +188,22 @@
 
                                 <div class="flex items-center justify-between gap-4">
                                     <dt class="text-slate-500">{{ $copy['deadline_label'] }}</dt>
-                                    <dd class="font-semibold text-slate-900">{{ $job['deadline_label'] }}</dd>
+                                    <dd class="font-semibold text-school-950">{{ $job['deadline_label'] }}</dd>
                                 </div>
 
                                 <div class="flex items-center justify-between gap-4">
                                     <dt class="text-slate-500">Dibuka</dt>
-                                    <dd class="font-semibold text-slate-900">{{ $job['published_label'] }}</dd>
+                                    <dd class="font-semibold text-school-950">{{ $job['published_label'] }}</dd>
                                 </div>
 
                                 <div class="flex items-center justify-between gap-4">
                                     <dt class="text-slate-500">Kategori</dt>
-                                    <dd class="font-semibold text-slate-900">{{ $job['category_label'] }}</dd>
+                                    <dd class="font-semibold text-school-950">{{ $job['category_label'] }}</dd>
                                 </div>
 
                                 <div class="flex items-center justify-between gap-4">
                                     <dt class="text-slate-500">Lokasi</dt>
-                                    <dd class="text-right font-semibold text-slate-900">{{ $job['location'] }}</dd>
+                                    <dd class="text-right font-semibold text-school-950">{{ $job['location'] }}</dd>
                                 </div>
                             </dl>
 
@@ -217,7 +217,7 @@
                                     <x-icon name="arrow-right" class="size-4" />
                                 </a>
                             @else
-                                <p class="mt-6 rounded-xl bg-slate-100 px-4 py-3 text-center text-sm font-semibold text-slate-500">
+                                <p class="mt-6 rounded-xl bg-school-100 px-4 py-3 text-center text-sm font-semibold text-slate-500">
                                     Lowongan ini sudah ditutup
                                 </p>
                             @endif
@@ -230,7 +230,7 @@
 
                         @if ($related->isNotEmpty())
                             <div>
-                                <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                                <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                                     Lowongan Terkait
                                 </h2>
 
@@ -239,13 +239,13 @@
                                         <li>
                                             <a
                                                 href="{{ route('bkk.show', $other['slug']) }}"
-                                                class="flex items-start justify-between gap-4 border-b border-slate-200 py-4 transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                                class="flex items-start justify-between gap-4 border-b border-school-200 py-4 transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                                             >
                                                 <span class="min-w-0">
                                                     <span class="flex items-center gap-2">
                                                         <x-bkk.badge :job="$other" />
                                                     </span>
-                                                    <span class="mt-2 block text-[0.95rem] leading-snug font-semibold text-slate-900 transition hover:text-school-700">
+                                                    <span class="mt-2 block text-[0.95rem] leading-snug font-semibold text-school-950 transition hover:text-school-700">
                                                         {{ $other['position'] }}
                                                     </span>
                                                     <span class="mt-1 block text-sm text-slate-500">{{ $other['company'] }}</span>

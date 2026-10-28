@@ -84,7 +84,7 @@
                             <x-icon :name="$page['icon']" class="pointer-events-none absolute -right-8 -bottom-8 size-40 text-white/5" />
                         @endif
 
-                        <span class="relative flex size-14 items-center justify-center rounded-2xl bg-gold-500 text-school-950 shadow-lg shadow-gold-500/30">
+                        <span class="relative flex size-14 items-center justify-center rounded-2xl bg-gold-500 text-white shadow-lg shadow-gold-500/30">
                             <x-icon :name="$page['icon']" class="size-7" />
                         </span>
 
@@ -130,21 +130,21 @@
 
         {{-- Competencies and careers as twin cards on slate, so the two lists
              read as one block rather than two competing sections. --}}
-        <section class="bg-slate-50 py-20 lg:py-24">
+        <section class="bg-school-50 py-20 lg:py-24">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="grid gap-6 lg:grid-cols-2">
-                    <article class="group relative overflow-hidden rounded-3xl bg-white p-8 ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-slate-900/5 hover:ring-school-300" data-reveal data-reveal-from="left">
+                    <article class="group relative overflow-hidden rounded-3xl bg-white p-8 ring-1 ring-school-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-school-900/5 hover:ring-school-300" data-reveal data-reveal-from="left">
                         <div aria-hidden="true" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gold-500 to-gold-400"></div>
 
                         <div class="flex items-center gap-3">
                             <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gold-500/15 text-gold-600 transition-transform duration-300 group-hover:scale-110">
                                 <x-icon name="check-badge" class="size-5" />
                             </span>
-                            <h2 class="text-lg font-bold tracking-tight text-slate-900">Kompetensi yang Dipelajari</h2>
+                            <h2 class="text-lg font-bold tracking-tight text-school-950">Kompetensi yang Dipelajari</h2>
                             <span class="ml-auto hidden rounded-full bg-school-50 px-3 py-1 text-xs font-bold text-school-700 ring-1 ring-school-100 sm:inline-flex">{{ $competencyCount }}</span>
                         </div>
 
-                        <div class="mt-4 h-px bg-slate-100"></div>
+                        <div class="mt-4 h-px bg-school-100"></div>
 
                         <ul class="mt-6 space-y-3.5">
                             @foreach ($page['competencies'] as $competency)
@@ -158,18 +158,18 @@
                         </ul>
                     </article>
 
-                    <article class="group relative overflow-hidden rounded-3xl bg-white p-8 ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-slate-900/5 hover:ring-school-300" data-reveal data-reveal-from="right">
+                    <article class="group relative overflow-hidden rounded-3xl bg-white p-8 ring-1 ring-school-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-school-900/5 hover:ring-school-300" data-reveal data-reveal-from="right">
                         <div aria-hidden="true" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-school-700 to-school-800"></div>
 
                         <div class="flex items-center gap-3">
                             <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-school-700/10 text-school-700 transition-transform duration-300 group-hover:scale-110">
                                 <x-icon name="briefcase" class="size-5" />
                             </span>
-                            <h2 class="text-lg font-bold tracking-tight text-slate-900">Peluang Karier</h2>
+                            <h2 class="text-lg font-bold tracking-tight text-school-950">Peluang Karier</h2>
                             <span class="ml-auto hidden rounded-full bg-school-50 px-3 py-1 text-xs font-bold text-school-700 ring-1 ring-school-100 sm:inline-flex">{{ $careerCount }}</span>
                         </div>
 
-                        <div class="mt-4 h-px bg-slate-100"></div>
+                        <div class="mt-4 h-px bg-school-100"></div>
 
                         <ul class="mt-6 space-y-3.5">
                             @foreach ($page['careers'] as $career)

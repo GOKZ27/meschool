@@ -48,13 +48,12 @@
             <a
                 href="{{ route('home') }}"
                 aria-label="{{ config('school.name') }}"
-                class="flex min-w-0 items-center gap-2.5 lg:hidden"
+                class="nav-mobile-brand flex min-w-0 items-center gap-3 lg:hidden"
             >
-                <x-logo class="h-8 w-auto shrink-0" surface="light" />
-                <span class="flex min-w-0 flex-col leading-[1.1]" aria-hidden="true">
-                    @foreach (preg_split('/\s+/', trim((string) config('school.name'))) as $word)
-                        <span class="truncate text-[11px] font-bold tracking-[0.08em] text-white uppercase">{{ $word }}</span>
-                    @endforeach
+                <x-logo class="nav-mobile-brand__logo h-12 w-auto shrink-0" surface="light" />
+                <span class="flex min-w-0 flex-col gap-0.5 leading-tight" aria-hidden="true">
+                    <span class="nav-mobile-brand__name">{{ config('school.name') }}</span>
+                    <span class="nav-mobile-brand__tagline">Berilmu · Berakhlak · Siap Kerja</span>
                 </span>
             </a>
 
@@ -99,7 +98,7 @@
 
     {{-- Mobile drawer: the burger's contents — search on top, then the menu
              items, then the contact channels. --}}
-    <div class="nav-menu-panel hidden max-h-[75vh] overflow-y-auto pb-4 lg:hidden">
+    <div class="nav-menu-panel hidden lg:hidden">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2 py-4">
                 <label for="mobile-search-q" class="sr-only">Cari informasi sekolah</label>
@@ -132,8 +131,25 @@
                 @endforeach
             </ul>
 
-            <div class="mt-4 rounded-xl bg-school-800/60 p-4">
-                <x-contact-links orientation="stack" />
+            <div class="nav-mobile-contact">
+                <span class="nav-mobile-contact__icon" aria-hidden="true">
+                    <x-icon name="whatsapp" class="size-7" />
+                </span>
+                <span class="nav-mobile-contact__copy">
+                    <span class="nav-mobile-contact__eyebrow">WhatsApp</span>
+                    <span class="nav-mobile-contact__number">{{ config('school.contact.whatsapp') }}</span>
+                    <span class="nav-mobile-contact__hint">Balasan tercepat pada jam kerja</span>
+                </span>
+                <a
+                    class="nav-mobile-contact__button"
+                    href="{{ config('school.contact.whatsapp_link') }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <x-icon name="whatsapp" class="size-5 shrink-0" />
+                    <span>Hubungi Kami</span>
+                    <x-icon name="arrow-right" class="size-4 shrink-0" />
+                </a>
             </div>
         </div>
     </div>

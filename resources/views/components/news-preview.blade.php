@@ -18,7 +18,7 @@
 
 {{-- The home page previews the news archive as a compact editorial front
      page; each block is skipped when its query is empty. --}}
-<section id="berita" class="news-preview bg-slate-50 py-20 lg:py-24">
+<section id="berita" class="news-preview bg-school-50 py-20 lg:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div class="news-preview-heading" data-reveal>
@@ -137,13 +137,13 @@
             @if ($latest->isNotEmpty() && $latest->hasPages())
                 <nav class="mt-10 flex items-center justify-center gap-2" aria-label="Navigasi berita terbaru" data-reveal>
                     @if ($latest->onFirstPage())
-                        <span class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-300 ring-1 ring-slate-200" aria-hidden="true">
+                        <span class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-300 ring-1 ring-school-200" aria-hidden="true">
                             <x-icon name="chevron-left" class="size-5" />
                         </span>
                     @else
                         <a
                             href="{{ $latest->previousPageUrl() }}"
-                            class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-700 ring-1 ring-slate-200 transition hover:text-school-700 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                            class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-700 ring-1 ring-school-200 transition hover:text-school-700 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                             aria-label="Halaman sebelumnya"
                         >
                             <x-icon name="chevron-left" class="size-5" />
@@ -156,7 +156,7 @@
                             @class([
                                 'inline-flex size-10 items-center justify-center rounded-full text-sm font-semibold tabular-nums transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500',
                                 'bg-school-700 text-white shadow-sm' => $page === $latest->currentPage(),
-                                'bg-white text-slate-700 ring-1 ring-slate-200 hover:text-school-700 hover:ring-school-300' => $page !== $latest->currentPage(),
+                                'bg-white text-slate-700 ring-1 ring-school-200 hover:text-school-700 hover:ring-school-300' => $page !== $latest->currentPage(),
                             ])
                             @if ($page === $latest->currentPage()) aria-current="page" @endif
                             aria-label="Halaman {{ $page }}"
@@ -166,13 +166,13 @@
                     @endfor
 
                     @if ($latest->onLastPage())
-                        <span class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-300 ring-1 ring-slate-200" aria-hidden="true">
+                        <span class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-300 ring-1 ring-school-200" aria-hidden="true">
                             <x-icon name="chevron-right" class="size-5" />
                         </span>
                     @else
                         <a
                             href="{{ $latest->nextPageUrl() }}"
-                            class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-700 ring-1 ring-slate-200 transition hover:text-school-700 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                            class="inline-flex size-10 items-center justify-center rounded-full bg-white text-slate-700 ring-1 ring-school-200 transition hover:text-school-700 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                             aria-label="Halaman berikutnya"
                         >
                             <x-icon name="chevron-right" class="size-5" />
@@ -286,7 +286,7 @@
                             {{ $copy['eyebrow'] }}
                             <span aria-hidden="true" class="h-px w-8 bg-gold-500"></span>
                         </p>
-                        <h3 class="mt-4 text-3xl leading-none font-bold tracking-tight text-slate-900 sm:text-4xl">
+                        <h3 class="mt-4 text-3xl leading-none font-bold tracking-tight text-school-950 sm:text-4xl">
                             {{ $copy['gallery_title'] }}
                         </h3>
                     </div>

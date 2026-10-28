@@ -7,7 +7,7 @@
      wide banner strip instead of squeezing beside it. --}}
 <a
     href="{{ route('bkk.show', $job['slug']) }}"
-    class="group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg shadow-slate-900/5 ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/15 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500 sm:flex-row"
+    class="group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg shadow-school-950/5 ring-1 ring-school-200 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-school-950/15 hover:ring-school-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500 sm:flex-row"
 >
     {{-- Left: the logo or a monogram banner while no logo file is uploaded —
          the visual anchor of the card. --}}
@@ -40,7 +40,7 @@
 
             <span class="inline-flex flex-wrap items-center gap-2">
                 @if ($job['type'])
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-school-100 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-school-200">
                         <x-icon name="check-badge" class="size-3.5 shrink-0 text-slate-400" />
                         {{ $job['type'] }}
                     </span>
@@ -50,7 +50,7 @@
             </span>
         </div>
 
-        <h3 class="mt-3 text-lg leading-snug font-bold tracking-tight text-balance text-slate-900 transition group-hover:text-school-700 sm:text-xl">
+        <h3 class="mt-3 text-lg leading-snug font-bold tracking-tight text-balance text-school-950 transition group-hover:text-school-700 sm:text-xl">
             {{ $job['position'] }}
         </h3>
 

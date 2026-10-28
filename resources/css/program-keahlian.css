@@ -1,8 +1,8 @@
 #program-keahlian {
-    --pk-paper: #f3ebdd;
-    --pk-ink: #2b2118;
-    --pk-muted: #50463b;
-    --pk-gold: #d9a441;
+    --pk-paper: var(--color-school-50);
+    --pk-ink: var(--color-school-950);
+    --pk-muted: var(--color-school-700);
+    --pk-gold: var(--color-school-500);
     --pk-display: 'Fraunces', Georgia, serif;
     --pk-body: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 
@@ -44,7 +44,7 @@
     align-items: center;
     gap: 0.5rem;
     margin: 0 0 0.7rem;
-    color: #5b6236;
+    color: var(--color-school-700);
     font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -85,9 +85,9 @@
 }
 
 #program-keahlian .pk-card {
-    --pk-card-bg: #b5502e;
-    --pk-card-ink: #fffaf1;
-    --pk-card-hover-border: rgb(255 250 241 / 55%);
+    --pk-card-bg: var(--color-school-800);
+    --pk-card-ink: white;
+    --pk-card-hover-border: rgb(255 255 255 / 55%);
 
     position: relative;
     display: flex;
@@ -96,10 +96,10 @@
     height: 100%;
     padding: 0.875rem;
     overflow: hidden;
-    border: 1px solid rgb(43 33 24 / 12%);
+    border: 1px solid color-mix(in srgb, var(--color-school-950) 12%, transparent);
     border-radius: 0.625rem;
     background: var(--pk-card-bg);
-    box-shadow: 0 1px 2px rgb(43 33 24 / 5%);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--color-school-950) 5%, transparent);
     color: var(--pk-card-ink);
     text-decoration: none;
     transition:
@@ -110,32 +110,32 @@
 
 #program-keahlian .pk-card--dkv,
 #program-keahlian .pk-card--mp {
-    --pk-card-bg: #d9a441;
-    --pk-card-ink: #2b2118;
-    --pk-card-hover-border: rgb(43 33 24 / 35%);
+    --pk-card-bg: var(--color-school-600);
+    --pk-card-ink: white;
+    --pk-card-hover-border: rgb(255 255 255 / 55%);
 }
 
 #program-keahlian .pk-card--tkj {
-    --pk-card-bg: #23412f;
-    --pk-card-ink: #fffaf1;
-    --pk-card-hover-border: rgb(255 250 241 / 55%);
+    --pk-card-bg: var(--color-school-900);
+    --pk-card-ink: white;
+    --pk-card-hover-border: rgb(255 255 255 / 55%);
 }
 
 #program-keahlian .pk-card--ak {
-    --pk-card-bg: #ded3bd;
-    --pk-card-ink: #2b2118;
-    --pk-card-hover-border: rgb(43 33 24 / 35%);
+    --pk-card-bg: var(--color-school-100);
+    --pk-card-ink: var(--color-school-900);
+    --pk-card-hover-border: color-mix(in srgb, var(--color-school-700) 35%, transparent);
 }
 
 #program-keahlian .pk-card--bd {
-    --pk-card-bg: #2b2118;
-    --pk-card-ink: #fffaf1;
-    --pk-card-hover-border: rgb(255 250 241 / 55%);
+    --pk-card-bg: var(--color-school-700);
+    --pk-card-ink: white;
+    --pk-card-hover-border: rgb(255 255 255 / 55%);
 }
 
 #program-keahlian .pk-card:focus-visible {
     z-index: 1;
-    outline: 3px solid #5b6236;
+    outline: 3px solid var(--color-school-600);
     outline-offset: 3px;
 }
 
@@ -163,7 +163,7 @@
     overflow: hidden;
     border-radius: 0.375rem;
     aspect-ratio: 5 / 2;
-    background: rgb(43 33 24 / 8%);
+    background: color-mix(in srgb, var(--color-school-700) 8%, transparent);
 }
 
 #program-keahlian .pk-card__art img {
@@ -343,8 +343,8 @@
     #program-keahlian .pk-card:hover {
         border-color: var(--pk-card-hover-border);
         box-shadow:
-            0 2px 4px rgb(43 33 24 / 8%),
-            0 14px 26px -22px rgb(43 33 24 / 55%);
+            0 2px 4px color-mix(in srgb, var(--color-school-950) 8%, transparent),
+            0 14px 26px -22px color-mix(in srgb, var(--color-school-950) 55%, transparent);
     }
 }
 

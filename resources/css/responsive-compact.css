@@ -129,10 +129,6 @@ body {
         grid-column: 1 / -1;
     }
 
-    #sambutan figure {
-        max-width: 20rem;
-    }
-
     [data-berita-feed] {
         display: block;
     }
@@ -143,13 +139,6 @@ body {
 }
 
 @media (min-width: 64rem) and (max-width: 89.999rem) {
-    #sambutan figure {
-        max-width: 20rem;
-    }
-
-    #sambutan figure > span[aria-hidden="true"] {
-        right: 0;
-    }
 }
 
 @media (min-width: 80rem) {

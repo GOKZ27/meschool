@@ -6,7 +6,7 @@
     $tone = match ($job['status']) {
         'open' => ['classes' => 'bg-school-50 text-school-700 ring-school-500/25', 'icon' => 'check-badge'],
         'closing' => ['classes' => 'bg-gold-500/15 text-gold-600 ring-gold-500/30', 'icon' => 'clock'],
-        default => ['classes' => 'bg-slate-100 text-slate-500 ring-slate-300', 'icon' => 'close'],
+        default => ['classes' => 'bg-school-100 text-slate-500 ring-slate-300', 'icon' => 'close'],
     };
 @endphp
 

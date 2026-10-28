@@ -4,7 +4,16 @@
 
     $staff = config('school.staff');
     $items = array_values(array_filter((array) ($staff['items'] ?? [])));
-    $accents = ['#a64b32', '#bd8e27', '#315a47', '#687044', '#8a593f', '#536b78', '#9a7040', '#4c644b'];
+    $accents = [
+        'var(--color-school-700)',
+        'var(--color-school-800)',
+        'var(--color-school-600)',
+        'var(--color-school-900)',
+        'var(--color-school-700)',
+        'var(--color-school-800)',
+        'var(--color-school-600)',
+        'var(--color-school-900)',
+    ];
     $people = [];
 
     foreach ($items as $index => $item) {

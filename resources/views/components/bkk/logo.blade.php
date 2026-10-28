@@ -11,7 +11,7 @@
     <img
         src="{{ $job['logo_url'] }}"
         alt="Logo {{ $job['company'] }}"
-        class="{{ $shape }} shrink-0 bg-white object-contain ring-1 ring-slate-200"
+        class="{{ $shape }} shrink-0 bg-white object-contain ring-1 ring-school-200"
     >
 @else
     {{-- A missing logo never leaves a broken <img>: the company monogram

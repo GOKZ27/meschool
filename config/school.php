@@ -22,6 +22,17 @@ return [
     'description' => 'Sekolah Menengah Kejuruan Islamiyah Ciputat menyiapkan generasi muda yang '
         .'berakhlak mulia, berpotensi, dan siap bekerja di dunia industri serta dunia usaha.',
 
+    'about' => [
+        'eyebrow' => 'Tentang Kami',
+        'title' => 'SMK Islamiyah Ciputat',
+        'stats' => [
+            ['icon' => 'graduation-cap', 'value' => '+1.000', 'label' => 'Alumni'],
+            ['icon' => 'user-group', 'value' => '10+', 'label' => 'Program Keahlian'],
+            ['icon' => 'check-badge', 'value' => '100%', 'label' => 'Berbasis Islam'],
+        ],
+        'link_label' => 'Selengkapnya',
+    ],
+
     'domain' => 'www.smkislamiyahciputat.com',
 
     /*

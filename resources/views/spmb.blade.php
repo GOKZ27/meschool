@@ -63,7 +63,7 @@
                     </p>
 
                     <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
-                        <a href="{{ config('school.contact.whatsapp_link') }}" class="group inline-flex items-center gap-2 rounded-full bg-gold-500 px-7 py-3 text-sm font-semibold uppercase tracking-wide text-school-950 shadow-lg shadow-gold-500/20 transition-all hover:-translate-y-0.5 hover:bg-gold-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400">
+                        <a href="{{ config('school.contact.whatsapp_link') }}" class="group inline-flex items-center gap-2 rounded-full bg-gold-500 px-7 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-lg shadow-gold-500/20 transition-all hover:-translate-y-0.5 hover:bg-school-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400">
                             <x-icon name="whatsapp" class="size-4" />
                             {{ $page['register_label'] }}
                             <x-icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
@@ -101,7 +101,7 @@
                         {{ $page['steps_label'] }}
                     </p>
 
-                    <h2 class="mt-5 text-2xl leading-snug font-bold tracking-tight text-balance text-slate-900 sm:text-3xl">
+                    <h2 class="mt-5 text-2xl leading-snug font-bold tracking-tight text-balance text-school-950 sm:text-3xl">
                         Empat langkah menuju kelas baru Anda
                     </h2>
 
@@ -114,7 +114,7 @@
                 <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group data-reveal-slow data-spmb-steps>
                     @foreach ($page['steps'] as $index => $step)
                         <li class="relative">
-                            <article class="group relative h-full rounded-2xl bg-slate-50 p-6 ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1.5 hover:bg-white hover:shadow-xl hover:shadow-slate-900/5 hover:ring-gold-400/40">
+                            <article class="group relative h-full rounded-2xl bg-school-50 p-6 ring-1 ring-school-200 transition-all duration-300 hover:-translate-y-1.5 hover:bg-white hover:shadow-xl hover:shadow-school-900/5 hover:ring-school-300">
                                 <span class="relative flex size-12 items-center justify-center rounded-2xl bg-school-700 text-gold-400 shadow-md transition-colors duration-300 group-hover:bg-gold-500 group-hover:text-white">
                                     <x-icon :name="$stepIcons[$index] ?? 'sparkles'" class="size-6" />
                                     <span class="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-gold-500 text-[10px] font-bold text-white ring-2 ring-white">
@@ -122,7 +122,7 @@
                                     </span>
                                 </span>
 
-                                <h3 class="mt-5 text-base leading-snug font-bold tracking-tight text-slate-900">
+                                <h3 class="mt-5 text-base leading-snug font-bold tracking-tight text-school-950">
                                     {{ $step['title'] }}
                                 </h3>
 
@@ -144,7 +144,7 @@
         </section>
 
         {{-- What goes in the file. --}}
-        <section class="bg-slate-50 py-20 lg:py-24">
+        <section class="bg-school-50 py-20 lg:py-24">
             <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-14 lg:px-8">
                 <div class="lg:col-span-5" data-reveal data-reveal-from="left">
                     <span class="flex size-14 items-center justify-center rounded-2xl bg-school-700 text-gold-400 shadow-lg shadow-school-700/20">
@@ -156,7 +156,7 @@
                         {{ $page['requirements_label'] }}
                     </p>
 
-                    <h2 class="mt-5 text-2xl leading-snug font-bold tracking-tight text-balance text-slate-900 sm:text-3xl">
+                    <h2 class="mt-5 text-2xl leading-snug font-bold tracking-tight text-balance text-school-950 sm:text-3xl">
                         Siapkan berkas pendaftaran Anda
                     </h2>
 
@@ -169,7 +169,7 @@
                 <div class="lg:col-span-7">
                     <ul class="grid gap-3 sm:grid-cols-2" data-reveal-group data-reveal-slow data-spmb-requirements>
                         @foreach ($page['requirements'] as $requirement)
-                            <li class="group flex items-center gap-3 rounded-xl bg-white p-4 ring-1 ring-slate-200 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/5 hover:ring-gold-400/40">
+                            <li class="group flex items-center gap-3 rounded-xl bg-white p-4 ring-1 ring-school-200 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-school-950/5 hover:ring-gold-400/40">
                                 <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-gold-500/10 text-gold-600 transition-colors duration-200 group-hover:bg-gold-500 group-hover:text-white">
                                     <x-icon name="check-badge" class="size-4" />
                                 </span>

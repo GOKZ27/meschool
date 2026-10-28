@@ -501,83 +501,61 @@ class HomePageTest extends TestCase
         );
     }
 
-    public function test_the_principal_greeting_carries_the_configured_copy(): void
+    public function test_the_school_profile_carries_the_configured_copy(): void
     {
         $html = $this->get(route('home'))->assertOk()->getContent();
         [, $xp] = $this->parseHtml($html);
 
-        $greeting = $xp->query('//*[@id="sambutan"]')->item(0);
+        $profile = $xp->query('//*[@id="sambutan"]')->item(0);
 
-        $this->assertNotNull($greeting);
+        $this->assertNotNull($profile);
         $this->assertSame(
-            'Sambutan '.config('school.principal.role'),
-            trim($xp->query('.//p', $greeting)->item(0)->textContent)
+            config('school.about.eyebrow'),
+            trim($xp->query('.//div[@data-reveal-group]/p', $profile)->item(0)->textContent)
         );
-
-        // Every configured paragraph is rendered, once, in order. Compared as
-        // parsed text so an apostrophe is not mistaken for an HTML entity.
-        $paragraphs = array_map(
-            fn ($node) => trim($node->textContent),
-            iterator_to_array($xp->query('.//div[@data-reveal-group]/p[contains(@class, "mt-4")]', $greeting))
+        $this->assertSame(
+            config('school.about.title'),
+            trim($xp->query('.//h2', $profile)->item(0)->textContent)
         );
-
-        $this->assertSame(config('school.principal.message'), $paragraphs);
-
-        // The lead line is the only heading in the block, so the page keeps a
-        // single h1 from the hero.
-        $this->assertSame(1, $xp->query('.//h2', $greeting)->length);
+        $this->assertSame(
+            config('school.description'),
+            trim($xp->query('.//div[@data-reveal-group]/p', $profile)->item(1)->textContent)
+        );
+        $this->assertSame(1, $xp->query('.//h2', $profile)->length);
         $this->assertSame(1, $xp->query('//h1')->length);
     }
 
-    public function test_the_principal_greeting_credits_nobody_until_a_name_is_configured(): void
+    public function test_the_school_profile_renders_its_configured_statistics(): void
     {
-        // Shipping a plausible-sounding name nobody confirmed would put the
-        // wrong person on the website, so the role stands alone until it is set.
-        config()->set('school.principal.name', null);
-
         $html = $this->get(route('home'))->assertOk()->getContent();
         [, $xp] = $this->parseHtml($html);
+        $stats = config('school.about.stats');
+        $items = $xp->query('//*[@id="sambutan"]/div//ul/li');
 
-        $signature = $xp->query('//*[@id="sambutan"]//div[contains(@class, "mt-8")]')->item(0);
+        $this->assertCount(count($stats), $items);
 
-        $this->assertSame(
-            config('school.principal.role'),
-            trim($xp->query('./p', $signature)->item(0)->textContent)
-        );
-
-        config()->set('school.principal.name', 'H. Ahmad Fauzan');
-
-        $named = $this->get(route('home'))->assertOk()->getContent();
-        [, $xp] = $this->parseHtml($named);
-
-        $signature = $xp->query('//*[@id="sambutan"]//div[contains(@class, "mt-8")]')->item(0);
-
-        $this->assertSame('H. Ahmad Fauzan', trim($xp->query('./p', $signature)->item(0)->textContent));
-        $this->assertSame(config('school.principal.role'), trim($xp->query('./p', $signature)->item(1)->textContent));
+        foreach ($stats as $index => $stat) {
+            $this->assertSame(
+                $stat['value'].$stat['label'],
+                preg_replace('/\s+/', '', $items->item($index)->textContent)
+            );
+        }
     }
 
-    public function test_the_principal_greeting_uses_the_portrait_when_it_is_uploaded(): void
+    public function test_the_school_profile_uses_the_configured_campus_photo_when_uploaded(): void
     {
-        config()->set('school.principal.photo', $this->fakePrincipalPhoto());
+        config()->set('school.hero.slides.0.photo', $this->fakePrincipalPhoto());
 
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         $this->assertStringContainsString(asset('images/principal/kepala-sekolah-test.jpg'), $html);
         $this->assertStringContainsString('object-cover', $html);
-
-        // Without a confirmed name the alt text names the role, not a person.
-        $this->assertStringContainsString('alt="'.config('school.principal.role'), $html);
-
-        config()->set('school.principal.name', 'H. Ahmad Fauzan');
-
-        $named = $this->get(route('home'))->assertOk()->getContent();
-
-        $this->assertStringContainsString('alt="H. Ahmad Fauzan, Kepala Sekolah"', $named);
+        $this->assertStringContainsString('alt="'.config('school.about.title').'"', $html);
     }
 
-    public function test_the_principal_greeting_falls_back_when_the_portrait_is_missing(): void
+    public function test_the_school_profile_falls_back_when_the_campus_photo_is_missing(): void
     {
-        config()->set('school.principal.photo', 'tidak-ada.jpg');
+        config()->set('school.hero.slides.0.photo', 'tidak-ada.jpg');
 
         $html = $this->get(route('home'))->assertOk()->getContent();
         [, $xp] = $this->parseHtml($html);

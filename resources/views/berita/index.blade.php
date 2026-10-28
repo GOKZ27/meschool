@@ -14,7 +14,7 @@
         {{-- The archive opens with a brick-green band: the one place on this
              page where the brand colour is the background rather than the
              accent, so the search bar has somewhere loud to sit. --}}
-        <section class="bg-slate-900">
+        <section class="bg-school-900">
             <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
                 <p class="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-gold-400 uppercase">
                     <span aria-hidden="true" class="h-px w-10 bg-gold-400"></span>
@@ -90,7 +90,7 @@
 
             <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
                 @if ($news->isEmpty())
-                    <div class="rounded-2xl bg-slate-50 p-10 text-center ring-1 ring-slate-200">
+                    <div class="rounded-2xl bg-school-50 p-10 text-center ring-1 ring-school-200">
                         <x-icon name="search" class="size-8 text-slate-400" />
                         <p class="mt-4 text-sm leading-relaxed text-slate-600">{{ $copy['empty'] }}</p>
 
@@ -125,7 +125,7 @@
                                             {{ $article->categoryLabel() }}
                                         </span>
 
-                                        <h2 class="mt-1 line-clamp-2 text-[0.95rem] leading-snug font-semibold text-balance text-slate-900 transition group-hover:text-school-700">
+                                        <h2 class="mt-1 line-clamp-2 text-[0.95rem] leading-snug font-semibold text-balance text-school-950 transition group-hover:text-school-700">
                                             {{ $article->title }}
                                         </h2>
                                     </a>
@@ -163,8 +163,8 @@
 
                     {{-- 3. Tag Terpopuler: the busiest categories as a hashtag grid. --}}
                     @if ($tags->isNotEmpty())
-                        <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-4" data-berita-tags data-reveal>
-                            <h2 class="text-sm font-bold tracking-tight text-slate-900">
+                        <section class="mt-6 rounded-2xl border border-school-200 bg-white p-4" data-berita-tags data-reveal>
+                            <h2 class="text-sm font-bold tracking-tight text-school-950">
                                 {{ $copy['tags_title'] }}
                             </h2>
 
@@ -205,7 +205,7 @@
                                             {{ $article->categoryLabel() }}
                                         </span>
 
-                                        <h3 class="mt-1 line-clamp-2 text-sm leading-snug font-semibold text-balance text-slate-900 transition group-hover:text-school-700">
+                                        <h3 class="mt-1 line-clamp-2 text-sm leading-snug font-semibold text-balance text-school-950 transition group-hover:text-school-700">
                                             {{ $article->title }}
                                         </h3>
                                     </a>
@@ -219,7 +219,7 @@
                         <div class="mt-8 flex justify-center" data-berita-more data-reveal>
                             <a
                                 href="{{ $news->nextPageUrl() }}"
-                                class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-school-700 transition hover:border-school-300 hover:bg-slate-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+                                class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-school-700 transition hover:border-school-300 hover:bg-school-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
                             >
                                 {{ $copy['more'] }}
                                 <x-icon name="arrow-right" class="size-4" />
@@ -233,12 +233,12 @@
         <div class="mx-auto hidden max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-12 lg:px-8" data-berita-archive>
             {{-- ── The results ─────────────────────────────────────────── --}}
             <div class="lg:col-span-8">
-                <div class="flex flex-wrap items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3">
+                <div class="flex flex-wrap items-baseline justify-between gap-4 border-b-2 border-school-950 pb-3">
                     <p class="text-sm text-slate-600">
-                        <span class="font-semibold text-slate-900">{{ $news->total() }}</span>
+                        <span class="font-semibold text-school-950">{{ $news->total() }}</span>
                         berita ditemukan
                         @if ($filters['q'] !== '')
-                            untuk &ldquo;<span class="font-semibold text-slate-900">{{ $filters['q'] }}</span>&rdquo;
+                            untuk &ldquo;<span class="font-semibold text-school-950">{{ $filters['q'] }}</span>&rdquo;
                         @endif
                     </p>
 
@@ -250,7 +250,7 @@
                 </div>
 
                 @if ($news->isEmpty())
-                    <div class="mt-8 rounded-2xl bg-slate-50 p-10 text-center ring-1 ring-slate-200">
+                    <div class="mt-8 rounded-2xl bg-school-50 p-10 text-center ring-1 ring-school-200">
                         <x-icon name="search" class="size-8 text-slate-400" />
                         <p class="mt-4 text-sm leading-relaxed text-slate-600">{{ $copy['empty'] }}</p>
 
@@ -280,7 +280,7 @@
             {{-- ── The filters, as a list rather than a second grid ────── --}}
             <aside class="space-y-8 lg:col-span-4">
                 <div data-reveal data-reveal-from="right">
-                    <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                    <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                         {{ $copy['category_label'] }}
                     </h2>
 
@@ -291,7 +291,7 @@
                                 @class([
                                     'flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                                     'bg-school-700 text-white' => $filters['category'] === null,
-                                    'text-slate-700 hover:bg-slate-100' => $filters['category'] !== null,
+                                    'text-slate-700 hover:bg-school-100' => $filters['category'] !== null,
                                 ])
                             >
                                 <span class="inline-flex items-center gap-2.5">
@@ -309,7 +309,7 @@
                                     @class([
                                         'flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                                         'bg-school-700 text-white' => $filters['category'] === $info['slug'],
-                                        'text-slate-700 hover:bg-slate-100' => $filters['category'] !== $info['slug'],
+                                        'text-slate-700 hover:bg-school-100' => $filters['category'] !== $info['slug'],
                                     ])
                                     @if ($filters['category'] === $info['slug']) aria-current="page" @endif
                                 >
@@ -326,7 +326,7 @@
 
                 @if ($years->isNotEmpty())
                     <div data-reveal data-reveal-from="right">
-                        <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                        <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                             {{ $copy['year_label'] }}
                         </h2>
 
@@ -335,8 +335,8 @@
                                 href="{{ route('berita', array_filter(['kategori' => $filters['category']])) }}"
                                 @class([
                                     'rounded-full px-4 py-2 text-sm font-semibold transition',
-                                    'bg-slate-900 text-white' => $filters['year'] === null,
-                                    'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100' => $filters['year'] !== null,
+                                    'bg-school-950 text-white' => $filters['year'] === null,
+                                    'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-school-100' => $filters['year'] !== null,
                                 ])
                             >
                                 {{ $copy['all_years'] }}
@@ -347,8 +347,8 @@
                                     href="{{ route('berita', array_filter(['kategori' => $filters['category'], 'tahun' => $year])) }}"
                                     @class([
                                         'rounded-full px-4 py-2 text-sm font-semibold transition',
-                                        'bg-slate-900 text-white' => $filters['year'] === (string) $year,
-                                        'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100' => $filters['year'] !== (string) $year,
+                                        'bg-school-950 text-white' => $filters['year'] === (string) $year,
+                                        'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-school-100' => $filters['year'] !== (string) $year,
                                     ])
                                     @if ($filters['year'] === (string) $year) aria-current="page" @endif
                                 >
@@ -361,7 +361,7 @@
 
                 @if ($popular->isNotEmpty())
                     <div data-reveal data-reveal-from="right">
-                        <h2 class="flex items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                        <h2 class="flex items-baseline justify-between gap-4 border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                             Trending
                             <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-school-700 uppercase">
                                 <x-icon name="eye" class="size-4" />

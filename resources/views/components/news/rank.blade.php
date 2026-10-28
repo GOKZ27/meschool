@@ -11,7 +11,7 @@
     $position = str_pad((string) $rank, 2, '0', STR_PAD_LEFT);
 @endphp
 
-<li class="flex items-start gap-4 border-b border-slate-200 py-4 last:border-0">
+<li class="flex items-start gap-4 border-b border-school-200 py-4 last:border-0">
     <span aria-hidden="true" class="w-8 shrink-0 text-2xl leading-none font-black text-school-200 tabular-nums">
         {{ $position }}
     </span>
@@ -19,7 +19,7 @@
     <div class="min-w-0 flex-1">
         <a
             href="{{ route('berita.show', $article->slug) }}"
-            class="text-sm leading-snug font-semibold text-slate-900 transition hover:text-school-700 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
+            class="text-sm leading-snug font-semibold text-school-950 transition hover:text-school-700 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-school-500"
         >
             {{ $article->title }}
         </a>

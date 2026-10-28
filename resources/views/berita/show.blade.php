@@ -75,11 +75,11 @@
                     <header>
                         <x-news.chip :category="$article->category" />
 
-                        <h1 class="mt-4 text-2xl leading-[1.15] font-black tracking-tight text-balance text-slate-900 sm:text-4xl">
+                        <h1 class="mt-4 text-2xl leading-[1.15] font-black tracking-tight text-balance text-school-950 sm:text-4xl">
                             {{ $article->title }}
                         </h1>
 
-                        <x-news.meta :article="$article" author class="mt-5 border-y border-slate-200 py-4" />
+                        <x-news.meta :article="$article" author class="mt-5 border-y border-school-200 py-4" />
                     </header>
 
                     @if ($photo)
@@ -110,7 +110,7 @@
                                 playsinline
                                 preload="metadata"
                                 @if ($photo) poster="{{ $photo }}" @endif
-                                class="aspect-video w-full rounded-3xl bg-slate-900 object-cover"
+                                class="aspect-video w-full rounded-3xl bg-school-950 object-cover"
                             >
                                 <source src="{{ $video }}" type="video/mp4">
                                 Browser Anda tidak mendukung pemutaran video.
@@ -126,13 +126,13 @@
 
                     @if ($gallery)
                         <section class="mt-10">
-                            <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                            <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                                 Galeri
                             </h2>
 
                             <div class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3">
                                 @foreach ($gallery as $photoEntry)
-                                    <figure class="overflow-hidden rounded-2xl bg-brick-green ring-1 ring-slate-200">
+                                    <figure class="overflow-hidden rounded-2xl bg-brick-green ring-1 ring-school-200">
                                         @if ($photoEntry['url'])
                                             <img
                                                 src="{{ $photoEntry['url'] }}"
@@ -153,8 +153,8 @@
 
                     @if ($related->isNotEmpty())
                         <section class="mt-12">
-                            <div class="flex items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3">
-                                <h2 class="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                            <div class="flex items-baseline justify-between gap-4 border-b-2 border-school-950 pb-3">
+                                <h2 class="text-base font-bold tracking-tight text-school-950 sm:text-lg">
                                     {{ $copy['related_title'] }}
                                 </h2>
                                 <a href="{{ route('berita', ['kategori' => $article->category]) }}" class="text-xs font-semibold text-school-700 hover:text-school-800">
@@ -186,7 +186,7 @@
                     <div class="sticky top-24 space-y-8">
                         @if ($popular->isNotEmpty())
                             <div>
-                                <h2 class="flex items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                                <h2 class="flex items-baseline justify-between gap-4 border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                                     Trending
                                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-school-700 uppercase">
                                         <x-icon name="eye" class="size-4" />

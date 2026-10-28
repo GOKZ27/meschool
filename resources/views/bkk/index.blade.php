@@ -75,12 +75,12 @@
         <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8">
             {{-- ── The results ─────────────────────────────────────────── --}}
             <div class="lg:col-span-8">
-                <div class="flex flex-wrap items-baseline justify-between gap-4 border-b-2 border-slate-900 pb-3">
+                <div class="flex flex-wrap items-baseline justify-between gap-4 border-b-2 border-school-950 pb-3">
                     <p class="text-sm text-slate-600">
-                        <span class="font-semibold text-slate-900">{{ $jobs->total() }}</span>
+                        <span class="font-semibold text-school-950">{{ $jobs->total() }}</span>
                         lowongan ditemukan
                         @if ($filters['q'] !== '')
-                            untuk &ldquo;<span class="font-semibold text-slate-900">{{ $filters['q'] }}</span>&rdquo;
+                            untuk &ldquo;<span class="font-semibold text-school-950">{{ $filters['q'] }}</span>&rdquo;
                         @endif
                     </p>
 
@@ -92,7 +92,7 @@
                 </div>
 
                 @if ($jobs->isEmpty())
-                    <div class="mt-8 rounded-2xl bg-slate-50 p-10 text-center ring-1 ring-slate-200">
+                    <div class="mt-8 rounded-2xl bg-school-50 p-10 text-center ring-1 ring-school-200">
                         <x-icon name="search" class="size-8 text-slate-400" />
                         <p class="mt-4 text-sm leading-relaxed text-slate-600">{{ $copy['empty'] }}</p>
 
@@ -122,7 +122,7 @@
             {{-- ── The filters ─────────────────────────────────────────── --}}
             <aside class="space-y-8 lg:col-span-4">
                 <div data-reveal data-reveal-from="right">
-                    <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                    <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                         {{ $copy['all_categories'] }}
                     </h2>
 
@@ -133,7 +133,7 @@
                                 @class([
                                     'flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                                     'bg-school-700 text-white' => $filters['category'] === null,
-                                    'text-slate-700 hover:bg-slate-100' => $filters['category'] !== null,
+                                    'text-slate-700 hover:bg-school-100' => $filters['category'] !== null,
                                 ])
                             >
                                 <span>Semua bidang</span>
@@ -148,7 +148,7 @@
                                     @class([
                                         'flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                                         'bg-school-700 text-white' => $filters['category'] === $category['slug'],
-                                        'text-slate-700 hover:bg-slate-100' => $filters['category'] !== $category['slug'],
+                                        'text-slate-700 hover:bg-school-100' => $filters['category'] !== $category['slug'],
                                     ])
                                     @if ($filters['category'] === $category['slug']) aria-current="page" @endif
                                 >
@@ -165,7 +165,7 @@
 
                 @if ($locations->isNotEmpty())
                     <div data-reveal data-reveal-from="right">
-                        <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                        <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                             {{ $copy['all_locations'] }}
                         </h2>
 
@@ -176,7 +176,7 @@
                                     @class([
                                         'flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                                         'bg-school-700 text-white' => $filters['location'] === null,
-                                        'text-slate-700 hover:bg-slate-100' => $filters['location'] !== null,
+                                        'text-slate-700 hover:bg-school-100' => $filters['location'] !== null,
                                     ])
                                 >
                                     <span>Semua lokasi</span>
@@ -190,7 +190,7 @@
                                         @class([
                                             'flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                                             'bg-school-700 text-white' => $filters['location'] === $location['value'],
-                                            'text-slate-700 hover:bg-slate-100' => $filters['location'] !== $location['value'],
+                                            'text-slate-700 hover:bg-school-100' => $filters['location'] !== $location['value'],
                                         ])
                                         @if ($filters['location'] === $location['value']) aria-current="page" @endif
                                     >
@@ -208,7 +208,7 @@
 
                 @if ($statuses->isNotEmpty())
                     <div data-reveal data-reveal-from="right">
-                        <h2 class="border-b-2 border-slate-900 pb-3 text-base font-bold tracking-tight text-slate-900">
+                        <h2 class="border-b-2 border-school-950 pb-3 text-base font-bold tracking-tight text-school-950">
                             {{ $copy['all_statuses'] }}
                         </h2>
 
@@ -217,8 +217,8 @@
                                 href="{{ route('bkk', array_filter(['bidang' => $filters['category'], 'lokasi' => $filters['location']])) }}"
                                 @class([
                                     'rounded-full px-4 py-2 text-sm font-semibold transition',
-                                    'bg-slate-900 text-white' => $filters['status'] === null,
-                                    'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100' => $filters['status'] !== null,
+                                    'bg-school-950 text-white' => $filters['status'] === null,
+                                    'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-school-100' => $filters['status'] !== null,
                                 ])
                             >
                                 {{ $copy['all_statuses'] }}
@@ -229,8 +229,8 @@
                                     href="{{ route('bkk', array_filter(['bidang' => $filters['category'], 'lokasi' => $filters['location'], 'status' => $status['value']])) }}"
                                     @class([
                                         'rounded-full px-4 py-2 text-sm font-semibold transition',
-                                        'bg-slate-900 text-white' => $filters['status'] === $status['value'],
-                                        'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100' => $filters['status'] !== $status['value'],
+                                        'bg-school-950 text-white' => $filters['status'] === $status['value'],
+                                        'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-school-100' => $filters['status'] !== $status['value'],
                                     ])
                                     @if ($filters['status'] === $status['value']) aria-current="page" @endif
                                 >

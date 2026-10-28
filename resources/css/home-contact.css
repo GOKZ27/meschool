@@ -1,8 +1,8 @@
 .home-contact {
-    --home-contact-ink: #173a50;
-    --home-contact-muted: #688092;
-    --home-contact-green: #0b513f;
-    --home-contact-ground: #fbfaf6;
+    --home-contact-ink: var(--color-school-950);
+    --home-contact-muted: var(--color-school-600);
+    --home-contact-green: var(--color-school-700);
+    --home-contact-ground: var(--color-school-50);
 
     overflow: hidden;
     background: var(--home-contact-ground);
@@ -22,15 +22,15 @@
     min-height: 220px;
     align-items: center;
     overflow: hidden;
-    background-color: #f5f3eb;
+    background-color: var(--color-school-50);
     background-image:
         linear-gradient(
             90deg,
-            #f8f6ef 0%,
-            #f8f6ef 36%,
-            rgb(248 246 239 / 0.94) 46%,
-            rgb(248 246 239 / 0.56) 58%,
-            rgb(248 246 239 / 0) 72%
+            var(--color-school-50) 0%,
+            var(--color-school-50) 36%,
+            color-mix(in srgb, var(--color-school-50) 94%, transparent) 46%,
+            color-mix(in srgb, var(--color-school-50) 56%, transparent) 58%,
+            color-mix(in srgb, var(--color-school-50) 0%, transparent) 72%
         ),
         var(--home-contact-photo, none);
     background-position: center, right 43%;
@@ -61,7 +61,7 @@
 
 .home-contact__title {
     margin: 0;
-    color: #104d40;
+    color: var(--color-school-900);
     font-size: clamp(2rem, 4vw, 2.75rem);
     font-weight: 800;
     letter-spacing: -0.035em;
@@ -71,7 +71,7 @@
 .home-contact__description {
     max-width: 28rem;
     margin: 0.7rem 0 0;
-    color: #34505b;
+    color: var(--color-school-700);
     font-size: 0.875rem;
     line-height: 1.55;
 }
@@ -93,8 +93,8 @@
 }
 
 .home-contact__channels > a {
-    --channel-accent: #28b875;
-    --channel-ground: #eff7f2;
+    --channel-accent: var(--color-school-700);
+    --channel-ground: var(--color-school-100);
 
     display: flex;
     min-width: 0;
@@ -111,30 +111,30 @@
 }
 
 .home-contact__channels > a:hover {
-    box-shadow: 0 8px 18px rgb(23 58 80 / 0.1);
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--color-school-950) 10%, transparent);
     transform: translateY(-1px);
 }
 
 .home-contact__channels > a:focus-visible,
 .home-contact__social:focus-visible,
 .home-contact__map-link:focus-visible {
-    outline: 2px solid var(--channel-accent, #14775b);
+    outline: 2px solid var(--channel-accent, var(--color-school-700));
     outline-offset: 2px;
 }
 
 .home-contact__channels > [data-contact-channel="phone"] {
-    --channel-accent: #3289e8;
-    --channel-ground: #eff4fb;
+    --channel-accent: var(--color-school-700);
+    --channel-ground: var(--color-school-100);
 }
 
 .home-contact__channels > [data-contact-channel="email"] {
-    --channel-accent: #7350d8;
-    --channel-ground: #f3f0fa;
+    --channel-accent: var(--color-school-700);
+    --channel-ground: var(--color-school-100);
 }
 
 .home-contact__channels > [data-contact-channel="address"] {
-    --channel-accent: #ee7440;
-    --channel-ground: #fbf3ee;
+    --channel-accent: var(--color-school-700);
+    --channel-ground: var(--color-school-100);
 }
 
 .home-contact__channel-icon {
@@ -158,7 +158,7 @@
 }
 
 .home-contact__channel-label {
-    color: #17463e;
+    color: var(--color-school-800);
     font-size: 0.85rem;
     font-weight: 750;
     line-height: 1.2;
@@ -166,7 +166,7 @@
 
 .home-contact__channel-value {
     overflow-wrap: anywhere;
-    color: #203d4b;
+    color: var(--color-school-900);
     font-size: 0.78rem;
     line-height: 1.3;
 }
@@ -179,7 +179,7 @@
 
 .home-contact__channel-arrow {
     flex: 0 0 auto;
-    color: #244c59;
+    color: var(--color-school-700);
     transition: transform 180ms ease;
 }
 
@@ -191,11 +191,11 @@
     display: flex;
     min-width: 0;
     flex-direction: column;
-    border: 1px solid #e6e6df;
+    border: 1px solid var(--color-school-200);
     border-radius: 0.75rem;
     padding: 0.8rem;
     background: #fff;
-    box-shadow: 0 2px 8px rgb(23 58 80 / 0.035);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--color-school-950) 4%, transparent);
 }
 
 .home-contact__location-heading {
@@ -213,13 +213,13 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: #e7f1ec;
+    background: var(--color-school-100);
     color: var(--home-contact-green);
 }
 
 .home-contact__location-heading h3 {
     margin: 0;
-    color: #155243;
+    color: var(--color-school-800);
     font-size: 1.05rem;
     font-weight: 750;
     line-height: 1.3;
@@ -227,7 +227,7 @@
 
 .home-contact__location-heading p {
     margin: 0.1rem 0 0;
-    color: #34505b;
+    color: var(--color-school-700);
     font-size: 0.72rem;
     line-height: 1.4;
 }
@@ -237,7 +237,7 @@
     flex: 1;
     overflow: hidden;
     border-radius: 0.55rem;
-    background: #e8eff0;
+    background: var(--color-school-100);
 }
 
 .home-contact__map iframe {
@@ -256,7 +256,7 @@
     margin-top: 0.45rem;
     border-radius: 0.5rem;
     padding: 0.45rem 0.7rem;
-    background: #14523f;
+    background: var(--color-school-700);
     color: #fff;
     font-size: 0.68rem;
     font-weight: 650;
@@ -273,15 +273,15 @@
     align-items: center;
     gap: 0.6rem;
     margin-top: 0.85rem;
-    border: 1px solid #e1eee7;
+    border: 1px solid var(--color-school-200);
     border-radius: 0.75rem;
     padding: 0.8rem 1rem;
-    background: linear-gradient(110deg, #eef5f0, #f5f8f3);
+    background: linear-gradient(110deg, var(--color-school-100), var(--color-school-50));
 }
 
 .home-contact__social-intro h3 {
     margin: 0;
-    color: #155243;
+    color: var(--color-school-800);
     font-size: 1.05rem;
     font-weight: 750;
 }
@@ -297,7 +297,7 @@
     min-width: 0;
     align-items: center;
     gap: 0.55rem;
-    color: #183d4d;
+    color: var(--color-school-900);
     text-decoration: none;
 }
 
@@ -339,7 +339,7 @@
 
 .home-contact__motto {
     margin: 0;
-    color: #28644f;
+    color: var(--color-school-700);
     font-family: cursive;
     font-size: 0.72rem;
     font-style: italic;
@@ -398,7 +398,7 @@
     .home-contact__hero {
         min-height: 265px;
         background-image:
-            linear-gradient(0deg, #f8f6ef 0%, rgb(248 246 239 / 0.96) 45%, rgb(248 246 239 / 0.08) 100%),
+            linear-gradient(0deg, var(--color-school-50) 0%, color-mix(in srgb, var(--color-school-50) 96%, transparent) 45%, color-mix(in srgb, var(--color-school-50) 8%, transparent) 100%),
             var(--home-contact-photo, none);
         background-position: center, 67% center;
     }

@@ -16,9 +16,9 @@
    owned by the shared reveal rules in app.css. */
 
 .spmb-banner {
-    --spmb-scrim: rgb(4 23 15 / 0.94);
-    --spmb-gold: var(--color-gold-400);
-    --spmb-gold-strong: var(--color-gold-500);
+    --spmb-scrim: color-mix(in srgb, var(--color-school-950) 94%, transparent);
+    --spmb-accent: var(--color-gold-400);
+    --spmb-accent-strong: var(--color-gold-500);
 
     position: relative;
     display: flex;
@@ -43,9 +43,9 @@
     background: linear-gradient(
         100deg,
         var(--spmb-scrim) 0%,
-        rgb(4 23 15 / 0.82) 38%,
-        rgb(4 23 15 / 0.42) 66%,
-        rgb(4 23 15 / 0.66) 100%
+        color-mix(in srgb, var(--color-school-950) 82%, transparent) 38%,
+        color-mix(in srgb, var(--color-school-950) 42%, transparent) 66%,
+        color-mix(in srgb, var(--color-school-950) 66%, transparent) 100%
     );
     content: '';
     pointer-events: none;
@@ -58,7 +58,7 @@
     right: 0;
     left: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--spmb-gold-strong), rgb(217 154 43 / 0));
+    background: linear-gradient(90deg, var(--spmb-accent-strong), transparent);
     content: '';
     pointer-events: none;
 }
@@ -83,7 +83,7 @@
     align-items: center;
     gap: 0.75rem;
     margin: 0;
-    color: var(--spmb-gold);
+    color: var(--spmb-accent);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.2em;
@@ -120,19 +120,16 @@
     text-wrap: balance;
 }
 
-/* The academic year is the one line the school asked to be unmistakable: a
-   white label on a near-opaque deep-green pill with a gold ring, never the
-   inherited dark body colour that `text-gold-300` used to resolve to (that
-   token does not exist in the theme, so the copy vanished into the photo). */
+/* The academic year stays readable on the deep-green photo scrim. */
 .spmb-banner .spmb-year {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
     margin: clamp(1.15rem, 2vw, 1.5rem) 0 0;
-    border: 1px solid rgb(232 193 92 / 0.55);
+    border: 1px solid color-mix(in srgb, var(--spmb-accent) 55%, transparent);
     border-radius: 999px;
     padding: 0.55rem 1.1rem;
-    background-color: rgb(4 23 15 / 0.74);
+    background-color: color-mix(in srgb, var(--color-school-950) 74%, transparent);
     color: #fff;
     font-size: clamp(0.875rem, 1.05vw, 1rem);
     font-weight: 600;
@@ -144,7 +141,7 @@
     width: 1.05em;
     height: 1.05em;
     flex: none;
-    color: var(--spmb-gold);
+    color: var(--spmb-accent);
 }
 
 .spmb-banner .spmb-desc {
@@ -182,12 +179,11 @@
     transition: transform 200ms ease, background-color 200ms ease, border-color 200ms ease, color 200ms ease;
 }
 
-/* Gold ground takes the deep green ink, never white: white on gold-500 is
-   barely 2:1. */
+/* The accent background stays dark enough for readable white button text. */
 .spmb-banner .spmb-btn--primary {
-    background-color: var(--spmb-gold-strong);
+    background-color: var(--spmb-accent-strong);
     box-shadow: 0 18px 34px -18px rgb(0 0 0 / 0.8);
-    color: var(--color-school-950);
+    color: white;
 }
 
 .spmb-banner .spmb-btn--ghost {
@@ -200,7 +196,7 @@
 }
 
 .spmb-banner .spmb-btn:focus-visible {
-    outline: 3px solid var(--spmb-gold);
+    outline: 3px solid var(--spmb-accent);
     outline-offset: 3px;
 }
 
@@ -291,16 +287,16 @@
     .spmb-banner::before {
         background: linear-gradient(
             180deg,
-            rgb(4 23 15 / 0.9) 0%,
-            rgb(4 23 15 / 0.8) 45%,
-            rgb(4 23 15 / 0.92) 100%
+            color-mix(in srgb, var(--color-school-950) 90%, transparent) 0%,
+            color-mix(in srgb, var(--color-school-950) 80%, transparent) 45%,
+            color-mix(in srgb, var(--color-school-950) 92%, transparent) 100%
         );
     }
 }
 
 @media (hover: hover) and (pointer: fine) {
     .spmb-banner .spmb-btn--primary:hover {
-        background-color: var(--spmb-gold);
+        background-color: var(--spmb-accent);
         transform: translateY(-2px);
     }
 
@@ -334,13 +330,13 @@
 
 .spmb-hero,
 .spmb-benefits {
-    --spmb-deep: #073d32;
-    --spmb-green: #087c50;
-    --spmb-mint: #36c99a;
-    --spmb-ink: #193547;
-    --spmb-muted: #71859b;
-    --spmb-surface: #f5f9fc;
-    --spmb-line: #dbe8e2;
+    --spmb-deep: var(--color-school-900);
+    --spmb-green: var(--color-school-700);
+    --spmb-mint: var(--color-school-400);
+    --spmb-ink: var(--color-school-950);
+    --spmb-muted: var(--color-school-600);
+    --spmb-surface: var(--color-school-50);
+    --spmb-line: var(--color-school-200);
 }
 
 .spmb-hero {
@@ -376,10 +372,10 @@
     inset: 0;
     background: linear-gradient(
         100deg,
-        rgb(7 61 50 / 0.97) 0%,
-        rgb(7 61 50 / 0.9) 42%,
-        rgb(7 61 50 / 0.58) 68%,
-        rgb(7 61 50 / 0.34) 100%
+        color-mix(in srgb, var(--spmb-deep) 97%, transparent) 0%,
+        color-mix(in srgb, var(--spmb-deep) 90%, transparent) 42%,
+        color-mix(in srgb, var(--spmb-deep) 58%, transparent) 68%,
+        color-mix(in srgb, var(--spmb-deep) 34%, transparent) 100%
     );
     content: '';
     pointer-events: none;
@@ -453,10 +449,10 @@
     align-items: center;
     gap: 0.55rem;
     margin: 1rem 0 0;
-    border: 1px solid rgb(54 201 154 / 0.38);
+    border: 1px solid color-mix(in srgb, var(--spmb-mint) 38%, transparent);
     border-radius: 999px;
     padding: 0.4rem 1rem;
-    background-color: rgb(7 61 50 / 0.55);
+    background-color: color-mix(in srgb, var(--spmb-deep) 55%, transparent);
     color: #fff;
     font-size: clamp(1.125rem, 1.5vw, 1.375rem);
     font-weight: 600;
@@ -516,7 +512,7 @@
         box-shadow 200ms ease;
 }
 
-/* White on #087c50 clears 5:1, so the label stays readable at this size. */
+/* Keep the label white on the school's accessible green shade. */
 .spmb-hero .spmb-hero__cta--primary {
     background-color: var(--spmb-green);
     box-shadow: 0 16px 30px -18px rgb(0 0 0 / 0.7);
@@ -556,7 +552,7 @@
     aspect-ratio: 3 / 2;
     border: 1px solid rgb(255 255 255 / 0.18);
     border-radius: 18px;
-    background-color: rgb(7 61 50 / 0.7);
+    background-color: color-mix(in srgb, var(--spmb-deep) 70%, transparent);
     box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.65);
     object-fit: cover;
 }
@@ -565,7 +561,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0b5241, #073d32);
+    background: linear-gradient(135deg, var(--spmb-green), var(--spmb-deep));
     color: var(--spmb-mint);
 }
 
@@ -617,9 +613,9 @@
     .spmb-hero::before {
         background: linear-gradient(
             180deg,
-            rgb(7 61 50 / 0.94) 0%,
-            rgb(7 61 50 / 0.88) 55%,
-            rgb(7 61 50 / 0.96) 100%
+            color-mix(in srgb, var(--spmb-deep) 94%, transparent) 0%,
+            color-mix(in srgb, var(--spmb-deep) 88%, transparent) 55%,
+            color-mix(in srgb, var(--spmb-deep) 96%, transparent) 100%
         );
     }
 
@@ -645,7 +641,7 @@
 
 @media (hover: hover) and (pointer: fine) {
     .spmb-hero .spmb-hero__cta--primary:hover {
-        background-color: #0b8f5c;
+        background-color: var(--spmb-green);
     }
 
     .spmb-hero .spmb-hero__cta--ghost:hover {
@@ -740,8 +736,8 @@
     padding: 1rem 0.95rem;
     background-color: #fff;
     box-shadow:
-        0 1px 2px rgb(7 61 50 / 0.05),
-        0 18px 30px -26px rgb(7 61 50 / 0.45);
+        0 1px 2px color-mix(in srgb, var(--spmb-deep) 5%, transparent),
+        0 18px 30px -26px color-mix(in srgb, var(--spmb-deep) 45%, transparent);
     transition:
         border-color 200ms ease,
         box-shadow 200ms ease;
@@ -755,7 +751,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    background-color: #e7f8f1;
+    background-color: var(--color-school-100);
     color: var(--spmb-deep);
 }
 
@@ -831,10 +827,10 @@
 
 @media (hover: hover) and (pointer: fine) {
     .spmb-benefits .spmb-benefit-card:hover {
-        border-color: rgb(54 201 154 / 0.55);
+        border-color: color-mix(in srgb, var(--spmb-mint) 55%, transparent);
         box-shadow:
-            0 1px 2px rgb(7 61 50 / 0.06),
-            0 22px 38px -26px rgb(7 61 50 / 0.5);
+            0 1px 2px color-mix(in srgb, var(--spmb-deep) 6%, transparent),
+            0 22px 38px -26px color-mix(in srgb, var(--spmb-deep) 50%, transparent);
     }
 }
 

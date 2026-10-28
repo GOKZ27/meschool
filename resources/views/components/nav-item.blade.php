@@ -15,6 +15,15 @@
     $isExternal = isset($item['url']);
     // Only plain link items carry 'route'; dropdown parents only have 'children'.
     $href = $isExternal ? $item['url'] : (isset($item['route']) ? route($item['route']) : '#');
+    $mobileIcon = match ($item['route'] ?? null) {
+        'home' => 'home',
+        'tenaga-kependidikan' => 'user-group',
+        'berita' => 'document',
+        'bkk' => 'briefcase',
+        'spmb' => 'calendar',
+        'kontak' => 'phone',
+        default => $isExternal ? 'map-pin' : 'graduation-cap',
+    };
 @endphp
 
 {{-- This component owns the <li> so the `group` class that drives the hover
@@ -32,12 +41,11 @@
             ])
         >
             <span>{{ $item['label'] }}</span>
-            <x-icon name="chevron-down" class="size-3.5 text-white/50 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
         </a>
 
         <div
             @class([
-                'absolute top-full left-0 z-30 hidden overflow-hidden rounded-b-xl bg-white shadow-xl ring-1 ring-slate-200/80 lg:block lg:invisible lg:opacity-0 lg:transition lg:duration-150 lg:group-hover:visible lg:group-hover:opacity-100 lg:group-focus-within:visible lg:group-focus-within:opacity-100',
+                'absolute top-full left-0 z-30 hidden overflow-hidden rounded-b-xl bg-white shadow-xl ring-1 ring-school-200/80 lg:block lg:invisible lg:opacity-0 lg:transition lg:duration-150 lg:group-hover:visible lg:group-hover:opacity-100 lg:group-focus-within:visible lg:group-focus-within:opacity-100',
                 'lg:w-[27rem]' => $columns > 1,
                 'lg:w-60' => $columns === 1,
             ])
@@ -49,15 +57,15 @@
         <div class="relative lg:hidden">
             <input type="checkbox" id="nav-{{ $uid }}" class="peer sr-only" />
 
-            <span
-                @class([
-                    'flex items-center justify-between gap-2 px-4 py-3 text-sm font-semibold tracking-wide whitespace-nowrap uppercase transition peer-checked:bg-school-800',
-                    'text-school-100' => ! $active,
-                    'bg-school-800 text-white' => $active,
-                ])
-            >
-                <span>{{ $item['label'] }}</span>
-                <x-icon name="chevron-down" class="size-4 shrink-0 text-school-300 transition-transform duration-200 peer-checked:rotate-180" />
+            <span @class([
+                'nav-mobile-link flex items-center justify-between gap-3',
+                'nav-mobile-link--active' => $active,
+            ])>
+                <span class="nav-mobile-link__main">
+                    <x-icon :name="$mobileIcon" class="nav-mobile-link__icon size-7 shrink-0" />
+                    <span>{{ $item['label'] }}</span>
+                </span>
+                <x-icon name="chevron-down" class="nav-mobile-link__chevron size-5 shrink-0 transition-transform duration-200 peer-checked:rotate-180" />
             </span>
 
             <label
@@ -86,10 +94,13 @@
                 rel="noopener noreferrer"
             @endif
         >
-            <span>{{ $item['label'] }}</span>
-            @if ($isExternal)
-                <x-icon name="arrow-right" class="size-3 text-white/50" />
-            @endif
+            <span @class([
+                'nav-mobile-link nav-mobile-link--plain',
+                'nav-mobile-link--active' => $active,
+            ])>
+                <x-icon :name="$mobileIcon" class="nav-mobile-link__icon size-7 shrink-0 lg:hidden" />
+                <span>{{ $item['label'] }}</span>
+            </span>
         </a>
     @endif
 </li>

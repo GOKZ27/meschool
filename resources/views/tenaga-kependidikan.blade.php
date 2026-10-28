@@ -71,7 +71,7 @@
                 <ul class="grid grid-cols-1 gap-6 min-[400px]:grid-cols-2 lg:grid-cols-3" data-reveal-group data-reveal-slow data-staff-grid>
                     @foreach ($people as $person)
                         <li>
-                            <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-slate-900/5 hover:ring-school-300">
+                            <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-school-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-school-950/5 hover:ring-school-300">
                                 <div aria-hidden="true" class="absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-gold-500 to-gold-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
 
                                 <div class="relative aspect-4/3 overflow-hidden bg-school-50">
@@ -91,7 +91,7 @@
                                 </div>
 
                                 <div class="flex flex-1 flex-col p-6">
-                                    <h2 class="text-base font-bold tracking-tight text-slate-900">
+                                    <h2 class="text-base font-bold tracking-tight text-school-950">
                                         {{ $person['name'] }}
                                     </h2>
 
